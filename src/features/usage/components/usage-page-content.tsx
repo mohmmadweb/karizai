@@ -39,7 +39,14 @@ export function UsagePageContent() {
           <AlertDescription>{formatNumber(Math.max(quota.limit - state.used, 0))} توکن باقی مانده است و سهمیه در {formatDate(quota.resetsAt)} بازنشانی می‌شود.</AlertDescription>
         </Alert>
       ) : null}
-      <section className="flex flex-col gap-2">
+      <section aria-label="سهمیه" className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1">
+          <p className="text-body-sm text-muted-foreground">باقی‌مانده‌ی سهمیه</p>
+          <p className="flex flex-wrap items-baseline gap-x-2 text-h2 tabular-nums">
+            {formatNumber(Math.max(quota.limit - state.used, 0))}
+            <span className="text-body-sm text-muted-foreground">توکن از {formatNumber(quota.limit)}</span>
+          </p>
+        </div>
         <QuotaBar quota={quota} used={state.used} />
         <p className="text-caption text-muted-foreground">بازنشانی سهمیه: {formatDate(quota.resetsAt)}</p>
       </section>
@@ -54,10 +61,13 @@ export function UsagePageContent() {
             <h2 className="text-h4">روند مصرف</h2>
             <ul className="flex flex-col gap-2">
               {report.series.map((point) => (
-                <li key={point.label} className="grid grid-cols-[5rem_1fr_auto] items-center gap-3 text-body-sm">
+                <li key={point.label} className="grid grid-cols-[5rem_1fr] items-center gap-3 text-body-sm">
                   <span>{point.label}</span>
-                  <span className="h-3 rounded-full bg-muted" role="presentation"><span className="block h-full rounded-full bg-primary" style={{ width: `${(point.tokens / max) * 100}%` }} /></span>
-                  <span className="text-muted-foreground">{formatNumber(point.requests)} درخواست · {formatNumber(point.tokens)} توکن</span>
+                  {/* The value sits right after the end of its bar; the longest bar takes 65 % of the row so the value always fits. */}
+                  <span className="flex min-w-0 items-center gap-2">
+                    <span className="h-3 shrink-0 rounded-full bg-primary" style={{ width: `${Math.max((point.tokens / max) * 65, point.tokens > 0 ? 1 : 0)}%` }} role="presentation" />
+                    <span className="whitespace-nowrap tabular-nums text-muted-foreground">{formatNumber(point.requests)} درخواست · {formatNumber(point.tokens)} توکن</span>
+                  </span>
                 </li>
               ))}
             </ul>
