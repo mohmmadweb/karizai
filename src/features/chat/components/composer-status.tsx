@@ -5,6 +5,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Agent } from "@/features/agents/types";
+import { ConnectionIcon } from "@/features/connections/components/connection-icon";
 import { useConnections } from "@/features/connections/components/connections-provider";
 import { formatDate } from "@/lib/format";
 import type { Notice } from "../hooks/use-send-flow";
@@ -94,6 +95,7 @@ export function ComposerStatus(props: ComposerStatusProps) {
           ) : null}
           {connections.map((item) => (
             <Badge key={item.id} variant="secondary" className="h-7 gap-2">
+              <ConnectionIcon name={item.name} domain={item.domain} className="size-5 rounded-md" />
               {item.name}
               <button type="button" onClick={() => props.onToggleConnection(item.id, false)} aria-label={`خاموش کردن ${item.name}`}><XIcon aria-hidden /></button>
             </Badge>

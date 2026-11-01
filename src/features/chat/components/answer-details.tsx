@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { BotIcon, ExternalLinkIcon, FileTextIcon, GlobeIcon, MessagesSquareIcon, ShieldCheckIcon, WrenchIcon } from "lucide-react";
+import { ExternalLinkIcon, FileTextIcon, GlobeIcon, MessagesSquareIcon, ShieldCheckIcon, WrenchIcon } from "lucide-react";
+import { ProviderLogo } from "@/components/shared/provider-logo";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { Message, Source } from "../types";
@@ -13,7 +14,7 @@ export function AnswerDetails({ message }: { message: Message }) {
   return (
     <div className="flex flex-col gap-2 text-caption text-muted-foreground">
       <div className="flex flex-wrap items-center gap-2">
-        {message.modelName ? <Badge variant="secondary"><BotIcon aria-hidden />پاسخ از: {message.modelName}</Badge> : null}
+        {message.modelName ? <Badge variant="secondary"><ProviderLogo name={message.modelName} className="size-4 text-[9px]" />پاسخ از: {message.modelName}</Badge> : null}
         {message.agentName ? <Badge variant="info">Agent: {message.agentName}</Badge> : null}
         {tools.map((tool) => <Badge key={tool} variant="outline"><WrenchIcon aria-hidden />{tool}</Badge>)}
         {message.maskedCount ? <Badge variant="success"><ShieldCheckIcon aria-hidden />{message.maskedCount.toLocaleString("fa-IR")} مورد حساس پوشانده شد</Badge> : null}

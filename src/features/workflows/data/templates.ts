@@ -91,6 +91,31 @@ const templates: WorkflowTemplate[] = [
       { id: "e8", source: "n7", target: "n8" },
     ],
   },
+  {
+    id: "tpl-reorder",
+    name: "سفارش‌دهی خودکار مواد اولیه",
+    description: "هر روز موجودی را با محموله‌های در راه مقایسه می‌کند. اگر کمبود پیش‌بینی شود، پس از تأیید مدیر تدارک از تامین‌کنندگان قیمت می‌گیرد، مقایسه می‌کند و پیش‌نویس سفارش خرید را آماده می‌کند.",
+    triggers: [{ kind: "schedule", every: "daily", time: "08:00" }],
+    nodes: [
+      { id: "n1", kind: "tool", label: "مواد کم‌موجودی", position: { x: 0, y: 0 }, config: { connectionId: "conn-12", toolId: "tool-20", params: { query: "کدام مواد اولیه به نقطه‌ی سفارش رسیده‌اند؟", maxRows: "50" }, instruction: "مواد زیر نقطه‌ی سفارش و پوشش روزانه‌شان را بخوان." } },
+      { id: "n2", kind: "tool", label: "محموله‌های در راه", position: { x: 0, y: 117 }, config: { connectionId: "conn-13", toolId: "tool-22", params: { query: "محموله‌های در راه این مواد و تاریخ رسیدنشان", maxRows: "50" }, instruction: "سفارش‌های باز و تاریخ ورود را بخوان." } },
+      { id: "n3", kind: "condition", label: "کمبود پیش‌بینی می‌شود؟", position: { x: 0, y: 234 }, config: { condition: "پوشش موجودی پیش از رسیدن محموله تمام شود" } },
+      { id: "n4", kind: "approval", label: "تأیید مدیر تدارک", position: { x: -120, y: 351 }, config: { instruction: "کمبود پیش‌بینی شده است. استعلام قیمت شروع شود؟" } },
+      { id: "n5", kind: "tool", label: "استعلام قیمت", position: { x: -120, y: 468 }, config: { connectionId: "conn-18", toolId: "tool-32", params: { material: "PE سنگین HD5502", quantityTon: "80", vendors: "3" }, instruction: "از سه تامین‌کننده قیمت بگیر." } },
+      { id: "n6", kind: "agent", label: "مقایسه‌ی قیمت‌ها", position: { x: -120, y: 585 }, config: { agentId: "agent-pricing", params: { inputFrom: "previous", maxOutputTokens: "1500" }, instruction: "قیمت، حداقل سفارش و زمان تحویل را مقایسه کن و بهترین گزینه را با دلیل بنویس." } },
+      { id: "n7", kind: "tool", label: "پیش‌نویس سفارش خرید", position: { x: -120, y: 702 }, config: { connectionId: "conn-13", toolId: "tool-23", params: { material: "PE سنگین HD5502", quantityTon: "80", vendor: "پلیمر خزر" }, instruction: "پیش‌نویس سفارش خرید را با گزینه‌ی برتر بساز." } },
+      { id: "n8", kind: "tool", label: "اعلام به تدارک", position: { x: -120, y: 819 }, config: { connectionId: "conn-15", toolId: "tool-27", params: { channel: "تدارک", message: "پیش‌نویس سفارش خرید آماده‌ی بررسی است." }, instruction: "آماده‌بودن پیش‌نویس را در کانال تدارک اعلام کن." } },
+    ],
+    edges: [
+      { id: "e1", source: "n1", target: "n2" },
+      { id: "e2", source: "n2", target: "n3" },
+      { id: "e3", source: "n3", target: "n4", label: "بله" },
+      { id: "e4", source: "n4", target: "n5" },
+      { id: "e5", source: "n5", target: "n6" },
+      { id: "e6", source: "n6", target: "n7" },
+      { id: "e7", source: "n7", target: "n8" },
+    ],
+  },
 ];
 
 export function getTemplates(): WorkflowTemplate[] {

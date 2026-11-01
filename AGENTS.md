@@ -244,6 +244,10 @@ Every step of a workflow belongs to an Agent (its run, or one of its skills) or 
 
 A new conversation shows six ready starts under the message box (`chat/data/starters.ts`, `ChatStarters`): choosing one sets the Agent, connections or organizational knowledge and fills an example question; the user still sends it. Design references such as `VoltAgent/awesome-design-md` are inspiration only: they describe other companies' brands, so their colors, fonts and logos are never copied; only structural patterns that fit `design.md` may be borrowed (tonal depth instead of heavy shadows, one solid primary action per group, light type weights, one-click starts).
 
+## Marks and icons
+
+`components/shared/provider-logo.tsx` draws a coloured tile with a letter for a model's maker (OpenAI, Anthropic, Google, DeepSeek, Qwen, Meta, Mistral; others get a neutral robot) in the model picker and under answers. `features/connections/components/connection-icon.tsx` gives each connection a coloured icon by kind (MES, IoT, database, social network, lab, maintenance, prices). These are drawn marks, not the makers' own logos, and their colours identify a kind, so they are not design tokens. Official logos would need local files with the owners' permission; no logo is loaded from the internet.
+
 ## API keys
 
 The admin panel decides per group which kinds of key may be created (`apikeys.json`, `src/lib/api-keys.ts` and `src/server/provider-store.ts` are identical copies). The user panel creates keys (`POST /api/api-keys`, refused for a group without permission), lists the user's own keys and revokes them. Only a SHA-256 hash is stored; the key text is shown once and never kept in the browser after the dialog closes. The `/api/v1` gateway that would accept the keys, the real usage count and the monthly ceiling are not built (Planned); the `curl` examples on the page show the planned shape.

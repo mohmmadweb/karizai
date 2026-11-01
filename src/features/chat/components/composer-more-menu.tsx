@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import type { Agent } from "@/features/agents/types";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { ConnectionIcon } from "@/features/connections/components/connection-icon";
 import { useConnections } from "@/features/connections/components/connections-provider";
 import { getCapabilities } from "@/features/user-session/data/session";
 
@@ -74,7 +75,7 @@ export function ComposerMoreMenu(props: ComposerMoreMenuProps) {
             {connections.length === 0 ? <DropdownMenuItem disabled>اتصالی در دسترس نیست</DropdownMenuItem> : null}
             {connections.map((item) => (
               <DropdownMenuCheckboxItem key={item.id} checked={props.connectionIds.includes(item.id)} disabled={item.status === "needs-auth"} onCheckedChange={(checked) => props.onToggleConnection(item.id, checked)}>
-                {item.name}{item.status === "needs-auth" ? " — نیازمند ورود" : ""}
+                <ConnectionIcon name={item.name} domain={item.domain} className="size-5 rounded-md" />{item.name}{item.status === "needs-auth" ? " — نیازمند ورود" : ""}
               </DropdownMenuCheckboxItem>
             ))}
             <DropdownMenuSeparator />

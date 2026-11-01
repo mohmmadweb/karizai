@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import { SearchField } from "@/components/shared/search-field";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ConnectionIcon } from "./connection-icon";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { simulateRequest } from "@/lib/simulate-request";
 import type { Connection } from "../types";
@@ -29,7 +30,7 @@ function ConnectionCard({ item }: { item: Connection }) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex flex-wrap items-center gap-2">{item.name}{statusBadge[item.status]}</CardTitle>
+        <CardTitle className="flex flex-wrap items-center gap-2"><ConnectionIcon name={item.name} domain={item.domain} />{item.name}{statusBadge[item.status]}</CardTitle>
         <CardDescription>{item.domain}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-3 text-body-sm">

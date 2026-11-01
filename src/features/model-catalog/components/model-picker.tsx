@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ProviderLogo } from "@/components/shared/provider-logo";
 import { useModels } from "./models-provider";
 import type { ModelChoice } from "../types";
 
@@ -35,6 +36,7 @@ export function ModelPicker({ value, onChange, lockedLabel }: ModelPickerProps) 
         disabled={Boolean(lockedLabel)}
         render={<Button type="button" variant="ghost" className="rounded-full text-h4" aria-label={`مدل: ${label}`} />}
       >
+        {current ? <ProviderLogo name={`${current.provider} ${current.name}`} /> : null}
         <span className="max-w-40 truncate">{label}</span>
         <ChevronDownIcon aria-hidden />
       </DropdownMenuTrigger>
@@ -46,6 +48,7 @@ export function ModelPicker({ value, onChange, lockedLabel }: ModelPickerProps) 
           <DropdownMenuSeparator />
           {models.map((model) => (
             <DropdownMenuRadioItem key={model.id} value={model.id} disabled={!model.isAvailable}>
+              <ProviderLogo name={`${model.provider} ${model.name}`} />
               {model.name}
               {model.isInternal ? " (داخلی)" : ""}
               {!model.isAvailable ? " — موقتاً در دسترس نیست" : ""}

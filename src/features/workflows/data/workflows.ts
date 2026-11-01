@@ -1,7 +1,7 @@
 import type { Run, Workflow } from "../types";
 import { getTemplates } from "./templates";
 
-const [weekly, customer, , indicators, pricing] = getTemplates();
+const [weekly, customer, , indicators, pricing, reorder] = getTemplates();
 
 const workflows: Workflow[] = [
   { id: "wf-1", name: weekly.name, description: weekly.description, status: "active", triggers: weekly.triggers, nodes: weekly.nodes, edges: weekly.edges, updatedAt: "2026-10-20T09:00:00.000Z", lastRunAt: "2026-10-24T05:00:00.000Z" },
@@ -14,6 +14,7 @@ const workflows: Workflow[] = [
   },
   { id: "wf-4", name: indicators.name, description: indicators.description, status: "active", triggers: indicators.triggers, nodes: indicators.nodes, edges: indicators.edges, updatedAt: "2026-10-27T08:00:00.000Z", lastRunAt: "2026-10-30T14:10:00.000Z" },
   { id: "wf-5", name: pricing.name, description: pricing.description, status: "active", triggers: pricing.triggers, nodes: pricing.nodes, edges: pricing.edges, updatedAt: "2026-10-28T10:00:00.000Z", lastRunAt: "2026-10-29T08:35:00.000Z" },
+  { id: "wf-6", name: reorder.name, description: reorder.description, status: "active", triggers: reorder.triggers, nodes: reorder.nodes, edges: reorder.edges, updatedAt: "2026-10-30T09:00:00.000Z", lastRunAt: "2026-10-31T05:00:00.000Z" },
 ];
 
 const runs: Run[] = [
@@ -66,6 +67,19 @@ const runs: Run[] = [
       { nodeId: "n6", label: "تأیید مدیر فروش", status: "succeeded", durationMs: 312000, output: "تأیید شد." },
       { nodeId: "n7", label: "پیش‌نویس پیش‌فاکتور", status: "succeeded", durationMs: 5600, output: "پیش‌فاکتور با اعتبار ۵ روز نوشته شد.", modelName: "Mistral", inputTokens: 1450, outputTokens: 640 },
       { nodeId: "n8", label: "اعلام به کانال فروش", status: "succeeded", durationMs: 900, output: "پیام در کانال فروش شبکه اجتماعی سازمان گذاشته شد." },
+    ],
+  },
+  {
+    id: "run-6", workflowId: "wf-6", startedAt: "2026-10-31T05:00:00.000Z", endedAt: "2026-10-31T05:06:40.000Z", status: "succeeded", startedBy: "زمان‌بندی: هر روز ۰۸:۰۰",
+    steps: [
+      { nodeId: "n1", label: "مواد کم‌موجودی", status: "succeeded", durationMs: 1600, output: "۳ ماده از ۶ ماده زیر نقطه‌ی سفارش است؛ HD5502 فقط ۳ روز پوشش دارد." },
+      { nodeId: "n2", label: "محموله‌های در راه", status: "succeeded", durationMs: 1500, output: "محموله‌ی HD5502 تا ۱۸ آبان در گمرک است." },
+      { nodeId: "n3", label: "کمبود پیش‌بینی می‌شود؟", status: "succeeded", durationMs: 250, output: "بله: حدود ۸ روز بدون موجودی HD5502." },
+      { nodeId: "n4", label: "تأیید مدیر تدارک", status: "succeeded", durationMs: 214000, output: "تأیید شد." },
+      { nodeId: "n5", label: "استعلام قیمت", status: "succeeded", durationMs: 2400, output: "از سه تامین‌کننده قیمت گرفته شد." },
+      { nodeId: "n6", label: "مقایسه‌ی قیمت‌ها", status: "succeeded", durationMs: 5200, output: "پلیمر خزر: قیمت مناسب و تحویل ۷ روزه؛ گزینه‌ی برتر.", modelName: "Claude Sonnet", inputTokens: 1480, outputTokens: 520 },
+      { nodeId: "n7", label: "پیش‌نویس سفارش خرید", status: "succeeded", durationMs: 1100, output: "پیش‌نویس ۸۰ تن HD5502 ساخته شد." },
+      { nodeId: "n8", label: "اعلام به تدارک", status: "succeeded", durationMs: 800, output: "پیام در کانال تدارک گذاشته شد." },
     ],
   },
 ];
