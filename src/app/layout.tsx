@@ -1,0 +1,32 @@
+import type { Metadata } from "next";
+import { Toaster } from "@/components/ui/sonner";
+import { DirectionProvider } from "@/components/ui/direction";
+import { themeInitScript } from "@/lib/use-theme";
+import { fontSans } from "@/styles/fonts";
+import "./globals.css";
+
+export const metadata: Metadata = {
+  title: "موشکاف",
+  description: "موشکاف، هوش مصنوعی سازمانی",
+};
+
+export default function RootLayout({ children }: LayoutProps<"/">) {
+  return (
+    <html
+      lang="fa"
+      dir="rtl"
+      suppressHydrationWarning
+      className={`${fontSans.variable} h-full antialiased`}
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body className="min-h-full flex flex-col">
+        <DirectionProvider direction="rtl">
+          {children}
+          <Toaster dir="rtl" position="bottom-center" />
+        </DirectionProvider>
+      </body>
+    </html>
+  );
+}

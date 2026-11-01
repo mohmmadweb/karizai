@@ -1,0 +1,127 @@
+"use client";
+
+import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
+import { TriangleAlertIcon } from "lucide-react";
+import { toast } from "sonner";
+import { BackLink } from "@/components/shared/back-link";
+import { EntityNotFound } from "@/components/shared/entity-not-found";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAgents } from "@/features/agents/components/agents-provider";
+import { useUnsavedGuard } from "@/features/agents/hooks/use-unsaved-guard";
+import { useConnections } from "@/features/connections/components/connections-provider";
+import { useWorkflowDraft } from "../hooks/use-workflow-draft";
+import { validateWorkflow } from "../lib/validate-workflow";
+import type { WorkflowNode } from "../types";
+import { ApprovalPrompt } from "./approval-prompt";
+import { EditorCanvas } from "./editor-canvas";
+import { EditorHeader } from "./editor-header";
+import { NodeProperties } from "./node-properties";
+import { RunsTab } from "./runs-tab";
+import { TriggersPanel } from "./triggers-panel";
+import { useWorkflows } from "./workflows-provider";
+
+type WorkflowEditorProps = { workflowId: string; initialTab?: "design" | "runs" };
+
+export function WorkflowEditor({ workflowId, initialTab = "design" }: WorkflowEditorProps) {
+  const { workflows } = useWorkflows();
+  const workflow = workflows.find((item) => item.id === workflowId);
+  // Rendered, not thrown: a workflow created a moment ago appears as soon as the state arrives.
+  if (!workflow) return <EntityNotFound title="کار پیدا نشد" backHref="/workflows" backLabel="بازگشت به کارهای من" />;
+  return <EditorBody key={workflow.id} workflowId={workflowId} initialTab={initialTab} />;
+}
+
+function EditorBody({ workflowId, initialTab }: Required<WorkflowEditorProps>) {
+  const router = useRouter();
+  const { workflows, runs, save, activate, run } = useWorkflows();
+  const { agents, skills } = useAgents();
+  const { connections } = useConnections();
+  const workflow = workflows.find((item) => item.id === workflowId)!;
+  const draft = useWorkflowDraft(workflow);
+  const guard = useUnsavedGuard(draft.dirty);
+  const [problems, setProblems] = useState<string[]>([]);
+  const latest = runs.find((item) => item.workflowId === workflowId);
+  // Steps light up only for a run started in this session; old runs stay in the Runs tab.
+  const liveRun = latest?.id.startsWith("run-new-") ? latest : undefined;
+  const running = latest?.status === "running" || latest?.status === "waiting-approval";
+
+  const subtitle = useCallback(
+    (node: WorkflowNode) => {
+      const c = node.config;
+      if (node.kind === "agent") return agents.find((a) => a.id === c.agentId)?.name;
+      if (node.kind === "skill") return skills.find((s) => s.id === c.skillId)?.name;
+      if (node.kind === "tool") return connections.find((x) => x.id === c.connectionId)?.tools.find((t) => t.id === c.toolId)?.name;
+      if (node.kind === "orchestrator") return `${(c.childAgentIds?.length ?? 0).toLocaleString("fa-IR")} Agent`;
+      return undefined;
+    },
+    [agents, skills, connections],
+  );
+
+  const current = () => ({ ...workflow, ...draft.draft });
+  const check = () => {
+    const found = validateWorkflow(current(), { agents, skills, connections });
+    setProblems(found);
+    return found.length === 0;
+  };
+  const persist = () => {
+    save(current());
+    draft.markSaved();
+  };
+
+  return (
+    <div className="mx-auto flex w-full max-w-page flex-col gap-6 page-gutter py-8">
+      <BackLink href="/workflows">بازگشت به کارهای من</BackLink>
+      <EditorHeader
+        name={draft.draft.name}
+        onRename={draft.rename}
+        status={workflow.status}
+        dirty={draft.dirty}
+        running={running}
+        onSave={() => { persist(); toast.success("تغییرها ذخیره شد."); }}
+        onTest={() => { if (!check()) return; persist(); run(workflowId, "اجرای آزمایشی"); }}
+        onActivate={() => {
+          if (!check()) return;
+          persist();
+          const status = activate(workflowId);
+          toast.success(status === "pending-approval" ? "برای تأیید ادمین فرستاده شد." : "کار فعال شد.", { description: status === "pending-approval" ? "تا تأیید، فقط اجرای دستی کار می‌کند." : undefined });
+        }}
+      />
+      {problems.length > 0 ? (
+        <Alert variant="destructive">
+          <TriangleAlertIcon aria-hidden />
+          <AlertTitle>پیش از ادامه این موارد را درست کنید</AlertTitle>
+          <AlertDescription><ul className="list-disc ps-5">{problems.map((problem) => <li key={problem}>{problem}</li>)}</ul></AlertDescription>
+        </Alert>
+      ) : null}
+      <Tabs defaultValue={initialTab}>
+        <TabsList>
+          <TabsTrigger value="design">طراحی</TabsTrigger>
+          <TabsTrigger value="runs">اجراها</TabsTrigger>
+        </TabsList>
+        <TabsContent value="design" className="flex flex-col gap-6 pt-4">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
+            <EditorCanvas draft={draft} run={liveRun} subtitle={subtitle} />
+            <NodeProperties draft={draft} />
+          </div>
+          <TriggersPanel triggers={draft.draft.triggers} onChange={draft.setTriggers} />
+        </TabsContent>
+        <TabsContent value="runs" className="pt-4"><RunsTab workflowId={workflowId} /></TabsContent>
+      </Tabs>
+      <ApprovalPrompt workflow={workflow} />
+      <AlertDialog open={guard.pendingHref !== null} onOpenChange={(open) => !open && guard.stay()}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>تغییرهای ذخیره‌نشده دارید</AlertDialogTitle>
+            <AlertDialogDescription>اگر از این صفحه بروید، تغییرهای کار از بین می‌رود.</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>ماندن در صفحه</AlertDialogCancel>
+            <AlertDialogAction variant="destructive" onClick={() => { guard.leave(); router.prefetch("/workflows"); }}>خروج بدون ذخیره</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+}

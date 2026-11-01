@@ -1,0 +1,330 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  /* Radii: sm 6px, md 8px, lg 10px (control), xl 16px (card, dialog). */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: var(--radius);
+  --radius-xl: 1rem;
+  --radius-2xl: 1.25rem;
+  --radius-3xl: 1.5rem;
+  --radius-4xl: 2rem;
+}
+
+/* Type roles (size / line height / weight). Use as `text-h1`, `text-body`. */
+@theme {
+  --text-display: 2.5rem;
+  --text-display--line-height: 3.5rem;
+  --text-display--font-weight: 700;
+  --text-h1: 2rem;
+  --text-h1--line-height: 3rem;
+  --text-h1--font-weight: 700;
+  --text-h2: 1.75rem;
+  --text-h2--line-height: 2.625rem;
+  --text-h2--font-weight: 700;
+  --text-h3: 1.5rem;
+  --text-h3--line-height: 2.25rem;
+  --text-h3--font-weight: 600;
+  --text-h4: 1.25rem;
+  --text-h4--line-height: 2rem;
+  --text-h4--font-weight: 600;
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 2rem;
+  --text-body: 1rem;
+  --text-body--line-height: 1.75rem;
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.5rem;
+  --text-label: 0.875rem;
+  --text-label--line-height: 1.5rem;
+  --text-label--font-weight: 600;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1.25rem;
+
+  /* Content widths. */
+  --container-page: 72rem;
+  --container-reading: 42rem;
+
+  /* Elevation: sm for cards that need lift, lg for popovers, dialogs, sheets. */
+  --shadow-sm: 0 1px 2px 0 oklch(0.25 0.05 262 / 8%), 0 1px 3px 0 oklch(0.25 0.05 262 / 6%);
+  --shadow-lg: 0 10px 28px -6px oklch(0.25 0.05 262 / 22%), 0 4px 10px -4px oklch(0.25 0.05 262 / 12%);
+
+  /* Motion: short and calm. */
+  --default-transition-duration: 200ms;
+  --default-transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Layer order, bottom to top: content, sticky, popovers, modals, toasts. */
+@utility z-sticky { z-index: 10; }
+@utility z-popover { z-index: 50; }
+@utility z-modal { z-index: 60; }
+@utility z-toast { z-index: 70; }
+
+/* Page gutter: 16px, 24px from md, 32px from lg. */
+@utility page-gutter {
+  padding-inline: 1rem;
+  @media (min-width: 48rem) { padding-inline: 1.5rem; }
+  @media (min-width: 64rem) { padding-inline: 2rem; }
+}
+
+/*
+  Brand: navy primary (hue 262). The secondary brand color is a calm cyan
+  (hue 205), proposed from the navy to give a precise, technical feel.
+  Foreground pairs are chosen for at least 4.5:1 contrast.
+*/
+/* Light theme (default). */
+:root {
+  color-scheme: light;
+  --background: oklch(0.955 0.018 258);
+  --foreground: oklch(0.2 0.04 262);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.04 262);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.04 262);
+  --primary: oklch(0.32 0.1 262);
+  --primary-foreground: oklch(0.985 0.005 255);
+  --secondary: oklch(0.94 0.035 205);
+  --secondary-foreground: oklch(0.3 0.07 240);
+  --muted: oklch(0.93 0.018 258);
+  --muted-foreground: oklch(0.44 0.035 258);
+  --accent: oklch(0.92 0.03 252);
+  --accent-foreground: oklch(0.28 0.08 262);
+  --destructive: oklch(0.5 0.21 27);
+  --destructive-foreground: oklch(0.985 0.005 27);
+  --success: oklch(0.46 0.12 155);
+  --success-foreground: oklch(0.985 0.005 155);
+  --warning: oklch(0.8 0.15 85);
+  --warning-foreground: oklch(0.25 0.05 80);
+  --info: oklch(0.48 0.13 235);
+  --info-foreground: oklch(0.985 0.005 235);
+  --border: oklch(0.88 0.02 258);
+  --scrollbar-thumb: oklch(0.46 0.03 258 / 30%);
+  --scrollbar-thumb-hover: oklch(0.46 0.03 258 / 55%);
+  --input: oklch(0.66 0.025 258);
+  --ring: oklch(0.55 0.15 245);
+  --chart-1: oklch(0.38 0.11 262);
+  --chart-2: oklch(0.62 0.12 205);
+  --chart-3: oklch(0.55 0.15 245);
+  --chart-4: oklch(0.55 0.13 290);
+  --chart-5: oklch(0.75 0.14 80);
+  --radius: 0.625rem;
+  /* Sidebar: dark navy in both themes; the active item is a light-blue pill. */
+  --sidebar: oklch(0.24 0.055 262);
+  --sidebar-foreground: oklch(0.96 0.01 255);
+  --sidebar-primary: oklch(0.92 0.045 255);
+  --sidebar-primary-foreground: oklch(0.25 0.07 262);
+  --sidebar-accent: oklch(0.32 0.07 260);
+  --sidebar-accent-foreground: oklch(0.97 0.01 255);
+  --sidebar-border: oklch(0.34 0.05 262);
+  --sidebar-ring: oklch(0.75 0.12 245);
+  --sidebar-active-border: oklch(0.98 0.01 255 / 70%);
+}
+
+/*
+  Dark theme. Applied by adding the `dark` class to <html> (see
+  src/lib/use-theme.ts). Same navy hue (262), lifted for contrast: primary
+  becomes a light blue with dark text, surfaces step up in lightness.
+  Every text pair reaches at least 4.5:1, control borders and the ring 3:1.
+*/
+.dark {
+  color-scheme: dark;
+  --background: oklch(0.16 0.03 262);
+  --foreground: oklch(0.96 0.01 255);
+  --card: oklch(0.2 0.035 262);
+  --card-foreground: oklch(0.96 0.01 255);
+  --popover: oklch(0.22 0.035 262);
+  --popover-foreground: oklch(0.96 0.01 255);
+  --primary: oklch(0.74 0.11 248);
+  --primary-foreground: oklch(0.17 0.04 262);
+  --secondary: oklch(0.28 0.05 215);
+  --secondary-foreground: oklch(0.92 0.03 210);
+  --muted: oklch(0.25 0.03 262);
+  --muted-foreground: oklch(0.72 0.03 258);
+  --accent: oklch(0.28 0.05 255);
+  --accent-foreground: oklch(0.95 0.015 255);
+  --destructive: oklch(0.68 0.19 25);
+  --destructive-foreground: oklch(0.17 0.04 25);
+  --success: oklch(0.72 0.15 155);
+  --success-foreground: oklch(0.17 0.04 155);
+  --warning: oklch(0.82 0.15 85);
+  --warning-foreground: oklch(0.22 0.05 80);
+  --info: oklch(0.74 0.12 235);
+  --info-foreground: oklch(0.17 0.04 235);
+  --border: oklch(0.32 0.03 262);
+  --scrollbar-thumb: oklch(0.72 0.03 258 / 30%);
+  --scrollbar-thumb-hover: oklch(0.72 0.03 258 / 55%);
+  --input: oklch(0.5 0.04 262);
+  --ring: oklch(0.7 0.13 245);
+  --chart-1: oklch(0.74 0.11 248);
+  --chart-2: oklch(0.75 0.12 205);
+  --chart-3: oklch(0.65 0.15 255);
+  --chart-4: oklch(0.7 0.13 295);
+  --chart-5: oklch(0.82 0.14 85);
+  --sidebar: oklch(0.24 0.055 262);
+  --sidebar-foreground: oklch(0.96 0.01 255);
+  --sidebar-primary: oklch(0.92 0.045 255);
+  --sidebar-primary-foreground: oklch(0.25 0.07 262);
+  --sidebar-accent: oklch(0.32 0.07 260);
+  --sidebar-accent-foreground: oklch(0.97 0.01 255);
+  --sidebar-border: oklch(0.34 0.05 262);
+  --sidebar-ring: oklch(0.75 0.12 245);
+  --sidebar-active-border: oklch(0.98 0.01 255 / 70%);
+  --shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 40%), 0 1px 3px 0 oklch(0 0 0 / 30%);
+  --shadow-lg: 0 12px 32px -6px oklch(0 0 0 / 60%), 0 4px 10px -4px oklch(0 0 0 / 40%);
+}
+
+/*
+  Classic look: the panel before the messenger look. A light sidebar and the original
+  surfaces. It is switched on with the `classic` class on <html> (settings, temporary).
+  `.dark.classic` comes last so the dark theme keeps its own surfaces.
+*/
+:root.classic {
+  --background: oklch(0.99 0.003 255);
+  --muted: oklch(0.96 0.008 255);
+  --muted-foreground: oklch(0.46 0.03 258);
+  --accent: oklch(0.95 0.025 250);
+  --border: oklch(0.9 0.012 255);
+  --sidebar: oklch(0.97 0.008 255);
+  --sidebar-foreground: oklch(0.2 0.04 262);
+  --sidebar-primary: oklch(0.94 0.012 255);
+  --sidebar-primary-foreground: oklch(0.2 0.04 262);
+  --sidebar-accent: oklch(0.94 0.02 250);
+  --sidebar-accent-foreground: oklch(0.28 0.08 262);
+  --sidebar-border: oklch(0.9 0.012 255);
+  --sidebar-ring: oklch(0.55 0.15 245);
+  --sidebar-active-border: transparent;
+}
+.dark.classic {
+  --background: oklch(0.16 0.03 262);
+  --muted: oklch(0.25 0.03 262);
+  --muted-foreground: oklch(0.72 0.03 258);
+  --accent: oklch(0.28 0.05 255);
+  --border: oklch(0.32 0.03 262);
+  --sidebar: oklch(0.2 0.035 262);
+  --sidebar-foreground: oklch(0.96 0.01 255);
+  --sidebar-primary: oklch(0.28 0.05 255);
+  --sidebar-primary-foreground: oklch(0.96 0.01 255);
+  --sidebar-accent: oklch(0.28 0.05 255);
+  --sidebar-accent-foreground: oklch(0.95 0.015 255);
+  --sidebar-border: oklch(0.32 0.03 262);
+  --sidebar-ring: oklch(0.7 0.13 245);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground text-body;
+  }
+  /* Slim, theme-aware scrollbars (Chromium/Safari/Edge via webkit, Firefox via standard). */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+  }
+  @supports (-moz-appearance: none) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--scrollbar-thumb) transparent;
+    }
+  }
+  html {
+    @apply font-sans;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Markdown inside chat answers: restores list markers and spacing that the reset removes. */
+.chat-markdown > * + * {
+  margin-block-start: 0.75rem;
+}
+.chat-markdown ul {
+  list-style: disc;
+  padding-inline-start: 1.5rem;
+}
+.chat-markdown ol {
+  list-style: decimal;
+  padding-inline-start: 1.5rem;
+}
+.chat-markdown a {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.chat-markdown pre,
+.chat-markdown code {
+  direction: ltr;
+  unicode-bidi: plaintext;
+}
+.chat-markdown table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.chat-markdown th,
+.chat-markdown td {
+  border: 1px solid var(--border);
+  padding: 0.375rem 0.75rem;
+  text-align: start;
+}
