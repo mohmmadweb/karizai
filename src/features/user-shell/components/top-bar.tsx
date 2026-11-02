@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { BellIcon, Building2Icon, ChevronDownIcon, LogOutIcon, MoonIcon, SettingsIcon, SunIcon } from "lucide-react";
-import { BrandLogo } from "@/components/brand/brand-logo";
+import { BrandLockup } from "@/components/brand/brand-lockup";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -45,14 +45,14 @@ export function TopBar({ query, onQueryChange }: TopBarProps) {
     return (
       <header className="flex h-12 shrink-0 items-center gap-2 border-b page-gutter lg:hidden">
         <MobileMenu query={query} onQueryChange={onQueryChange} />
-        <BrandLogo alt="موشکاف" variant="text" className="w-24" />
+        <BrandLockup alt="موشکاف" markClassName="w-8" textClassName="w-20" />
       </header>
     );
   }
   return (
     <header className="z-sticky flex h-[4.75rem] shrink-0 items-center gap-3 border-b bg-card page-gutter">
       <MobileMenu query={query} onQueryChange={onQueryChange} />
-      <span className="flex lg:hidden"><BrandLogo alt="موشکاف" variant="text" className="w-20" /></span>
+      <span className="flex lg:hidden"><BrandLockup alt="موشکاف" markClassName="w-7" textClassName="w-16" /></span>
       <DropdownMenu>
         <DropdownMenuTrigger render={<button type="button" aria-label="پروفایل" className="flex h-11 items-center gap-3 rounded-lg px-1 text-start outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50" />}>
           <span className="hidden text-body-lg font-semibold lg:block">{user.name}</span>

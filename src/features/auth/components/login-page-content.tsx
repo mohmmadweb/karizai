@@ -1,4 +1,4 @@
-import { BrandLogo } from "@/components/brand/brand-logo";
+import { BrandLockup } from "@/components/brand/brand-lockup";
 import {
   Card,
   CardContent,
@@ -11,7 +11,7 @@ import { LoginForm } from "./login-form";
 export function LoginPageContent() {
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center gap-6 bg-background page-gutter py-10">
-      <BrandLogo alt="موشکاف" variant="full" className="w-28" priority />
+      <BrandLockup alt="موشکاف" stacked markClassName="w-20" textClassName="w-28" priority />
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-h4">ورود به موشکاف</CardTitle>

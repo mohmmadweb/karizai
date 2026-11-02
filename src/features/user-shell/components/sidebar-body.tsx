@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { HistoryIcon, ActivityIcon, PanelRightCloseIcon, PanelRightOpenIcon, SquarePenIcon } from "lucide-react";
+import { BrandLockup } from "@/components/brand/brand-lockup";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { SearchField } from "@/components/shared/search-field";
 import { buttonVariants, Button } from "@/components/ui/button";
@@ -51,14 +52,14 @@ export function SidebarBody({ pathname, query = "", onQueryChange, collapsed = f
             <TooltipTrigger
               render={<button type="button" aria-label="باز کردن سایدبار" onClick={onToggleCollapse} className="group relative flex size-10 items-center justify-center rounded-lg outline-none hover:bg-sidebar-accent focus-visible:ring-3 focus-visible:ring-sidebar-ring/50" />}
             >
-              <BrandLogo alt="" variant="icon" tone={tone} className="w-8 group-hover:hidden group-focus-visible:hidden" />
+              <BrandLogo alt="" variant="kariz" tone={tone} className="w-8 group-hover:hidden group-focus-visible:hidden" />
               <PanelRightOpenIcon className="hidden size-5 group-hover:block group-focus-visible:block" aria-hidden />
             </TooltipTrigger>
             <TooltipContent side="left">باز کردن سایدبار</TooltipContent>
           </Tooltip>
         ) : (
           <Link href="/chat" onClick={onNavigate} className="flex items-center rounded-lg px-1 outline-none focus-visible:ring-3 focus-visible:ring-sidebar-ring/50">
-            <BrandLogo alt="موشکاف" variant="text" tone={tone} className={classic ? "w-24" : "w-28"} />
+            <BrandLockup alt="موشکاف" tone={tone} markClassName="w-9" textClassName={classic ? "w-20" : "w-24"} />
           </Link>
         )}
         {onToggleCollapse && !collapsed ? (
@@ -68,7 +69,8 @@ export function SidebarBody({ pathname, query = "", onQueryChange, collapsed = f
           </Tooltip>
         ) : null}
       </div>
-      <div className={cn("flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto", !classic && "p-3")}>
+      {/* In a short window the content scrolls; without shrink-0 the rows would be squeezed flat instead. */}
+      <div className={cn("flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto [&>*]:shrink-0", !classic && "p-3")}>
         {inMessenger ? (
           <MessengerNav pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} />
         ) : (
@@ -99,10 +101,12 @@ export function SidebarBody({ pathname, query = "", onQueryChange, collapsed = f
 /** The most common action gets its own button above the groups. */
 function NewChatButton({ collapsed, classic, onNavigate }: { collapsed: boolean; classic: boolean; onNavigate?: () => void }) {
   const { href, title } = getNewChatSection();
+  // A little narrower than the rows below it; collapsed it fills the slim sidebar.
+  const narrow = collapsed ? "w-full" : "mx-2 w-[calc(100%-1rem)]";
   // The messenger look is plain classes: a button variant brings its own hover colours, which turn the light button dark on the navy surface.
   const className = classic
-    ? cn(buttonVariants(), "h-10 w-full", collapsed && "px-0")
-    : cn("inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-sidebar-primary text-label text-sidebar-primary-foreground outline-none transition-colors hover:bg-sidebar-primary/85 focus-visible:ring-3 focus-visible:ring-sidebar-ring/50 [&_svg]:size-4", collapsed && "px-0");
+    ? cn(buttonVariants(), "h-11", narrow, collapsed && "px-0")
+    : cn("inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-sidebar-primary text-label text-sidebar-primary-foreground outline-none transition-colors hover:bg-sidebar-primary/85 focus-visible:ring-3 focus-visible:ring-sidebar-ring/50 [&_svg]:size-4", narrow, collapsed && "px-0");
   if (collapsed) {
     return (
       <Tooltip>

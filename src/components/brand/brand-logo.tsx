@@ -6,6 +6,8 @@ const logos = {
   full: { color: "/brand/icon-text.png", white: "/brand/icon-text-white.png", width: 1254, height: 1254 },
   /** Icon only. */
   icon: { color: "/brand/icon.png", white: "/brand/icon-white.png", width: 1114, height: 1114 },
+  /** The Kariz mark, without the name. */
+  kariz: { color: "/brand/kariz.svg", white: "/brand/kariz-white.svg", width: 100, height: 75 },
   /** Name only. */
   text: { color: "/brand/text.png", white: "/brand/text-white.png", width: 1114, height: 333 },
 } as const;
