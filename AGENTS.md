@@ -155,14 +155,14 @@ visually identical to the admin panel (same tokens, fonts, ui components).
 
 - `src/app`: routes and layouts. `/login` (mock sign-in); inside the `(app)`
   route group (frame, providers, `error.tsx`, `not-found.tsx`): `/` redirects to `/chat`,
-  `/connections`, `/api-keys`, `/workflows` and `/workflows/[workflowId]`, `/skills`, `/knowledge`, `/usage`, `/settings`, `/chat`, `/chat/[conversationId]`, `/agents`, `/agents/new`,
+  `/connections`, `/workflows` and `/workflows/[workflowId]`, `/skills`, `/messenger` and `/messenger/[threadId]` (پیام‌رسان: workflow alerts and chats with colleagues; the sidebar switches to the messenger look on these routes), `/agent-repository` (مخزن عامل‌ها: nine ready Agents from `features/agent-repository/data`, with search, a category filter and «add to my Agents», which makes a temporary personal copy through `saveAgent`; making one's own Agent public and the admin approval step are `Planned` and need an OpenSpec change), `/knowledge`, `/usage`, `/settings`, `/chat`, `/chat/[conversationId]`, `/agents`, `/agents/new`,
   `/agents/[agentId]` (with `loading.tsx`).
 - `src/features/<feature>`: all code of one product area (`components`, `data`,
   `hooks`, `types`). Existing: `auth`, `user-shell`, `user-session` (user and
   quota), `chat` (one `ChatProvider`; simulated streaming engine), `model-catalog`
   (models, `resolveModel`), `connections` (tools, approval card), `agents`
   (one `AgentsProvider`, builder form, share requests, skills state), `skills`,
-  `workflows` (visual workflow editor with `@xyflow/react`, simulated runs, one `WorkflowsProvider`), `knowledge`, `usage`, `settings`; `connections` also has one `ConnectionsProvider`; `api-keys` has one `ApiKeysProvider` (the user's keys and what the groups allow).
+  `workflows` (visual workflow editor with `@xyflow/react`, simulated runs, one `WorkflowsProvider`), `knowledge`, `usage`, `settings`; `connections` also has one `ConnectionsProvider`; `api-keys` (its page and feature folder were removed on 2026-11-02; the server routes and shared copies stay) had one `ApiKeysProvider` (the user's keys and what the groups allow).
   `_template` is empty.
 - `src/components/ui`: shadcn primitives (same as the admin panel).
 - `src/components/shared`: `page-header`, `form-section`, `empty-state`,
@@ -251,3 +251,11 @@ A new conversation shows six ready starts under the message box (`chat/data/star
 ## API keys
 
 The admin panel decides per group which kinds of key may be created (`apikeys.json`, `src/lib/api-keys.ts` and `src/server/provider-store.ts` are identical copies). The user panel creates keys (`POST /api/api-keys`, refused for a group without permission), lists the user's own keys and revokes them. Only a SHA-256 hash is stored; the key text is shown once and never kept in the browser after the dialog closes. The `/api/v1` gateway that would accept the keys, the real usage count and the monthly ceiling are not built (Planned); the `curl` examples on the page show the planned shape.
+
+## Files made in the chat (Word and Excel)
+
+A prepared answer can carry `files` (`GeneratedFile` in `features/chat/types`): a Word document (headed sections) or an Excel table. The chat shows cards with a preview dialog and a download. The download is built in the browser as an HTML page named `.doc` or `.xls` (`lib/generated-file-export.ts`), the same trick as the table export; no library, nothing is sent or kept. Status: `Presentation-only` for the content (the demo pricing answer), `Implemented` for preview and download.
+
+## Messenger (پیام‌رسان)
+
+`features/messenger`: one `MessengerProvider` (inside `WorkflowsProvider`) holds messages in memory. The first thread, «هشدارهای جریان‌ها», shows alerts from workflows; a run that succeeds and uses the notify connection (`conn-15`) adds an alert card (title, figures, link to the workflow). Colleague threads accept the user's own text; nothing is sent or kept after a reload. Colleagues and seed messages are fixed sample records. Status: `Presentation-only` for delivery (no real social network), `Implemented` for the alert cards, unread counts and the sidebar switch. The foot of the sidebar («نقش و دسترسی من», «تنظیمات سامانه») links only «تنظیمات عمومی»; the other rows are shown without a page. Both are `Planned`; an OpenSpec change has not been written for the messenger.

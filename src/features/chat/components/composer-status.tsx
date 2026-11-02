@@ -1,40 +1,26 @@
 "use client";
 
-import { BookOpenIcon, BotIcon, GlobeIcon, ShieldCheckIcon, TriangleAlertIcon, XIcon } from "lucide-react";
+import { TriangleAlertIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import type { Agent } from "@/features/agents/types";
-import { ConnectionIcon } from "@/features/connections/components/connection-icon";
-import { useConnections } from "@/features/connections/components/connections-provider";
 import { formatDate } from "@/lib/format";
 import type { Notice } from "../hooks/use-send-flow";
 import type { Quota } from "@/features/user-session/types";
 
 type ComposerStatusProps = {
   agent: Agent | null;
-  onLeaveAgent: () => void;
-  connectionIds: string[];
-  onToggleConnection: (id: string, enabled: boolean) => void;
   notice: Notice | null;
   onDismissNotice: () => void;
   onUseSuggestion: (modelId: string) => void;
   quotaExhausted: boolean;
   quota: Quota;
   attachmentProblem: string | null;
-  knowledge: boolean;
-  onKnowledgeOff: () => void;
-  webSearch: boolean;
-  onWebSearchOff: () => void;
-  supervisor: boolean;
-  onSupervisorOff: () => void;
 };
 
-/** Everything that must be visible before sending: Agent, connections, warnings, quota. */
+/** Warnings that must be visible before sending: quota, Agent state, notices, attachment problems. */
 export function ComposerStatus(props: ComposerStatusProps) {
-  const { agent, connectionIds, notice } = props;
-  const { available } = useConnections();
-  const connections = available.filter((item) => connectionIds.includes(item.id));
+  const { agent, notice } = props;
   return (
     <div className="flex flex-col gap-2">
       {props.quotaExhausted ? (
@@ -66,41 +52,6 @@ export function ComposerStatus(props: ComposerStatusProps) {
       ) : null}
       {props.attachmentProblem ? (
         <Alert variant="destructive"><TriangleAlertIcon aria-hidden /><AlertDescription>{props.attachmentProblem}</AlertDescription></Alert>
-      ) : null}
-      {agent || connections.length > 0 || props.knowledge || props.webSearch || props.supervisor ? (
-        <div className="flex flex-wrap items-center gap-2">
-          {agent ? (
-            <Badge variant="info" className="h-7 gap-2">
-              <BotIcon aria-hidden />Agent: {agent.name}
-              <button type="button" onClick={props.onLeaveAgent} aria-label="خروج از حالت Agent"><XIcon aria-hidden /></button>
-            </Badge>
-          ) : null}
-          {props.knowledge ? (
-            <Badge variant="secondary" className="h-7 gap-2">
-              <BookOpenIcon aria-hidden />دانش سازمانی
-              <button type="button" onClick={props.onKnowledgeOff} aria-label="خاموش کردن دانش سازمانی"><XIcon aria-hidden /></button>
-            </Badge>
-          ) : null}
-          {props.webSearch ? (
-            <Badge variant="secondary" className="h-7 gap-2">
-              <GlobeIcon aria-hidden />جست‌وجوی وب
-              <button type="button" onClick={props.onWebSearchOff} aria-label="خاموش کردن جست‌وجوی وب"><XIcon aria-hidden /></button>
-            </Badge>
-          ) : null}
-          {props.supervisor ? (
-            <Badge variant="secondary" className="h-7 gap-2">
-              <ShieldCheckIcon aria-hidden />ناظر هوشمند
-              <button type="button" onClick={props.onSupervisorOff} aria-label="خاموش کردن ناظر هوشمند"><XIcon aria-hidden /></button>
-            </Badge>
-          ) : null}
-          {connections.map((item) => (
-            <Badge key={item.id} variant="secondary" className="h-7 gap-2">
-              <ConnectionIcon name={item.name} domain={item.domain} className="size-5 rounded-md" />
-              {item.name}
-              <button type="button" onClick={() => props.onToggleConnection(item.id, false)} aria-label={`خاموش کردن ${item.name}`}><XIcon aria-hidden /></button>
-            </Badge>
-          ))}
-        </div>
       ) : null}
     </div>
   );

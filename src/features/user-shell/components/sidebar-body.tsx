@@ -1,18 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { PanelRightCloseIcon, PanelRightOpenIcon } from "lucide-react";
+import { HistoryIcon, ActivityIcon, PanelRightCloseIcon, PanelRightOpenIcon, SquarePenIcon } from "lucide-react";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { SearchField } from "@/components/shared/search-field";
-import { Button } from "@/components/ui/button";
+import { buttonVariants, Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { MessengerEntry } from "@/features/messenger/components/messenger-entry";
+import { MessengerNav } from "@/features/messenger/components/messenger-nav";
+import { ActiveWorkflowsList } from "@/features/workflows/components/active-workflows-list";
 import { ConversationList } from "@/features/chat/components/conversation-list";
 import { getCurrentUser } from "@/features/user-session/data/session";
 import { useLayoutStyle } from "@/lib/use-layout-style";
 import { cn } from "@/lib/utils";
-import { getUserSectionGroups } from "../data/user-sections";
+import { getNewChatSection, getUserSectionGroups } from "../data/user-sections";
 import { SidebarNav } from "./sidebar-nav";
 import { SidebarProfile } from "./sidebar-profile";
+import { SidebarSystem } from "./sidebar-system";
+import { SidebarSection } from "./sidebar-section";
 
 type SidebarBodyProps = {
   pathname: string;
@@ -33,6 +38,8 @@ type SidebarBodyProps = {
 export function SidebarBody({ pathname, query = "", onQueryChange, collapsed = false, onToggleCollapse, onNavigate }: SidebarBodyProps) {
   const { classic } = useLayoutStyle();
   const activeId = pathname.startsWith("/chat/") ? pathname.split("/")[2] : null;
+  const inMessenger = pathname.startsWith("/messenger");
+  const activeFlowId = pathname.startsWith("/workflows/") ? pathname.split("/")[2] : null;
   const tone = classic ? "auto" : "white";
 
   return (
@@ -62,16 +69,47 @@ export function SidebarBody({ pathname, query = "", onQueryChange, collapsed = f
         ) : null}
       </div>
       <div className={cn("flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto", !classic && "p-3")}>
-        <SidebarNav groups={getUserSectionGroups()} flat={classic} pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} />
-        {collapsed ? null : (
-          <div className={cn("flex min-h-0 flex-1 flex-col gap-1", !classic && "border-t border-sidebar-border pt-3")}>
-            {classic ? <SearchField value={query} onValueChange={(value) => onQueryChange?.(value)} label="جست‌وجو در گفتگوها" placeholder="جست‌وجو در گفتگوها" className="sm:max-w-none" /> : null}
-            <h2 className={cn("px-3", classic ? "text-caption text-muted-foreground" : "text-label")}>گفتگوهای اخیر</h2>
-            <div className="min-h-0 flex-1 overflow-y-auto"><ConversationList activeId={activeId} onNavigate={onNavigate} query={query} /></div>
-          </div>
+        {inMessenger ? (
+          <MessengerNav pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} />
+        ) : (
+          <>
+            <NewChatButton collapsed={collapsed} classic={classic} onNavigate={onNavigate} />
+            <MessengerEntry collapsed={collapsed} onNavigate={onNavigate} />
+            <SidebarNav groups={getUserSectionGroups()} flat={classic} pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} />
+            {collapsed ? null : (
+              <SidebarSection title="گفتگوهای اخیر" icon={HistoryIcon} classic={classic} openClassName="min-h-40 flex-1">
+                {classic ? <SearchField value={query} onValueChange={(value) => onQueryChange?.(value)} label="جست‌وجو در گفتگوها" placeholder="جست‌وجو در گفتگوها" className="sm:max-w-none" /> : null}
+                <div className="min-h-0 flex-1 overflow-y-auto"><ConversationList activeId={activeId} onNavigate={onNavigate} query={query} /></div>
+              </SidebarSection>
+            )}
+            {collapsed ? null : (
+              <SidebarSection title="جریان‌های فعال" icon={ActivityIcon} classic={classic} openClassName="max-h-48 shrink-0">
+                <div className="min-h-0 flex-1 overflow-y-auto"><ActiveWorkflowsList activeId={activeFlowId} onNavigate={onNavigate} /></div>
+              </SidebarSection>
+            )}
+          </>
         )}
       </div>
+      <div className={cn("shrink-0", !classic && "px-3 pb-3")}><SidebarSystem pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} /></div>
       {classic ? <SidebarProfile user={getCurrentUser()} collapsed={collapsed} onNavigate={onNavigate} /> : null}
     </div>
   );
+}
+
+/** The most common action gets its own button above the groups. */
+function NewChatButton({ collapsed, classic, onNavigate }: { collapsed: boolean; classic: boolean; onNavigate?: () => void }) {
+  const { href, title } = getNewChatSection();
+  // The messenger look is plain classes: a button variant brings its own hover colours, which turn the light button dark on the navy surface.
+  const className = classic
+    ? cn(buttonVariants(), "h-10 w-full", collapsed && "px-0")
+    : cn("inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-sidebar-primary text-label text-sidebar-primary-foreground outline-none transition-colors hover:bg-sidebar-primary/85 focus-visible:ring-3 focus-visible:ring-sidebar-ring/50 [&_svg]:size-4", collapsed && "px-0");
+  if (collapsed) {
+    return (
+      <Tooltip>
+        <TooltipTrigger render={<Link href={href} aria-label={title} onClick={onNavigate} className={className} />}><SquarePenIcon aria-hidden /></TooltipTrigger>
+        <TooltipContent side="left">{title}</TooltipContent>
+      </Tooltip>
+    );
+  }
+  return <Link href={href} onClick={onNavigate} className={className}><SquarePenIcon aria-hidden />{title}</Link>;
 }

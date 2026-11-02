@@ -97,7 +97,7 @@ export function useChatEngine(
         if (shown >= words.length) {
           clear(messageId);
           patch(id, messageId, {
-            text: full, status: "done", sources: reply.sources, structured: reply.structured,
+            text: full, status: "done", sources: reply.sources, structured: reply.structured, files: reply.files,
             toolNames: [...(extra.toolNames ?? []), ...reply.toolNames], ...extra,
             maskedCount: ctx.masks.length || undefined, routerReason: ctx.routerReason,
           });
@@ -195,7 +195,7 @@ export function useChatEngine(
         const canned = ctx.canned;
         const steps: PlannedStep[] = canned.steps.map((step) => ({ ...step }));
         const plan = ctx.supervisor ? [...steps, supervisorStep] : steps;
-        contexts.current.set(messageId, { ...ctx, finalReply: { text: canned.text, sources: canned.sources ?? [], structured: canned.structured, toolNames: canned.steps.filter((step) => step.kind === "tool").map((step) => step.title) } });
+        contexts.current.set(messageId, { ...ctx, finalReply: { text: canned.text, sources: canned.sources ?? [], structured: canned.structured, files: canned.files, toolNames: canned.steps.filter((step) => step.kind === "tool").map((step) => step.title) } });
         void orchestration.run({ id, messageId, plan, question: ctx.sentText, modelName: ctx.modelName, sensitive: Boolean(ctx.agent?.isSensitive) }).then((outcome) => {
           if (!outcome) return;
           const used = outcome.steps.filter((step) => step.kind === "supervisor").reduce((sum, step) => sum + (step.inputTokens ?? 0) + (step.outputTokens ?? 0), 0);

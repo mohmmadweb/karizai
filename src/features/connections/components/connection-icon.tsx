@@ -1,8 +1,12 @@
-import { DatabaseIcon, FactoryIcon, FlaskConicalIcon, MessageSquareIcon, MessagesSquareIcon, PlugIcon, RadioIcon, TagsIcon, UsersIcon, WrenchIcon, type LucideIcon } from "lucide-react";
+import { BookOpenTextIcon, ChartGanttIcon, DatabaseIcon, FileTextIcon, GitBranchIcon, FactoryIcon, FlaskConicalIcon, MessageSquareIcon, MessagesSquareIcon, PlugIcon, RadioIcon, TagsIcon, UsersIcon, WrenchIcon, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /** What a connection is about, found from its name and area, with a colour that tells the kinds apart. */
 const kinds: { match: RegExp; icon: LucideIcon; tone: string }[] = [
+  { match: /GitLab|گیت‌لب/i, icon: GitBranchIcon, tone: "bg-orange-500/15 text-orange-600 dark:text-orange-400" },
+  { match: /Confluence|کانفلوئنس/i, icon: BookOpenTextIcon, tone: "bg-blue-500/15 text-blue-600 dark:text-blue-400" },
+  { match: /MSP|Microsoft Project|مایکروسافت پروجکت/i, icon: ChartGanttIcon, tone: "bg-green-500/15 text-green-600 dark:text-green-400" },
+  { match: /Word|مایکروسافت ورد/i, icon: FileTextIcon, tone: "bg-indigo-500/15 text-indigo-600 dark:text-indigo-400" },
   { match: /MES|اجرای تولید/i, icon: FactoryIcon, tone: "bg-orange-500/15 text-orange-600 dark:text-orange-400" },
   { match: /IoT|MQTT|حسگر/i, icon: RadioIcon, tone: "bg-teal-500/15 text-teal-600 dark:text-teal-400" },
   { match: /SQL|پایگاه|انبار|تدارک|راهکاران/i, icon: DatabaseIcon, tone: "bg-blue-500/15 text-blue-600 dark:text-blue-400" },

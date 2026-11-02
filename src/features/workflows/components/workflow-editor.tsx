@@ -29,7 +29,7 @@ export function WorkflowEditor({ workflowId, initialTab = "design" }: WorkflowEd
   const { workflows } = useWorkflows();
   const workflow = workflows.find((item) => item.id === workflowId);
   // Rendered, not thrown: a workflow created a moment ago appears as soon as the state arrives.
-  if (!workflow) return <EntityNotFound title="کار پیدا نشد" backHref="/workflows" backLabel="بازگشت به کارهای من" />;
+  if (!workflow) return <EntityNotFound title="جریان پیدا نشد" backHref="/workflows" backLabel="بازگشت به جریان‌ها" />;
   return <EditorBody key={workflow.id} workflowId={workflowId} initialTab={initialTab} />;
 }
 
@@ -72,7 +72,7 @@ function EditorBody({ workflowId, initialTab }: Required<WorkflowEditorProps>) {
 
   return (
     <div className="mx-auto flex w-full max-w-page flex-col gap-6 page-gutter py-8">
-      <BackLink href="/workflows">بازگشت به کارهای من</BackLink>
+      <BackLink href="/workflows">بازگشت به جریان‌ها</BackLink>
       <EditorHeader
         name={draft.draft.name}
         onRename={draft.rename}

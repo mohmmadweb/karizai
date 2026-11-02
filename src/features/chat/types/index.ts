@@ -35,6 +35,18 @@ export type StructuredResult = {
   suggested: DisplayKind;
 };
 
+/** A file the assistant prepared in the chat. Word has headed sections of lines; Excel has a table. */
+export type GeneratedFile = {
+  id: string;
+  kind: "word" | "excel";
+  /** Name without extension. */
+  name: string;
+  title: string;
+  sections?: { heading: string; lines: string[] }[];
+  columns?: string[];
+  rows?: (string | number)[][];
+};
+
 export type MessageStatus = "streaming" | "done" | "stopped" | "error";
 
 export type Message = {
@@ -58,6 +70,8 @@ export type Message = {
   /** Short explanations, for example a tool that was skipped. */
   notes?: string[];
   structured?: StructuredResult;
+  /** Word or Excel files prepared for this answer. */
+  files?: GeneratedFile[];
   /** Steps of a multi-agent answer; they stay above the answer. */
   timeline?: TimelineStep[];
   /** Why the router chose this model, or how a fallback happened. */
@@ -125,6 +139,7 @@ export type ScriptedReply = {
   text: string;
   sources?: Source[];
   structured?: StructuredResult;
+  files?: GeneratedFile[];
   /** True when no model answered, so no model badge is shown. */
   fixed?: boolean;
 };

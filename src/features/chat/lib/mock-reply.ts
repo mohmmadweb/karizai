@@ -1,5 +1,5 @@
 import type { Agent } from "@/features/agents/types";
-import type { Source, StructuredResult } from "../types";
+import type { GeneratedFile, Source, StructuredResult } from "../types";
 
 export type Role = "document" | "bi" | null;
 
@@ -8,6 +8,7 @@ export type Reply = {
   sources: Source[];
   toolNames: string[];
   structured?: StructuredResult;
+  files?: GeneratedFile[];
   routerReason?: string;
 };
 

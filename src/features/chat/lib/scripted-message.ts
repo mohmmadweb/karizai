@@ -25,7 +25,7 @@ export function scriptedExchange(options: { key: string; question: string; reply
       id: `${key}-a`, role: "assistant", text: reply.text, createdAt: answeredAt, status: "done",
       modelName: reply.fixed ? undefined : modelName, agentName, timeline,
       toolNames: reply.steps.filter((step) => step.kind === "tool").map((step) => step.title),
-      sources: reply.sources ?? [], attachments: [], structured: reply.structured,
+      sources: reply.sources ?? [], attachments: [], structured: reply.structured, files: reply.files,
     },
   ];
 }

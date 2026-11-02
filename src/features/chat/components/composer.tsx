@@ -16,6 +16,7 @@ import { emptySettings } from "../lib/chat-reducer";
 import { AttachmentChip } from "./attachment-chip";
 import { useChat } from "./chat-provider";
 import { ComposerDialogs } from "./composer-dialogs";
+import { ComposerPills } from "./composer-pills";
 import { ComposerStatus } from "./composer-status";
 import { ComposerToolbar } from "./composer-toolbar";
 import { UsageRing } from "./usage-ring";
@@ -111,21 +112,12 @@ export function Composer({ conversationId }: { conversationId: string | null }) 
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-2 page-gutter pb-3">
       <ComposerStatus
         agent={agent}
-        onLeaveAgent={() => update({ agentId: null })}
-        connectionIds={settings.connectionIds}
-        onToggleConnection={toggleConnection}
         notice={flow.notice}
         onDismissNotice={flow.dismissNotice}
         onUseSuggestion={(modelId) => { update({ model: modelId }); flow.dismissNotice(); }}
         quotaExhausted={exhausted}
         quota={quota}
         attachmentProblem={attachments.problem}
-        knowledge={settings.knowledge}
-        onKnowledgeOff={() => update({ knowledge: false })}
-        webSearch={settings.webSearch}
-        onWebSearchOff={() => update({ webSearch: false })}
-        supervisor={settings.supervisor}
-        onSupervisorOff={() => update({ supervisor: false })}
       />
       <PromptInput value={text} onValueChange={onTextChange} onSubmit={submit} isLoading={Boolean(streaming)} disabled={exhausted}>
         {attachments.items.length > 0 ? (
@@ -138,24 +130,38 @@ export function Composer({ conversationId }: { conversationId: string | null }) 
         ) : null}
         <PromptInputTextarea aria-label="پیام شما" placeholder={exhausted ? "سهمیه‌ی شما تمام شده است" : messages.length === 0 ? "تایپ/@ برای انتخاب agent" : "هر چیزی بپرسید..."} />
         <PromptInputActions className="mt-1 items-center justify-between">
-          <ComposerToolbar
-            connectionIds={settings.connectionIds}
-            onToggleConnection={toggleConnection}
-            agents={agents}
-            menuOpen={menuOpen}
-            onMenuOpenChange={setMenuOpen}
-            agentOpen={agentOpen}
-            onAgentOpenChange={setAgentOpen}
-            onAgentSelect={selectAgent}
-            knowledge={settings.knowledge}
-            onKnowledgeChange={(on) => update({ knowledge: on })}
-            webSearch={settings.webSearch}
-            onWebSearchChange={(on) => update({ webSearch: on })}
-            supervisor={settings.supervisor}
-            onSupervisorChange={(on) => update({ supervisor: on })}
-            onFiles={attachments.add}
-            disabled={exhausted}
-          />
+          <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5" onClick={(event) => event.stopPropagation()}>
+            <ComposerToolbar
+              connectionIds={settings.connectionIds}
+              onToggleConnection={toggleConnection}
+              agents={agents}
+              menuOpen={menuOpen}
+              onMenuOpenChange={setMenuOpen}
+              agentOpen={agentOpen}
+              onAgentOpenChange={setAgentOpen}
+              onAgentSelect={selectAgent}
+              knowledge={settings.knowledge}
+              onKnowledgeChange={(on) => update({ knowledge: on })}
+              webSearch={settings.webSearch}
+              onWebSearchChange={(on) => update({ webSearch: on })}
+              supervisor={settings.supervisor}
+              onSupervisorChange={(on) => update({ supervisor: on })}
+              onFiles={attachments.add}
+              disabled={exhausted}
+            />
+            <ComposerPills
+              agent={agent}
+              onLeaveAgent={() => update({ agentId: null })}
+              connectionIds={settings.connectionIds}
+              onToggleConnection={toggleConnection}
+              knowledge={settings.knowledge}
+              onKnowledgeOff={() => update({ knowledge: false })}
+              webSearch={settings.webSearch}
+              onWebSearchOff={() => update({ webSearch: false })}
+              supervisor={settings.supervisor}
+              onSupervisorOff={() => update({ supervisor: false })}
+            />
+          </div>
           <div className="flex items-center gap-1" onClick={(event) => event.stopPropagation()}>
             <UsageRing quota={quota} used={state.used} />
           {streaming && conversationId ? (

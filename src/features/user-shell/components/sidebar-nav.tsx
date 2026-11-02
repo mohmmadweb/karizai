@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { isSectionPath } from "../data/user-sections";
 import type { UserSection, UserSectionGroup } from "../types";
 
-const itemClass =
+export const itemClass =
   "flex h-10 items-center gap-3 rounded-lg border border-transparent px-3 text-label text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-3 focus-visible:ring-sidebar-ring/50 aria-[current=page]:border-(--sidebar-active-border) aria-[current=page]:bg-sidebar-primary aria-[current=page]:text-sidebar-primary-foreground";
 
 type SidebarNavProps = {
@@ -66,7 +66,7 @@ export function SidebarNav({ groups, pathname, collapsed = false, flat = false, 
                 onClick={() => setClosed((list) => (list.includes(group.id) ? list.filter((id) => id !== group.id) : [...list, group.id]))}
                 className="flex h-9 items-center justify-between rounded-lg px-3 text-start text-label outline-none hover:bg-sidebar-accent focus-visible:ring-3 focus-visible:ring-sidebar-ring/50"
               >
-                {group.title}
+                <span className="flex items-center gap-2"><group.icon className="size-4 text-sidebar-foreground/70" aria-hidden />{group.title}</span>
                 <ChevronDownIcon className={cn("size-4 text-sidebar-foreground/70 transition-transform", open && "rotate-180")} aria-hidden />
               </button>
             )}

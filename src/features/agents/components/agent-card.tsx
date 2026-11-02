@@ -1,13 +1,16 @@
 import Link from "next/link";
-import { PencilIcon } from "lucide-react";
+import { useState } from "react";
+import { PencilIcon, Share2Icon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { getConnectionById } from "@/features/connections/data/connections";
 import { useModels } from "@/features/model-catalog/components/models-provider";
 import { formatDate } from "@/lib/format";
 import type { Agent } from "../types";
-import { ShareStatusBadge } from "./share-status";
+import { AgentIcon } from "./agent-icon";
+import { AgentShareDialog } from "./agent-share-dialog";
 
 function toolNames(agent: Agent) {
   return agent.tools
@@ -18,27 +21,36 @@ function toolNames(agent: Agent) {
 
 export function AgentCard({ agent, readOnly = false }: { agent: Agent; readOnly?: boolean }) {
   const { modelById } = useModels();
-  const latest = agent.shareRequests[0];
+  const [sharing, setSharing] = useState(false);
   return (
-    <Card>
-      <CardHeader>
+    <Card className="transition-shadow hover:shadow-md">
+      <CardHeader className="grid-cols-[auto_1fr] items-start gap-x-3">
+        <AgentIcon name={agent.name} purpose={agent.purpose} className="row-span-2" />
         <CardTitle className="flex flex-wrap items-center gap-2">
           {agent.name}
-          {agent.isSensitive ? <Badge variant="warning">حساس</Badge> : null}
           {!agent.isEnabled ? <Badge variant="destructive">غیرفعال</Badge> : null}
         </CardTitle>
-        <CardDescription>{agent.purpose || "بدون توضیح"}</CardDescription>
+        <CardDescription className="line-clamp-2">{agent.purpose || "بدون توضیح"}</CardDescription>
       </CardHeader>
-      <CardContent className="flex flex-col gap-3 text-body-sm">
+      <CardContent className="flex flex-col gap-3 border-t pt-3 text-body-sm">
         <div className="flex flex-wrap items-center gap-2 text-muted-foreground">
           <span>مدل: {modelById(agent.defaultModelId)?.name ?? "—"}</span>
           <span>· ویرایش: {formatDate(agent.updatedAt)}</span>
         </div>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          {readOnly ? <span className="text-muted-foreground">ابزارها: {toolNames(agent) || "بدون ابزار"}</span> : latest ? <span className="flex items-center gap-2">اشتراک: <ShareStatusBadge status={latest.status} /></span> : <span className="text-muted-foreground">فقط برای شما</span>}
-          {readOnly ? null : <Link href={`/agents/${agent.id}`} className={buttonVariants({ variant: "outline", size: "sm" })}><PencilIcon aria-hidden />ویرایش</Link>}
+          {readOnly ? <span className="text-muted-foreground">ابزارها: {toolNames(agent) || "بدون ابزار"}</span> : <span />}
+          {readOnly ? null : (
+            <span className="flex items-center gap-1">
+              <Tooltip>
+                <TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={`اشتراک‌گذاری ${agent.name}`} onClick={() => setSharing(true)} />}><Share2Icon aria-hidden /></TooltipTrigger>
+                <TooltipContent>اشتراک‌گذاری</TooltipContent>
+              </Tooltip>
+              <Link href={`/agents/${agent.id}`} className={buttonVariants({ variant: "outline", size: "sm" })}><PencilIcon aria-hidden />ویرایش</Link>
+            </span>
+          )}
         </div>
       </CardContent>
+      {readOnly ? null : <AgentShareDialog agent={agent} open={sharing} onOpenChange={setSharing} />}
     </Card>
   );
 }

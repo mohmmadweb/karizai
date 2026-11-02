@@ -10,6 +10,7 @@ import { ToolRunCard } from "@/features/connections/components/tool-run-card";
 import type { Message as ChatMessage } from "../types";
 import { AnswerDetails } from "./answer-details";
 import { AttachmentChip } from "./attachment-chip";
+import { GeneratedFilesView } from "./generated-files";
 import { StructuredResultView } from "./structured-result";
 import { TimelineView } from "./timeline-view";
 
@@ -48,6 +49,7 @@ export function MessageBubble({ message, onApprove, onReject, onRetry }: Message
       {waiting ? <Loader variant="typing" size="md" /> : null}
       {message.text ? <MessageContent markdown className="chat-markdown bg-transparent p-0 text-body">{message.text}</MessageContent> : null}
       {message.structured ? <StructuredResultView result={message.structured} /> : null}
+      {message.files?.length ? <GeneratedFilesView files={message.files} /> : null}
       {message.status === "stopped" ? <p className="text-caption text-muted-foreground">پاسخ متوقف شد.</p> : null}
       {message.status === "error" ? (
         <Alert variant="destructive">

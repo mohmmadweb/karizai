@@ -28,7 +28,7 @@ export function KnowledgePageContent({ documents }: KnowledgePageContentProps) {
 
   return (
     <div className="mx-auto flex w-full max-w-page flex-col gap-8 page-gutter py-8">
-      <PageHeader title="دانش سازمان" description="اسناد و مجموعه‌هایی که به آن‌ها دسترسی دارید. افزودن و مدیریت اسناد در پنل ادمین انجام می‌شود." />
+      <PageHeader title="دانش سازمانی" description="اسناد و مجموعه‌هایی که به آن‌ها دسترسی دارید. افزودن و مدیریت اسناد در پنل ادمین انجام می‌شود." />
       <SearchField value={query} onValueChange={setQuery} label="جست‌وجو در اسناد" placeholder="جست‌وجو در اسناد" />
       {documents.length === 0 ? (
         <EmptyState icon={<BookOpenIcon />} title="سندی در دسترس نیست" description="هنوز به سندی دسترسی ندارید. با ادمین تماس بگیرید." />

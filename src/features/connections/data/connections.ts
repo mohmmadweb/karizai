@@ -1,4 +1,5 @@
 import type { Connection } from "../types";
+import { officeConnections } from "./office-connections";
 import { plantConnections } from "./plant-connections";
 
 const connections: Connection[] = [
@@ -111,11 +112,11 @@ const connections: Connection[] = [
 ];
 
 /** Plant systems (warehouse, procurement, MES, lab, maintenance, prices, social network). They stay available next to the connections the admin defines. */
-export const plantConnectionIds = plantConnections.map((item) => item.id);
+export const plantConnectionIds = [...plantConnections, ...officeConnections].map((item) => item.id);
 
 /** Connections of the current user, with their status. */
 export function getUserConnections(): Connection[] {
-  return [...connections, ...plantConnections];
+  return [...connections, ...plantConnections, ...officeConnections];
 }
 
 export function getConnectionById(id: string): Connection | undefined {
