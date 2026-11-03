@@ -9,7 +9,7 @@ restore() { [ -d "$stash/api" ] && rm -rf src/app/api && mv "$stash/api" src/app
 trap restore EXIT
 [ -d src/app/api ] && mv src/app/api "$stash/api"
 rm -rf .next out
-STATIC_EXPORT=1 npx next build
+STATIC_EXPORT=1 NEXT_PUBLIC_STATIC_EXPORT=1 npx next build
 echo "${PAGES_DOMAIN:-karizai.shub.ir}" > out/CNAME
 touch out/.nojekyll
 # The home page only sends visitors to /chat/; a tiny page does that before any script loads.

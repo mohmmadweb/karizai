@@ -1,5 +1,6 @@
 "use client";
 
+import { hasServer } from "@/lib/static-params";
 import { nextFreeId } from "@/lib/static-params";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { ConnectionType, DefinedConnection } from "@/lib/connections";
@@ -27,6 +28,7 @@ export function ConnectionsProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    if (!hasServer) { setReady(true); return; }
     fetch("/api/admin/connections")
       .then((response) => { if (!response.ok) throw new Error(String(response.status)); return response.json() as Promise<{ connections: DefinedConnection[] }>; })
       .then((data) => { setConnections(data.connections); setLoaded(true); })

@@ -1,5 +1,6 @@
 "use client";
 
+import { hasServer } from "@/lib/static-params";
 import { nextFreeId } from "@/lib/static-params";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { SmartRouter } from "@/lib/smart-routing";
@@ -27,6 +28,7 @@ export function RoutersProvider({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
+    if (!hasServer) { setReady(true); return; }
     fetch("/api/admin/routers")
       .then((response) => { if (!response.ok) throw new Error(String(response.status)); return response.json() as Promise<{ routers: SmartRouter[] }>; })
       .then((data) => { setRouters(data.routers); setLoaded(true); })

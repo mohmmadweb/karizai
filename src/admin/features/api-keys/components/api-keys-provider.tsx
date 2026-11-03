@@ -1,5 +1,6 @@
 "use client";
 
+import { hasServer } from "@/lib/static-params";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { ApiKeyPolicy, ApiKeyRecord } from "@/lib/api-keys";
 import { getSampleKeys, getSamplePolicies } from "../data/api-keys";
@@ -30,6 +31,7 @@ export function ApiKeysProvider({ children }: { children: ReactNode }) {
   const [synced, setSynced] = useState(false);
 
   useEffect(() => {
+    if (!hasServer) { setLoaded(true); return; }
     fetch("/api/admin/api-keys")
       .then((response) => { if (!response.ok) throw new Error(String(response.status)); return response.json() as Promise<{ policies: ApiKeyPolicy[]; keys: ApiKeyRecord[] }>; })
       .then((data) => {

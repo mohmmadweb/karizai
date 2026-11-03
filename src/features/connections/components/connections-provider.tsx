@@ -1,5 +1,6 @@
 "use client";
 
+import { hasServer } from "@/lib/static-params";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { getCurrentUser } from "@/features/user-session/data/session";
 import type { DefinedConnection } from "@/lib/connections";
@@ -47,6 +48,7 @@ export function ConnectionsProvider({ initialConnections, children }: { initialC
 
   useEffect(() => {
     const groupIds = getCurrentUser().groupIds;
+    if (!hasServer) return;
     fetch("/api/connections")
       .then((response) => response.json() as Promise<{ connections: DefinedConnection[] }>)
       .then((data) => {

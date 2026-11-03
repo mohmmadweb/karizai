@@ -1,5 +1,6 @@
 "use client";
 
+import { hasServer } from "@/lib/static-params";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { getCurrentUser } from "@/features/user-session/data/session";
 import type { SmartRouter } from "@/lib/smart-routing";
@@ -26,6 +27,7 @@ export function ModelsProvider({ children }: { children: ReactNode }) {
   const [allRouters, setAllRouters] = useState<SmartRouter[]>([]);
 
   useEffect(() => {
+    if (!hasServer) return;
     fetch("/api/models")
       .then((response) => response.json() as Promise<{ models: CatalogModel[] }>)
       .then((data) => setReal(data.models.map((model) => ({ ...model, isReal: true }))))

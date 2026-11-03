@@ -18,3 +18,6 @@ export function nextFreeId(prefix: string, usedIds: string[]): string {
   while (used.has(`${prefix}-${n}`)) n += 1;
   return `${prefix}-${n}`;
 }
+
+/** False on the static demo (GitHub Pages): there is no server, so `/api` calls are skipped. */
+export const hasServer = process.env.NEXT_PUBLIC_STATIC_EXPORT !== "1";

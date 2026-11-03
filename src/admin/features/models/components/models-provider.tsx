@@ -1,5 +1,6 @@
 "use client";
 
+import { hasServer } from "@/lib/static-params";
 import {
   createContext,
   useEffect,
@@ -70,6 +71,7 @@ export function ModelsProvider({ initialProviders, initialModels, children }: Mo
   const [loaded, setLoaded] = useState(false);
   const [ready, setReady] = useState(false);
   useEffect(() => {
+    if (!hasServer) { setReady(true); return; }
     fetch("/api/admin/store")
       .then((response) => { if (!response.ok) throw new Error(String(response.status)); return response.json() as Promise<{ providers: ModelProvider[]; models: AiModel[] }>; })
       .then((data) => { dispatch({ type: "replaceAll", providers: data.providers, models: data.models }); setLoaded(true); })
