@@ -1,19 +1,12 @@
-import { Suspense } from "react";
-import { ListSkeleton } from "@/components/shared/list-skeleton";
-import { WorkflowEditor } from "@/features/workflows/components/workflow-editor";
+import { getWorkflows } from "@/features/workflows/data/workflows";
+import { WorkflowEditorRoute } from "@/features/workflows/components/workflow-editor-route";
+import { runtimeIds, toParams } from "@/lib/static-params";
 
-type Props = { params: Promise<{ workflowId: string }>; searchParams: Promise<{ tab?: string }> };
-
-async function EditorContent({ params, searchParams }: Props) {
-  const { workflowId } = await params;
-  const { tab } = await searchParams;
-  return <WorkflowEditor workflowId={workflowId} initialTab={tab === "runs" ? "runs" : "design"} />;
+export function generateStaticParams() {
+  return toParams("workflowId", [...getWorkflows().map((item) => item.id), ...runtimeIds("wf-new")]);
 }
 
-export default function WorkflowPage(props: Props) {
-  return (
-    <Suspense fallback={<ListSkeleton title="کار" />}>
-      <EditorContent {...props} />
-    </Suspense>
-  );
+export default async function WorkflowPage({ params }: { params: Promise<{ workflowId: string }> }) {
+  const { workflowId } = await params;
+  return <WorkflowEditorRoute workflowId={workflowId} />;
 }
