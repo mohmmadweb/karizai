@@ -40,19 +40,6 @@ export function MessengerNav({ pathname, collapsed, onNavigate }: MessengerNavPr
           </ul>
         ) : null}
       </section>
-      <section aria-label="میز کار" className="flex flex-col gap-0.5">
-        <SectionTitle collapsed={collapsed}>میز کار</SectionTitle>
-        <NavLink {...common} href="/messenger/desk" label="میز کار من" icon={<LayoutDashboardIcon className="size-5 shrink-0" aria-hidden />} current={pathname === "/messenger/desk"} />
-        <NavLink {...common} href="/messenger/calendar" label="تقویم کاری من" icon={<CalendarDaysIcon className="size-5 shrink-0" aria-hidden />} current={pathname === "/messenger/calendar"} />
-        <NavLink {...common} href="/knowledge" label="مدیریت فایل‌های من" icon={<FolderOpenIcon className="size-5 shrink-0" aria-hidden />} current={false} />
-      </section>
-      <section aria-label="همکاران و شبکه" className="flex flex-col gap-0.5">
-        <SectionTitle collapsed={collapsed}>همکاران و شبکه</SectionTitle>
-        <NavLink {...common} href="/messenger/members" label="اعضای سازمان" icon={<ContactRoundIcon className="size-5 shrink-0" aria-hidden />} current={pathname === "/messenger/members"} />
-        <NavLink {...common} href="/messenger/groups" label="گروه‌ها" icon={<UsersRoundIcon className="size-5 shrink-0" aria-hidden />} current={pathname === "/messenger/groups"} />
-        <NavLink {...common} href="/messenger/channels" label="کانال‌ها" icon={<MegaphoneIcon className="size-5 shrink-0" aria-hidden />} current={pathname === "/messenger/channels"} />
-        <NavLink {...common} href="/messenger/news" label="اخبار سازمان" icon={<NewspaperIcon className="size-5 shrink-0" aria-hidden />} current={pathname === "/messenger/news"} />
-      </section>
       <section aria-label="فضای کاری" className="flex flex-col gap-0.5">
         <SectionTitle collapsed={collapsed}>پروژه‌ها و فعالیت‌ها</SectionTitle>
         <NavLink {...common} href="/messenger/projects" label="پروژه‌ها" icon={<FolderKanbanIcon className="size-5 shrink-0" aria-hidden />} current={pathname.startsWith("/messenger/projects")} />

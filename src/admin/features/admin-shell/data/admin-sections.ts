@@ -185,11 +185,9 @@ const byId = (ids: string[]) =>
   ids.map((id) => sections.find((section) => section.id === id)!);
 
 const groups: AdminSectionGroup[] = [
-  { id: "monitoring", title: "پایش", sections: byId(["section-dashboard", "section-usage", "section-status", "section-audit"]) },
-  { id: "governance", title: "حاکمیت هوش مصنوعی", sections: byId(["section-approvals", "section-agents", "section-evaluations", "section-policies", "section-masking"]) },
-  { id: "intelligence", title: "هوش و دانش", sections: byId(["section-models", "section-ml-models", "section-benchmark", "section-documents", "section-data", "section-connections", "section-webhooks"]) },
-  { id: "cost", title: "هزینه و ظرفیت", sections: byId(["section-budgets", "section-limits"]) },
-  { id: "access", title: "دسترسی", sections: byId(["section-users", "section-groups", "section-organization", "section-api-keys"]) },
+  { id: "monitoring", title: "پایش", sections: byId(["section-dashboard", "section-usage"]) },
+  { id: "intelligence", title: "هوش و دانش", sections: byId(["section-models", "section-documents", "section-data", "section-connections"]) },
+  { id: "access", title: "دسترسی", sections: byId(["section-users", "section-groups", "section-api-keys"]) },
 ];
 
 export function getAdminSectionGroups(): AdminSectionGroup[] {
