@@ -7,13 +7,15 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { cn } from "@/lib/utils";
 import { itemClass } from "./sidebar-nav";
 
-type RowProps = { label: string; icon: ReactNode; href?: string; current?: boolean; collapsed: boolean; onNavigate?: () => void };
+type RowProps = { label: string; icon: ReactNode; href?: string; current?: boolean; collapsed: boolean; onNavigate?: () => void; /** A small count after the name. */ count?: number; /** Opens another app in a new tab. */ external?: boolean };
 
 /** A row with a page opens it; a row without one is shown but does not respond yet. */
-function Row({ label, icon, href, current, collapsed, onNavigate }: RowProps) {
+export function Row({ label, icon, href, current, collapsed, onNavigate, count = 0, external }: RowProps) {
   const className = cn(itemClass, collapsed && "justify-center px-0", !href && "cursor-default opacity-60 hover:bg-transparent");
-  const content = <>{icon}{collapsed ? null : <span className="truncate">{label}</span>}</>;
-  const element = href
+  const content = <>{icon}{collapsed ? null : <span className="flex-1 truncate">{label}</span>}{collapsed || count === 0 ? null : <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-sidebar-primary px-1.5 text-caption text-sidebar-primary-foreground">{count.toLocaleString("fa-IR")}</span>}</>;
+  const element = href && external
+    ? <a href={href} target="_blank" rel="noopener noreferrer" aria-label={collapsed ? label : undefined} className={className}>{content}</a>
+    : href
     ? <Link href={href} aria-current={current ? "page" : undefined} aria-label={collapsed ? label : undefined} onClick={onNavigate} className={className}>{content}</Link>
     : <span aria-disabled="true" aria-label={collapsed ? label : undefined} className={className}>{content}</span>;
   if (!collapsed) return element;

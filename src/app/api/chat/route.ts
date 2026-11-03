@@ -1,4 +1,5 @@
-import { getProviderKey, readSnapshot } from "@/server/provider-store";
+import { maskWithPolicy } from "@/lib/masking";
+import { getProviderKey, readPolicies, readSnapshot } from "@/server/provider-store";
 import { apiUrl } from "@/server/remote";
 
 type ChatBody = { modelId?: string; messages?: { role: string; content: string }[] };
@@ -22,12 +23,16 @@ export async function POST(request: Request) {
   const apiKey = await getProviderKey(provider.id);
   if (!apiKey) return fail("کلید این ارائه‌دهنده ثبت نشده است.", 400);
 
+  // Safety net: whatever the browser sent, the saved policies are applied once more before the model sees it.
+  const { masking } = await readPolicies();
+  const messages = body.messages.map((item) => ({ ...item, content: typeof item.content === "string" ? maskWithPolicy(item.content, masking).masked : item.content }));
+
   let upstream: Response;
   try {
     upstream = await fetch(apiUrl(provider.baseUrl, "/chat/completions"), {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ model: model.remoteId, messages: body.messages, stream: true }),
+      body: JSON.stringify({ model: model.remoteId, messages, stream: true }),
       signal: AbortSignal.any([request.signal, AbortSignal.timeout(120000)]),
     });
   } catch {

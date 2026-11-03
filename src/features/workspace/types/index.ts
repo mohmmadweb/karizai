@@ -21,6 +21,8 @@ export type Task = {
   priority: TaskPriority;
   /** ISO date. */
   dueDate: string;
+  /** ISO date and time the task was registered; only tasks made in this session have it. */
+  createdAt?: string;
 };
 
 export const statusLabels: Record<TaskStatus, string> = { todo: "انجام‌نشده", doing: "در حال انجام", done: "انجام‌شده" };

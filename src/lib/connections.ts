@@ -3,13 +3,16 @@
  * them; the user panel only shows and uses them. The same file lives in both
  * apps; keep the copies identical.
  */
-export type ConnectionType = "mcp" | "api" | "n8n" | "dify";
+export type ConnectionType = "mcp" | "api" | "n8n" | "dify" | "gitlab" | "mattermost" | "confluence";
 
 export const connectionTypeLabels: Record<ConnectionType, string> = {
   mcp: "سرور MCP",
   api: "API مستقیم",
   n8n: "فلوی n8n",
   dify: "اپ Dify",
+  gitlab: "GitLab",
+  mattermost: "Mattermost",
+  confluence: "Confluence",
 };
 
 /** shared-key: one key kept by the server for everyone; user-login: each user signs in with their own account. */
@@ -27,6 +30,8 @@ export type DefinedTool = {
   description: string;
   /** The user must approve each run. */
   requiresApproval: boolean;
+  /** The tool changes something in the system; groups limited to reading do not get it. */
+  writes?: boolean;
 };
 
 export type DefinedConnection = {

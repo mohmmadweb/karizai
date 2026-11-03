@@ -7,15 +7,21 @@ import { useModels } from "@/features/model-catalog/components/models-provider";
 import { resolveModel } from "@/features/model-catalog/lib/resolve-model";
 import type { CatalogModel } from "@/features/model-catalog/types";
 import { findCannedReply } from "../data/scripted-replies";
-import { checkSensitive, maskText, type SensitiveMatch } from "../lib/sensitive-check";
+import { maskWithPolicy } from "@/lib/masking";
+import { isConfidential } from "@/lib/policies";
+import { getKnowledgeDocuments } from "@/features/knowledge/data/documents";
+import { usePolicies } from "@/features/policies/components/policies-provider";
+import { checkForbidden } from "../lib/sensitive-check";
 import type { MaskEntry } from "./use-chat-engine";
 import type { Attachment, ConversationSettings } from "../types";
 
 export type Notice = {
-  tone: "warning" | "destructive";
+  tone: "warning" | "destructive" | "info";
   title: string;
   text: string;
   suggestion?: CatalogModel;
+  /** Models the user can pick instead, for example the internal ones. */
+  suggestions?: CatalogModel[];
 };
 
 export type ReadyMessage = {
@@ -37,15 +43,13 @@ type FlowInput = {
   onSend: (message: ReadyMessage) => void;
 };
 
-type Pending = { text: string; attachments: Attachment[]; reason: string; matches: SensitiveMatch[] };
-
-/** Checks a message before it is sent: Agent state, forbidden and sensitive text, masking, and model fit. */
+/** Checks a message before it is sent: Agent state, forbidden text, confidential documents, automatic masking, and model fit. */
 export function useSendFlow({ settings, agent, connections, onSend }: FlowInput) {
   const { models, routers } = useModels();
   const [notice, setNotice] = useState<Notice | null>(null);
-  const [pending, setPending] = useState<Pending | null>(null);
+  const policies = usePolicies();
 
-  function proceed(text: string, attachments: Attachment[], options: { matches?: SensitiveMatch[]; forceInternal?: boolean } = {}) {
+  function proceed(text: string, attachments: Attachment[], options: { forceInternal?: boolean } = {}) {
     const result = resolveModel({
       choice: settings.model,
       agent,
@@ -64,8 +68,21 @@ export function useSendFlow({ settings, agent, connections, onSend }: FlowInput)
       else if (result.status === "incompatible") setNotice({ tone: "warning", title: "مدل با پیام شما سازگار نیست", text: result.reason, suggestion: result.suggestion });
       return;
     }
-    setNotice(null);
-    const { masked, map } = options.matches?.length ? maskText(text, options.matches) : { masked: text, map: [] };
+    // A confidential document only goes to a model that runs inside the organization.
+    const mentioned = getKnowledgeDocuments().find((item) => (policies.confidentialDocumentIds === null ? item.confidential : isConfidential(policies, item.id)) && text.toLowerCase().includes(item.title.toLowerCase()));
+    if (mentioned && !model.isInternal) {
+      const internal = models.filter((item) => item.isInternal && item.isAvailable);
+      setNotice({
+        tone: "destructive",
+        title: "این سند فقط با مدل داخلی قابل استفاده است",
+        text: `«${mentioned.title}» محرمانه است و به مدل بیرونی فرستاده نمی‌شود.${internal.length > 0 ? " یکی از مدل‌های داخلی را انتخاب کنید." : " هیچ مدل داخلی در دسترس نیست."}`,
+        suggestions: internal,
+      });
+      return;
+    }
+    // Sensitive values never reach the model: the saved policies decide what is hidden.
+    const { masked, map, count } = maskWithPolicy(text, policies.masking);
+    setNotice(count > 0 ? { tone: "info", title: "مواردی برای مدل پنهان شد", text: "مقدار اصلی در پاسخ برای شما نمایش داده می‌شود." } : null);
     // A message with only files still goes out; the model is asked to look at the files.
     const sentText = masked || "فایل‌های پیوست را بررسی کن و خلاصه‌ی آن‌ها را بنویس.";
     onSend({ text, sentText, masks: map, modelName: fixedFallback ? "" : model.name, modelId: model.id, isReal: Boolean(model.isReal), routerReason: result.status === "ok" ? result.note : undefined, attachments });
@@ -76,27 +93,17 @@ export function useSendFlow({ settings, agent, connections, onSend }: FlowInput)
       setNotice({ tone: "destructive", title: "این Agent اجرا نمی‌شود", text: agent.disabledReason ?? "این Agent در دسترس نیست." });
       return;
     }
-    const check = checkSensitive(text);
-    if (check.kind === "forbidden") {
-      setNotice({ tone: "destructive", title: "این پیام ارسال نمی‌شود", text: check.reason });
-      return;
-    }
-    if (check.kind === "warning") {
-      setPending({ text, attachments, reason: check.reason, matches: check.matches });
+    const forbidden = checkForbidden(text);
+    if (forbidden) {
+      setNotice({ tone: "destructive", title: "این پیام ارسال نمی‌شود", text: forbidden });
       return;
     }
     proceed(text, attachments);
   }
 
-  const close = () => setPending(null);
-
   return {
     notice,
     dismissNotice: () => setNotice(null),
     attempt,
-    sensitiveReason: pending?.reason ?? null,
-    maskAndSend: () => { if (pending) proceed(pending.text, pending.attachments, { matches: pending.matches }); close(); },
-    sendInternal: () => { if (pending) proceed(pending.text, pending.attachments, { forceInternal: true }); close(); },
-    cancelSensitive: close,
   };
 }

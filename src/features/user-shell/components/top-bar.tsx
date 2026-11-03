@@ -5,8 +5,9 @@ import { BellIcon, Building2Icon, ChevronDownIcon, LogOutIcon, MoonIcon, Setting
 import { BrandLockup } from "@/components/brand/brand-lockup";
 import { PersonAvatar } from "@/components/shared/person-avatar";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { getCurrentUser } from "@/features/user-session/data/session";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { getCurrentUser, getDemoUsers } from "@/features/user-session/data/session";
+import { useUserSwitch } from "@/features/user-session/components/user-session-boundary";
 import { useLayoutStyle } from "@/lib/use-layout-style";
 import { useTheme } from "@/lib/use-theme";
 import { MobileMenu } from "./mobile-menu";
@@ -39,6 +40,7 @@ function ThemeSwitch() {
 /** Top bar: user, search, organization, notifications, theme, and sign-out. Below `lg` it also holds the menu button. */
 export function TopBar({ query, onQueryChange }: TopBarProps) {
   const user = getCurrentUser();
+  const { userId, switchUser } = useUserSwitch();
   const { classic } = useLayoutStyle();
   if (classic) {
     // Classic look: only a small bar below `lg` with the menu button and the logo.
@@ -59,8 +61,17 @@ export function TopBar({ query, onQueryChange }: TopBarProps) {
           <PersonAvatar seed={user.id} name={user.name} className="size-10" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="min-w-52">
-          <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
-          <DropdownMenuItem render={<Link href="/settings" />}><SettingsIcon aria-hidden />تنظیمات</DropdownMenuItem>
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
+            <DropdownMenuItem render={<Link href="/settings" />}><SettingsIcon aria-hidden />تنظیمات</DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>تغییر کاربر</DropdownMenuLabel>
+            <DropdownMenuRadioGroup value={userId} onValueChange={switchUser}>
+              {getDemoUsers().map((item) => <DropdownMenuRadioItem key={item.id} value={item.id}>{item.name}</DropdownMenuRadioItem>)}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
       <div className="flex min-w-0 flex-1 justify-center"><TopBarSearch query={query} onQueryChange={onQueryChange} /></div>
@@ -70,15 +81,19 @@ export function TopBar({ query, onQueryChange }: TopBarProps) {
             <Building2Icon aria-hidden />{organization}<ChevronDownIcon aria-hidden />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="min-w-52">
-            <DropdownMenuLabel>سازمان</DropdownMenuLabel>
-            <DropdownMenuCheckboxItem checked>{organization}</DropdownMenuCheckboxItem>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>سازمان</DropdownMenuLabel>
+              <DropdownMenuCheckboxItem checked>{organization}</DropdownMenuCheckboxItem>
+            </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
         <DropdownMenu>
           <DropdownMenuTrigger render={<Button type="button" variant="ghost" size="icon" aria-label="اعلان‌ها" />}><BellIcon aria-hidden /></DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="min-w-60">
-            <DropdownMenuLabel>اعلان‌ها</DropdownMenuLabel>
-            <DropdownMenuItem disabled>اعلان تازه‌ای ندارید.</DropdownMenuItem>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>اعلان‌ها</DropdownMenuLabel>
+              <DropdownMenuItem disabled>اعلان تازه‌ای ندارید.</DropdownMenuItem>
+            </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
         <ThemeSwitch />

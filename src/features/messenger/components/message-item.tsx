@@ -4,10 +4,14 @@ import { buttonVariants } from "@/components/ui/button";
 import { formatDateTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { MessengerMessage } from "../types";
+import { useAlerts } from "@/features/alerts/components/alerts-provider";
+import { Button } from "@/components/ui/button";
 import { ThreadAvatar } from "./thread-avatar";
 
 function AlertCard({ message }: { message: MessengerMessage }) {
   const alert = message.alert!;
+  const { marks, mark } = useAlerts();
+  const current = marks[message.id];
   const Icon = alert.tone === "warning" ? BellRingIcon : InfoIcon;
   return (
     <article className="flex w-full max-w-xl flex-col gap-3 rounded-2xl border bg-card p-4">
@@ -24,7 +28,12 @@ function AlertCard({ message }: { message: MessengerMessage }) {
           </div>
         ))}
       </dl>
-      <Link href={`/workflows/${alert.workflowId}`} className={cn(buttonVariants({ variant: "outline", size: "sm" }), "w-fit")}>مشاهده‌ی جریان</Link>
+      <div className="flex flex-wrap items-center gap-2">
+        <Link href={`/workflows/${alert.workflowId}`} className={cn(buttonVariants({ variant: "outline", size: "sm" }), "w-fit")}>مشاهده‌ی جریان</Link>
+        <Button type="button" size="sm" variant={current === "important" ? "default" : "outline"} aria-pressed={current === "important"} onClick={() => mark(message.id, "important")}>مهم</Button>
+        <Button type="button" size="sm" variant={current === "unimportant" ? "default" : "outline"} aria-pressed={current === "unimportant"} onClick={() => mark(message.id, "unimportant")}>بی‌اهمیت</Button>
+      </div>
+      {current === "unimportant" ? <p className="text-caption text-muted-foreground">علامت شما ثبت شد.</p> : current === "important" ? <p className="text-caption text-muted-foreground">علامت شما ثبت شد.</p> : null}
     </article>
   );
 }
@@ -36,6 +45,7 @@ export function MessageItem({ message }: { message: MessengerMessage }) {
     <li className={cn("flex items-end gap-2", mine ? "justify-start" : "justify-end")}>
       {mine ? null : <ThreadAvatar threadId={message.threadId} className="size-8" />}
       <div className={cn("flex min-w-0 max-w-[85%] flex-col gap-1", mine ? "items-start" : "items-end")}>
+        {message.sender ? <span className="px-1 text-caption text-muted-foreground">{message.sender}</span> : null}
         {message.alert ? (
           <>
             <p className="rounded-2xl rounded-ee-sm bg-muted px-4 py-2 text-body">{message.text}</p>

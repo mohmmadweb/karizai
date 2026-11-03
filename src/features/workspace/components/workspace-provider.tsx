@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useRef, useState, type R
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useWorkflows } from "@/features/workflows/components/workflows-provider";
+import { formatDate } from "@/lib/format";
 import { taskFromStep } from "@/features/workflows/lib/task-step";
 import { currentUserId } from "../lib/people";
 import { getProjects, getTasks } from "../data/workspace";
@@ -42,8 +43,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         registered.current.add(key);
         const project = getProjects().find((item) => item.name === wanted.projectName) ?? getProjects()[0];
         const id = `task-flow-${registered.current.size}`;
-        setTasks((list) => [...list, { id, projectId: project.id, title: wanted.title, assigneeId: currentUserId(), status: "todo", priority: wanted.priority, dueDate: new Date(Date.now() + 3 * 864e5).toISOString() }]);
-        toast.success("وظیفه‌ی تازه ثبت شد", { description: `«${wanted.title}» در «فعالیت و وظایف من» ثبت شد.`, action: { label: "دیدن وظایف", onClick: () => router.push("/messenger/tasks") } });
+        setTasks((list) => [...list, { id, projectId: project.id, title: wanted.title, assigneeId: currentUserId(), status: "todo", priority: wanted.priority, dueDate: new Date(Date.now() + 3 * 864e5).toISOString(), createdAt: new Date().toISOString() }]);
+        toast.success("وظیفه‌ی تازه ثبت شد", { description: `«${wanted.title}» ساعت ${formatDate(new Date(), { timeStyle: "medium" })} در «فعالیت و وظایف من» ثبت شد.`, action: { label: "دیدن وظایف", onClick: () => router.push("/messenger/tasks") } });
       }
     }
   }, [runs, workflows, knownRunIds, router]);
@@ -51,7 +52,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     projects: getProjects(),
     tasks,
     setStatus: (taskId, status) => setTasks((list) => list.map((task) => (task.id === taskId ? { ...task, status } : task))),
-    addTask: (projectId, title, assigneeId, priority = "normal") => setTasks((list) => [...list, { id: `task-new-${++counter.current}`, projectId, title, assigneeId, status: "todo", priority, dueDate: new Date(Date.now() + 7 * 864e5).toISOString() }]),
+    addTask: (projectId, title, assigneeId, priority = "normal") => setTasks((list) => [...list, { id: `task-new-${++counter.current}`, projectId, title, assigneeId, status: "todo", priority, dueDate: new Date(Date.now() + 7 * 864e5).toISOString(), createdAt: new Date().toISOString() }]),
   }), [tasks]);
   return <WorkspaceContext.Provider value={value}>{children}</WorkspaceContext.Provider>;
 }

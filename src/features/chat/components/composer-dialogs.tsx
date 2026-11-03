@@ -12,10 +12,6 @@ import {
 } from "@/components/ui/alert-dialog";
 
 type ComposerDialogsProps = {
-  sensitiveReason: string | null;
-  onMaskAndSend: () => void;
-  onSendInternal: () => void;
-  onCancelSensitive: () => void;
   /** Name of the Agent waiting for the "new conversation or continue" choice. */
   agentChoice: string | null;
   onAgentNew: () => void;
@@ -26,19 +22,6 @@ type ComposerDialogsProps = {
 export function ComposerDialogs(props: ComposerDialogsProps) {
   return (
     <>
-      <AlertDialog open={props.sensitiveReason !== null} onOpenChange={(open) => !open && props.onCancelSensitive()}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>این پیام شاید اطلاعات حساس دارد</AlertDialogTitle>
-            <AlertDialogDescription>{props.sensitiveReason} یکی از راه‌ها را انتخاب کنید: مقدارهای حساس با نشانه‌ی بی‌معنی جایگزین می‌شوند و مقدار اصلی هرگز به مدل بیرونی نمی‌رسد؛ یا پیام فقط به مدل داخلی سازمان فرستاده می‌شود.</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>ویرایش پیام</AlertDialogCancel>
-            <AlertDialogAction variant="outline" onClick={props.onSendInternal}>ارسال به مدل داخلی</AlertDialogAction>
-            <AlertDialogAction onClick={props.onMaskAndSend}>پوشاندن و ارسال</AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
       <AlertDialog open={props.agentChoice !== null} onOpenChange={(open) => !open && props.onAgentCancel()}>
         <AlertDialogContent>
           <AlertDialogHeader>

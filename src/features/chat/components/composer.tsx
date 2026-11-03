@@ -177,10 +177,6 @@ export function Composer({ conversationId }: { conversationId: string | null }) 
         </PromptInputActions>
       </PromptInput>
       <ComposerDialogs
-        sensitiveReason={flow.sensitiveReason}
-        onMaskAndSend={flow.maskAndSend}
-        onSendInternal={flow.sendInternal}
-        onCancelSensitive={flow.cancelSensitive}
         agentChoice={agentChoice?.name ?? null}
         onAgentNew={() => {
           if (agentChoice) updateSettings(null, { ...emptySettings, agentId: agentChoice.id });

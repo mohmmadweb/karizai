@@ -1,4 +1,8 @@
+import Image from "next/image";
 import { cn } from "@/lib/utils";
+
+/** People who have a photo in `public/people`, by id; everyone else gets the drawn picture. */
+const photos = new Set(["user-1", "user-2", "col-ali", "col-sara", "col-reza", "col-narges", "col-mohammad", "col-mehdi"]);
 
 /** Illustration colours for profile pictures. They are picture content, not interface colours. */
 const backgrounds = ["#dbeafe", "#fde68a", "#bbf7d0", "#fbcfe8", "#ddd6fe", "#fed7aa", "#bae6fd"];
@@ -14,8 +18,15 @@ function hash(text: string): number {
 
 const pick = <T,>(list: T[], seed: number, shift: number): T => list[(seed >>> shift) % list.length];
 
-/** A profile picture drawn from the person's id, so the same person always looks the same. Real photos replace it later. */
+/** A profile picture drawn from the person's id, so the same person always looks the same. Photos in `public/people` replace it for the demo users. */
 export function PersonAvatar({ seed, name, className }: { seed: string; name: string; className?: string }) {
+  if (photos.has(seed)) {
+    return (
+      <span className={cn("inline-flex size-8 shrink-0 overflow-hidden rounded-full", className)}>
+        <Image src={`/people/${seed}.jpg`} alt={`تصویر ${name}`} width={256} height={256} className="size-full object-cover" />
+      </span>
+    );
+  }
   const h = hash(seed);
   const skin = pick(skins, h, 3);
   const hair = pick(hairs, h, 7);

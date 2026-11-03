@@ -7,7 +7,6 @@ import { BrandLogo } from "@/components/brand/brand-logo";
 import { SearchField } from "@/components/shared/search-field";
 import { buttonVariants, Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { MessengerNav } from "@/features/messenger/components/messenger-nav";
 import { ActiveWorkflowsList } from "@/features/workflows/components/active-workflows-list";
 import { ConversationList } from "@/features/chat/components/conversation-list";
 import { ProjectList } from "@/features/chat/components/project-list";
@@ -15,7 +14,7 @@ import { getCurrentUser } from "@/features/user-session/data/session";
 import { useLayoutStyle } from "@/lib/use-layout-style";
 import { cn } from "@/lib/utils";
 import { getNewChatSection, getUserSectionGroups } from "../data/user-sections";
-import { ModeSwitch } from "./mode-switch";
+import { SidebarSocial } from "./sidebar-social";
 import { SidebarNav } from "./sidebar-nav";
 import { SidebarProfile } from "./sidebar-profile";
 import { SidebarSystem } from "./sidebar-system";
@@ -40,7 +39,6 @@ type SidebarBodyProps = {
 export function SidebarBody({ pathname, query = "", onQueryChange, collapsed = false, onToggleCollapse, onNavigate }: SidebarBodyProps) {
   const { classic } = useLayoutStyle();
   const activeId = pathname.startsWith("/chat/") ? pathname.split("/")[2] : null;
-  const inMessenger = pathname.startsWith("/messenger");
   const activeFlowId = pathname.startsWith("/workflows/") ? pathname.split("/")[2] : null;
   const tone = classic ? "auto" : "white";
 
@@ -72,31 +70,25 @@ export function SidebarBody({ pathname, query = "", onQueryChange, collapsed = f
       </div>
       {/* In a short window the content scrolls; without shrink-0 the rows would be squeezed flat instead. */}
       <div className={cn("flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto [&>*]:shrink-0", !classic && "p-3")}>
-        <ModeSwitch inMessenger={inMessenger} collapsed={collapsed} onNavigate={onNavigate} />
-        {inMessenger ? (
-          <MessengerNav pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} />
-        ) : (
-          <>
-            <NewChatButton collapsed={collapsed} classic={classic} onNavigate={onNavigate} />
-            <SidebarNav groups={getUserSectionGroups()} flat={classic} pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} />
-            {collapsed ? null : (
-              <SidebarSection title="پروژه‌ها" icon={FolderIcon} classic={classic} openClassName="max-h-64 shrink-0">
-                <div className="min-h-0 flex-1 overflow-y-auto"><ProjectList activeId={activeId} onNavigate={onNavigate} /></div>
-              </SidebarSection>
-            )}
-            {collapsed ? null : (
-              <SidebarSection title="گفتگوهای اخیر" icon={HistoryIcon} classic={classic} openClassName="min-h-40 flex-1">
-                {classic ? <SearchField value={query} onValueChange={(value) => onQueryChange?.(value)} label="جست‌وجو در گفتگوها" placeholder="جست‌وجو در گفتگوها" className="sm:max-w-none" /> : null}
-                <div className="min-h-0 flex-1 overflow-y-auto"><ConversationList activeId={activeId} onNavigate={onNavigate} query={query} /></div>
-              </SidebarSection>
-            )}
-            {collapsed ? null : (
-              <SidebarSection title="جریان‌های فعال" icon={ActivityIcon} classic={classic} openClassName="max-h-48 shrink-0">
-                <div className="min-h-0 flex-1 overflow-y-auto"><ActiveWorkflowsList activeId={activeFlowId} onNavigate={onNavigate} /></div>
-              </SidebarSection>
-            )}
-          </>
+        <NewChatButton collapsed={collapsed} classic={classic} onNavigate={onNavigate} />
+        <SidebarNav groups={getUserSectionGroups()} flat={classic} pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} />
+        {collapsed ? null : (
+          <SidebarSection title="پروژه‌ها" icon={FolderIcon} classic={classic} openClassName="max-h-64 shrink-0">
+            <div className="min-h-0 flex-1 overflow-y-auto"><ProjectList activeId={activeId} onNavigate={onNavigate} /></div>
+          </SidebarSection>
         )}
+        {collapsed ? null : (
+          <SidebarSection title="گفتگوهای اخیر" icon={HistoryIcon} classic={classic} openClassName="min-h-40 flex-1">
+            {classic ? <SearchField value={query} onValueChange={(value) => onQueryChange?.(value)} label="جست‌وجو در گفتگوها" placeholder="جست‌وجو در گفتگوها" className="sm:max-w-none" /> : null}
+            <div className="min-h-0 flex-1 overflow-y-auto"><ConversationList activeId={activeId} onNavigate={onNavigate} query={query} /></div>
+          </SidebarSection>
+        )}
+        {collapsed ? null : (
+          <SidebarSection title="جریان‌های فعال" icon={ActivityIcon} classic={classic} openClassName="max-h-48 shrink-0">
+            <div className="min-h-0 flex-1 overflow-y-auto"><ActiveWorkflowsList activeId={activeFlowId} onNavigate={onNavigate} /></div>
+          </SidebarSection>
+        )}
+        <SidebarSocial pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} />
       </div>
       <div className={cn("shrink-0", !classic && "px-3 pb-3")}><SidebarSystem pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} /></div>
       {classic ? <SidebarProfile user={getCurrentUser()} collapsed={collapsed} onNavigate={onNavigate} /> : null}

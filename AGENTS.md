@@ -162,7 +162,7 @@ visually identical to the admin panel (same tokens, fonts, ui components).
   quota), `chat` (one `ChatProvider`; simulated streaming engine), `model-catalog`
   (models, `resolveModel`), `connections` (tools, approval card), `agents`
   (one `AgentsProvider`, builder form, share requests, skills state), `skills`,
-  `workflows` (visual workflow editor with `@xyflow/react`, simulated runs, one `WorkflowsProvider`), `knowledge`, `usage`, `settings`; `connections` also has one `ConnectionsProvider`; `api-keys` (its page and feature folder were removed on 2026-11-02; the server routes and shared copies stay) had one `ApiKeysProvider` (the user's keys and what the groups allow).
+  `workflows` (visual workflow editor with `@xyflow/react`, simulated runs, one `WorkflowsProvider`), `knowledge`, `usage`, `settings`; `connections` also has one `ConnectionsProvider`. The API keys page, its routes and server code were removed on 2026-11-03 (the admin panel dropped «کلیدهای API»; `apikeys.json` in the shared folder is left untouched).
   `_template` is empty.
 - `src/components/ui`: shadcn primitives (same as the admin panel).
 - `src/components/shared`: `page-header`, `form-section`, `empty-state`,
@@ -199,7 +199,7 @@ scenario verification.
   defines `dev`). Versions are the same as the admin panel.
 - OpenSpec 1.14.1 via `npx @fission-ai/openspec@1.14.1 <command>`; schema
   `spec-driven`; generated files in `.claude/commands/opsx` and `.claude/skills`.
-- Active changes: `add-api-keys` (API keys page: group-allowed keys for models, agents and knowledge; built, waiting for verify), `add-smart-supervisor` (per-conversation supervisor switch and timeline step; built, waiting for verify), `add-multi-agent-timeline` (steps of a multi-agent answer shown above the answer; built, waiting for verify), `add-workflows-and-multi-agent` (workflows, triggers, runs, multi-agent step; built, waiting for verify), `align-with-requirements-document` (ChatGPT-style chat with prompt-kit, masking, document and data assistants, web search, tool proposals; built, waiting for verify), `complete-user-panel-pages` (connections page, skills, knowledge, usage, settings; built, waiting for verify) and `add-chat-and-agent-builder` (approved by the user with the recommended answers; built, waiting for verify). All state is temporary and resets on reload.
+- Active changes: `add-smart-supervisor` (per-conversation supervisor switch and timeline step; built, waiting for verify), `add-multi-agent-timeline` (steps of a multi-agent answer shown above the answer; built, waiting for verify), `add-workflows-and-multi-agent` (workflows, triggers, runs, multi-agent step; built, waiting for verify), `align-with-requirements-document` (ChatGPT-style chat with prompt-kit, masking, document and data assistants, web search, tool proposals; built, waiting for verify), `complete-user-panel-pages` (connections page, skills, knowledge, usage, settings; built, waiting for verify) and `add-chat-and-agent-builder` (approved by the user with the recommended answers; built, waiting for verify). All state is temporary and resets on reload.
 
 ## Keeping This File Current
 
@@ -228,13 +228,33 @@ The admin panel configures smart routers («مسیریاب هوشمند»); they
 
 The admin panel defines connections (`connections.json` in the shared data folder, keys encrypted under `conn:<id>`); `src/lib/connections.ts` is an identical copy of the admin panel's file. The user panel only reads `GET /api/connections` (active ones) and filters by the user's groups; users cannot create or request connections. A selected connection that has an entry in `src/features/chat/data/connection-replies.ts` (matched by id or name, currently «MES کارخانه») always answers with that fixed text after its tool steps run (a `tool` timeline step per tool); nothing is requested from the connection's address and no model is needed.
 
+## Policies (سیاست‌ها)
+
+The admin panel saves policies in `policies.json` (shared folder); this panel only reads them: `readPolicies()` in `src/server/provider-store.ts`, `GET /api/policies`, and one `PoliciesProvider` (`usePolicies`) in `src/app/(app)/layout.tsx`. `src/lib/policies.ts`, `src/lib/masking.ts` and `src/lib/connections.ts` are identical copies of the admin panel's files; change them together.
+
+- Masking is automatic: every message goes through `maskWithPolicy` in `use-send-flow.ts` (the model gets tokens, the answer is restored with `restoreText`, the user sees «مواردی برای مدل پنهان شد»). Earlier assistant messages are masked again when the history is sent, and `/api/chat` masks every message once more from the saved file. The old choice dialog is gone; `sensitive-check.ts` keeps only the private-key block.
+- Confidential documents: when the selected model is not internal and the text names a sample knowledge document whose id is in `confidentialDocumentIds` (before the admin first changes the list, the document's own `confidential` flag; only `doc-003` has it), the message is not sent and the internal models are offered. The chat has no document picker, so only a document name written in the text is detected (attachments and the knowledge switch are not).
+- Tools: `ConnectionsProvider` drops tools with `writes: true` for connections where `toolModeFor(...)` is `read`; only the user's groups the connection is open to (`openTo`) are considered, so a group with no access to it cannot loosen the mode; this applies to chat, agents and workflows alike.
+- Weekly budgets in the policies are not applied here yet (Planned).
+
+## Alerts, reports, model comparison and the demo user switch
+
+- `/alerts` («هشدارها و گزارش‌ها», feature `alerts`): alert rules (data, sensitivity, recipient, frequency, on/off) and scheduled reports (day, time, recipients). One `AlertsProvider` holds them in memory, and also the user's «مهم» / «بی‌اهمیت» marks on alert cards in the messenger (`message-item.tsx`). Presentation-only: no alert is really sent and the marks do not change later alerts.
+- `/compare` («مقایسه‌ی مدل‌ها», feature `model-compare`): runs a task on up to four models, direct and multi-agent, and shows time and cost side by side. The figures come from `lib/estimate.ts` (fixed, deterministic) after a short timer; no model is called.
+- Demo user switch: the profile menu has «تغییر کاربر» (مریم احمدی in فروش and منابع انسانی, رضا کریمی in مالی). `UserSessionBoundary` in `src/app/(app)/layout.tsx` sets the user in `user-session/data/session.ts` and remounts everything, so temporary state resets. `ScriptedEntry.audience` lets the same knowledge question get a different answer by group (`scripted/discount.ts`: the discount and margin question). The settings page is a server page and always shows the first user.
+- API for other software (`/api/v1`) is not built and has no screen; the proposal calls it «در برنامه توسعه».
+
+## One sidebar
+
+The AI platform and the messenger share one sidebar (`user-shell/components/sidebar-body.tsx`); the old «موشکاف | پیام‌رسان» switch and `MessengerNav` are gone. Order, top to bottom: new chat; میز کار (`/desk`) and تقویم کاری (`/calendar`), both simple pages built from tasks, workflows and chats the panel already holds (`features/desk`); the groups «عامل‌ها» (agents, repository, skills, model comparison) and «اتوماسیون» (workflows, connections, alerts); «مدیریت فایل‌ها» (`/knowledge`); «حساب»; chat «پروژه‌ها»; «گفتگوهای اخیر»; «جریان‌های فعال»; then `SidebarSocial`: «شبکه اجتماعی» (گفتگوها → `/messenger`, with the thread list under it while a chat is open; groups and channels are not in the sidebar: they are in the chat list beside the open chat (`messenger/components/thread-list.tsx`: «گروه‌ها و کانال‌ها» from `messenger/data/groups.ts`, then «پیام‌های مستقیم»), «پروژه‌ها و فعالیت‌ها» and «مدیریت سیستم» (مدیریت هوش مصنوعی, no page yet); and at the foot `SidebarSystem`. The sales workflow (`wf-5`) announces itself in «گروه فروش» (`alertThreadFor` in `messenger/lib/run-alert.ts`) and a toast with «مشاهده پیام» opens it; other workflows still use the alert bot. A group with `bare: true` lists its items without a title.
+
 ## Look of the panel
 
 The frame follows the messenger platform the assistant will live in: a dark navy sidebar at the start side (logo, collapsible groups «گفتگو و دستیارها»، «کارها و اتصال‌ها»، «دانش و مصرف»، then recent conversations; the active item is a light-blue pill), a white top bar (user, search, organization, notifications, theme switch, sign-out) and a blue-gray page background. The sidebar always uses the dark tokens (its container carries the `dark` class) and `--sidebar*` hold the same navy in both themes. In settings («ظاهر ← طرح پنل») the user can go back to the classic look (the `classic` class on <html>, `use-layout-style.ts`: light sidebar with a flat list, its own search box and the profile at the bottom, no top bar from `lg`, the original surfaces); the choice is temporary and a reload returns to the messenger look. The top-bar search filters the recent conversations; the organization menu and the notifications menu are presentation-only.
 
 ## Plant scenarios (canned answers)
 
-For the polymer-plant demo, the chat can answer from prepared scripts (`src/features/chat/data/scripted/*` and `scripted-replies.ts`, found with `findCannedReply`): the Agents `agent-quality`, `agent-maint`, `agent-pricing`, `agent-indicators`; the connections `conn-12` to `conn-18` (warehouse and procurement SQL Server, MES indicators, social network, LIMS, CMMS, prices; `plantConnectionIds` keeps them beside the admin's connections); and the «دانش سازمانی» switch in the message box (`ConversationSettings.knowledge`). A script shows its steps running and then streams the prepared text, table and sources; no model, database or network is used. A question that matches no script gets a short hint. The history holds finished conversations built from the same scripts (`conv-7` to `conv-12`), and two ready workflows: «مرکز شاخص‌ها و هشدار هوشمند» (`wf-4`, event `indicator-breach`) and «پیش‌فاکتور و قیمت‌گذاری خودکار» (`wf-5`). Sources can be a document or a colleague's conversation (`kind: "chat"`) and open with an excerpt.
+For the polymer-plant demo, the chat can answer from prepared scripts (`src/features/chat/data/scripted/*` and `scripted-replies.ts`, found with `findCannedReply`): the Agents `agent-quality`, `agent-maint`, `agent-pricing`, `agent-indicators`; the connections `conn-12` to `conn-18` (warehouse and procurement SQL Server, MES indicators, social network, LIMS, CMMS, prices; `plantConnectionIds` keeps them beside the admin's connections); and the «دانش سازمانی» switch in the message box (`ConversationSettings.knowledge`). A script shows its steps running and then streams the prepared text, table and sources; no model, database or network is used. A question that matches no script gets a short hint. The history holds finished conversations built from the same scripts (`conv-7` to `conv-12`), and ready workflows such as «پیش‌فاکتور و قیمت‌گذاری خودکار» (`wf-5`). The workflow «مرکز شاخص‌ها و هشدار هوشمند» (`wf-4`) was removed. Sources can be a document or a colleague's conversation (`kind: "chat"`) and open with an excerpt.
 
 ## Workflow steps and their settings
 
@@ -247,10 +267,6 @@ A new conversation shows only the greeting and the message box (the ready-start 
 ## Marks and icons
 
 `components/shared/provider-logo.tsx` draws a coloured tile with a letter for a model's maker (OpenAI, Anthropic, Google, DeepSeek, Qwen, Meta, Mistral; others get a neutral robot) in the model picker and under answers. `features/connections/components/connection-icon.tsx` gives each connection a coloured icon by kind (MES, IoT, database, social network, lab, maintenance, prices). These are drawn marks, not the makers' own logos, and their colours identify a kind, so they are not design tokens. Official logos would need local files with the owners' permission; no logo is loaded from the internet.
-
-## API keys
-
-The admin panel decides per group which kinds of key may be created (`apikeys.json`, `src/lib/api-keys.ts` and `src/server/provider-store.ts` are identical copies). The user panel creates keys (`POST /api/api-keys`, refused for a group without permission), lists the user's own keys and revokes them. Only a SHA-256 hash is stored; the key text is shown once and never kept in the browser after the dialog closes. The `/api/v1` gateway that would accept the keys, the real usage count and the monthly ceiling are not built (Planned); the `curl` examples on the page show the planned shape.
 
 ## Files made in the chat (Word and Excel)
 

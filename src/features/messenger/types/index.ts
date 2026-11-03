@@ -6,6 +6,11 @@ export type Colleague = {
   online: boolean;
 };
 
+/** A group of colleagues or an announcement channel. Everyone in a group can write; a channel only lets its owners write. */
+export type Group = { id: string; name: string; description: string; kind: "group" | "channel" };
+
+export const salesGroupId = "grp-sales";
+
 export type AlertField = { label: string; value: string };
 
 /** What a workflow tells the user: a title, a few figures and the workflow it came from. */
@@ -22,6 +27,8 @@ export type MessengerMessage = {
   threadId: string;
   from: "me" | "other" | "system";
   text: string;
+  /** Who wrote it, shown in groups; absent in one-to-one chats. */
+  sender?: string;
   /** ISO date. */
   createdAt: string;
   read: boolean;

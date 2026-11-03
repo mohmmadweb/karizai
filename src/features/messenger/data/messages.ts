@@ -15,18 +15,6 @@ const messages: MessengerMessage[] = [
       ],
     },
   },
-  {
-    id: "msg-2", threadId: "alerts", from: "system", read: false, createdAt: "2026-11-02T07:10:00.000Z",
-    text: "جریان «مرکز شاخص‌ها و هشدار هوشمند» یک شاخص خارج از حد پیدا کرد.",
-    alert: {
-      title: "شاخص خط ۲ از حد مجاز خارج شد", tone: "warning", workflowId: "wf-4",
-      fields: [
-        { label: "شاخص", value: "دمای ناحیه‌ی ۴ اکسترودر" },
-        { label: "مقدار فعلی", value: "۲۴۸ درجه (حد مجاز تا ۲۴۰)" },
-        { label: "اثر احتمالی", value: "ضایعات ۴٫۸٪ (حد ۴٪)" },
-      ],
-    },
-  },
   { id: "msg-3", threadId: "col-ali", from: "other", read: false, createdAt: "2026-11-02T08:20:00.000Z", text: "سلام. هشدار سفارش HD5502 را دیدید؟ اگر تأیید کنید همین امروز استعلام می‌گیرم." },
   { id: "msg-4", threadId: "col-ali", from: "me", read: true, createdAt: "2026-11-02T08:25:00.000Z", text: "سلام، دیدم. مقدار ۸۰ تن را تأیید می‌کنم." },
   { id: "msg-5", threadId: "col-sara", from: "other", read: true, createdAt: "2026-11-01T14:00:00.000Z", text: "موجودی مستربچ مشکی شمارش شد، ۶٫۵ تن." },
@@ -45,6 +33,10 @@ const messages: MessengerMessage[] = [
     text: "اجرای جریان «گزارش فروش هفتگی» به خطا خورد؛ اتصال به پایگاه فروش پاسخ نداد.",
     alert: { title: "اجرای جریان ناموفق بود", tone: "warning", workflowId: "wf-1", fields: [{ label: "گام ناموفق", value: "خواندن فروش هفته" }, { label: "اقدام پیشنهادی", value: "اتصال را بررسی کنید و جریان را دوباره اجرا کنید" }] },
   },
+  { id: "msg-g1", threadId: "grp-sales", from: "other", sender: "نرگس حسینی", read: true, createdAt: "2026-11-01T09:10:00.000Z", text: "قیمت پایه‌ی PP این هفته ۲٪ بالا رفته؛ در پیش‌فاکتورها اعتبار را ۵ روزه بنویسید." },
+  { id: "msg-g2", threadId: "grp-sales", from: "other", sender: "محمد کاظمی", read: true, createdAt: "2026-11-01T09:25:00.000Z", text: "موافقم. پیش‌فاکتورهای بالای سقف را برای تأیید من بفرستید." },
+  { id: "msg-g3", threadId: "grp-quality", from: "other", sender: "نرگس حسینی", read: true, createdAt: "2026-10-31T11:00:00.000Z", text: "نتایج آزمون بچ ۲۱۲ تا ظهر آماده می‌شود." },
+  { id: "msg-n1", threadId: "chan-news", from: "system", sender: "روابط عمومی", read: true, createdAt: "2026-10-30T08:00:00.000Z", text: "برنامه‌ی تعمیرات دوره‌ای خط ۲ از شنبه‌ی آینده اعلام شد." },
 ];
 
 export function getInitialMessages(): MessengerMessage[] {

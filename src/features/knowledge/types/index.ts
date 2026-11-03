@@ -9,4 +9,6 @@ export type KnowledgeDocument = {
   sizeKb: number;
   /** ISO date; absent when unknown. */
   updatedAt?: string;
+  /** The document's own flag; the saved policies override it once the admin changes the list. */
+  confidential?: boolean;
 };

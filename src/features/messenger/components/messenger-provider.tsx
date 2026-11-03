@@ -1,9 +1,12 @@
 "use client";
 
-import { createContext, useContext, useMemo, useRef, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { useWorkflows } from "@/features/workflows/components/workflows-provider";
 import { getInitialMessages } from "../data/messages";
-import { alertForRun, notifiesSomeone } from "../lib/run-alert";
+import { alertForRun, alertThreadFor, notifiesSomeone } from "../lib/run-alert";
+import { getGroupById } from "../data/groups";
 import { alertsThreadId, flowsThreadId, type MessengerMessage } from "../types";
 
 type MessengerContextValue = {
@@ -29,6 +32,21 @@ export function MessengerProvider({ children }: { children: ReactNode }) {
   // Runs that existed on arrival already have their alerts in the seed.
   const [knownRunIds] = useState(() => new Set(runs.map((run) => run.id)));
 
+  const router = useRouter();
+  const announced = useRef(new Set<string>());
+  // A run that finishes and notifies someone says so at once, with a way to open the message.
+  useEffect(() => {
+    for (const run of runs) {
+      if (run.status !== "succeeded" || knownRunIds.has(run.id) || announced.current.has(run.id)) continue;
+      const workflow = workflows.find((item) => item.id === run.workflowId);
+      if (!workflow || !notifiesSomeone(workflow)) continue;
+      announced.current.add(run.id);
+      const thread = alertThreadFor(workflow);
+      const place = getGroupById(thread)?.name ?? "ربات هشدار";
+      toast.success(`پیام تازه در «${place}»`, { description: `جریان «${workflow.name}» اعلام کرد.`, action: { label: "مشاهده پیام", onClick: () => router.push(`/messenger/${thread}`) } });
+    }
+  }, [runs, workflows, knownRunIds, router]);
+
   const value = useMemo<MessengerContextValue>(() => {
     const fromRuns: MessengerMessage[] = [];
     for (const run of runs) {
@@ -40,7 +58,10 @@ export function MessengerProvider({ children }: { children: ReactNode }) {
       const report = { ...alertForRun(workflow, run), ...(failed ? { title: `اجرای جریان «${workflow.name}» ناموفق بود`, tone: "warning" as const } : {}) };
       const make = (threadId: string, text: string, alert = report): MessengerMessage => ({ id: `msg-${threadId}-${run.id}`, threadId, from: "system", read: readAlertIds.includes(`msg-${threadId}-${run.id}`), createdAt, text, alert });
       fromRuns.push(make(flowsThreadId, failed ? `اجرای جریان «${workflow.name}» به خطا خورد.` : `جریان «${workflow.name}» با موفقیت اجرا شد.`));
-      if (!failed && notifiesSomeone(workflow)) fromRuns.push(make(alertsThreadId, `جریان «${workflow.name}» برای شما پیام فرستاد.`));
+      if (!failed && notifiesSomeone(workflow)) {
+        const thread = alertThreadFor(workflow);
+        fromRuns.push({ ...make(thread, thread === alertsThreadId ? `جریان «${workflow.name}» برای شما پیام فرستاد.` : `جریان «${workflow.name}» این پیام را در گروه اعلام کرد.`), ...(thread === alertsThreadId ? {} : { sender: "جریان‌ها" }) });
+      }
     }
     const messages = [...stored, ...fromRuns];
     const unread = (item: MessengerMessage) => !item.read && item.from !== "me";

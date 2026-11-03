@@ -153,5 +153,7 @@ export type ScriptedReply = {
 export type ScriptedEntry = {
   scope: { agentId?: string; connectionId?: string; connectionName?: string; knowledge?: boolean };
   match?: RegExp;
+  /** Only for users of these groups (`groups`) or not of these (`exceptGroups`); the same question gets a different answer by role. */
+  audience?: { groups?: string[]; exceptGroups?: string[] };
   reply: ScriptedReply;
 };

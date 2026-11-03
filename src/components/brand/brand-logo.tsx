@@ -9,7 +9,7 @@ const logos = {
   /** The Kariz mark, without the name. */
   kariz: { color: "/brand/kariz.svg", white: "/brand/kariz-white.svg", width: 100, height: 75 },
   /** Name only. */
-  text: { color: "/brand/text.png", white: "/brand/text-white.png", width: 1114, height: 333 },
+  text: { color: "/brand/kariz-text.svg", white: "/brand/kariz-text-white.svg", width: 103, height: 37 },
 } as const;
 
 type BrandLogoProps = {

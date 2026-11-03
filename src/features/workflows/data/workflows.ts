@@ -1,7 +1,7 @@
 import type { Run, Workflow } from "../types";
 import { getTemplates } from "./templates";
 
-const [weekly, customer, , indicators, pricing, reorder] = getTemplates();
+const [weekly, customer, , pricing, reorder] = getTemplates();
 
 const workflows: Workflow[] = [
   { id: "wf-1", name: weekly.name, description: weekly.description, status: "active", triggers: weekly.triggers, nodes: weekly.nodes, edges: weekly.edges, updatedAt: "2026-10-20T09:00:00.000Z", lastRunAt: "2026-10-24T05:00:00.000Z" },
@@ -12,7 +12,6 @@ const workflows: Workflow[] = [
     nodes: [{ id: "n1", kind: "tool", label: "مانده‌ی مرخصی", position: { x: 0, y: 0 }, config: { connectionId: "conn-3", toolId: "tool-6", params: { p0: "کابل شبکه" }, instruction: "مانده را بخوان." } }],
     edges: [], updatedAt: "2026-10-10T08:00:00.000Z", lastRunAt: "2026-10-18T05:30:00.000Z",
   },
-  { id: "wf-4", name: indicators.name, description: indicators.description, status: "active", triggers: indicators.triggers, nodes: indicators.nodes, edges: indicators.edges, updatedAt: "2026-10-27T08:00:00.000Z", lastRunAt: "2026-10-30T14:10:00.000Z" },
   { id: "wf-5", name: pricing.name, description: pricing.description, status: "active", triggers: pricing.triggers, nodes: pricing.nodes, edges: pricing.edges, updatedAt: "2026-10-28T10:00:00.000Z", lastRunAt: "2026-10-29T08:35:00.000Z" },
   { id: "wf-6", name: reorder.name, description: reorder.description, status: "active", triggers: reorder.triggers, nodes: reorder.nodes, edges: reorder.edges, updatedAt: "2026-10-30T09:00:00.000Z", lastRunAt: "2026-10-31T05:00:00.000Z" },
 ];
@@ -34,26 +33,6 @@ const runs: Run[] = [
       { nodeId: "n2", label: "نوشتن گزارش", status: "skipped" },
       { nodeId: "n3", label: "تأیید مدیر", status: "skipped" },
       { nodeId: "n4", label: "ارسال پیامک", status: "skipped" },
-    ],
-  },
-  {
-    id: "run-3", workflowId: "wf-4", startedAt: "2026-10-30T14:10:00.000Z", endedAt: "2026-10-30T14:10:09.000Z", status: "succeeded", startedBy: "رویداد: خروج یک شاخص از حد مجاز",
-    steps: [
-      { nodeId: "n1", label: "شاخص‌های خط ۲", status: "succeeded", durationMs: 1800, output: "۶ شاخص خط ۲ خوانده شد؛ ۲ شاخص خارج از حد است." },
-      { nodeId: "n5", label: "دمای ناحیه ۴", status: "succeeded", durationMs: 900, output: "آخرین مقدار ۲۴۸ °C؛ میانگین ۶۰ ثانیه ۲۴۶٫۵ °C." },
-      { nodeId: "n2", label: "دما بالاتر از ۲۴۰؟", status: "succeeded", durationMs: 300, output: "بله: ۲۴۸ از ۲۴۰ بیشتر است." },
-      { nodeId: "n3", label: "تحلیل علت", status: "succeeded", durationMs: 5200, output: "دما از ساعت ۱۴ بالا رفته و ضایعات حدود دو ساعت بعد؛ علت احتمالی ضایعات، دمای بالای ناحیه‌ی ۴ است.", modelName: "Claude Sonnet", inputTokens: 1240, outputTokens: 410 },
-      { nodeId: "n4", label: "هشدار به مسئول", status: "succeeded", durationMs: 700, output: "هشدار برای سرپرست خط ۲ و مدیر تولید در شبکه اجتماعی سازمان ساخته شد." },
-    ],
-  },
-  {
-    id: "run-4", workflowId: "wf-4", startedAt: "2026-10-30T13:00:00.000Z", endedAt: "2026-10-30T13:00:03.000Z", status: "succeeded", startedBy: "زمان‌بندی: هر ساعت",
-    steps: [
-      { nodeId: "n1", label: "شاخص‌های خط ۲", status: "succeeded", durationMs: 1700, output: "۶ شاخص خط ۲ خوانده شد." },
-      { nodeId: "n5", label: "دمای ناحیه ۴", status: "succeeded", durationMs: 800, output: "آخرین مقدار ۲۳۶ °C؛ میانگین ۶۰ ثانیه ۲۳۵٫۸ °C." },
-      { nodeId: "n2", label: "دما بالاتر از ۲۴۰؟", status: "succeeded", durationMs: 250, output: "خیر: ۲۳۶ از ۲۴۰ بیشتر نیست." },
-      { nodeId: "n3", label: "تحلیل علت", status: "skipped" },
-      { nodeId: "n4", label: "هشدار به مسئول", status: "skipped" },
     ],
   },
   {

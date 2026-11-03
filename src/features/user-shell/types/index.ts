@@ -9,4 +9,4 @@ export type UserSection = {
 };
 
 /** A titled group of sidebar items, collapsible like the groups of the messenger. */
-export type UserSectionGroup = { id: string; title: string; icon: LucideIcon; sections: UserSection[] };
+export type UserSectionGroup = { id: string; title: string; icon: LucideIcon; sections: UserSection[]; /** Items listed directly, without a group title. */ bare?: boolean };

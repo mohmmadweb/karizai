@@ -3,7 +3,9 @@
 import Link from "next/link";
 import { LogOutIcon, MoonIcon, SettingsIcon, SunIcon } from "lucide-react";
 import { PersonAvatar } from "@/components/shared/person-avatar";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { getDemoUsers } from "@/features/user-session/data/session";
+import { useUserSwitch } from "@/features/user-session/components/user-session-boundary";
 import type { CurrentUser } from "@/features/user-session/types";
 import { useTheme } from "@/lib/use-theme";
 import { cn } from "@/lib/utils";
@@ -13,6 +15,7 @@ type SidebarProfileProps = { user: CurrentUser; collapsed?: boolean; onNavigate?
 /** Classic look only: profile at the bottom of the sidebar with settings, theme, and sign-out. */
 export function SidebarProfile({ user, collapsed = false, onNavigate }: SidebarProfileProps) {
   const { theme, toggleTheme } = useTheme();
+  const { userId, switchUser } = useUserSwitch();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
@@ -27,6 +30,13 @@ export function SidebarProfile({ user, collapsed = false, onNavigate }: SidebarP
           {theme === "dark" ? <SunIcon aria-hidden /> : <MoonIcon aria-hidden />}
           {theme === "dark" ? "حالت روشن" : "حالت تیره"}
         </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuLabel>تغییر کاربر</DropdownMenuLabel>
+          <DropdownMenuRadioGroup value={userId} onValueChange={switchUser}>
+            {getDemoUsers().map((item) => <DropdownMenuRadioItem key={item.id} value={item.id}>{item.name}</DropdownMenuRadioItem>)}
+          </DropdownMenuRadioGroup>
+        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem render={<Link href="/login" />}><LogOutIcon aria-hidden className="rtl:rotate-180" />خروج</DropdownMenuItem>
       </DropdownMenuContent>
