@@ -4,6 +4,8 @@ import { hasServer } from "@/lib/static-params";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { getCurrentUser } from "@/features/user-session/data/session";
 import type { DefinedConnection } from "@/lib/connections";
+import { toolModeFor } from "@/lib/policies";
+import { usePolicies } from "@/features/policies/components/policies-provider";
 import { plantConnectionIds } from "../data/connections";
 import type { Connection } from "../types";
 
@@ -22,6 +24,7 @@ function fromDefined(item: DefinedConnection): Connection {
   return {
     id: item.id,
     name: item.name,
+    openTo: item.groupIds,
     domain: item.domain,
     description: item.description,
     endpoint: item.endpoint,
@@ -31,6 +34,7 @@ function fromDefined(item: DefinedConnection): Connection {
       name: tool.name,
       description: tool.description,
       requiresApproval: tool.requiresApproval,
+      writes: tool.writes,
       userCanUse: true,
       sampleInputs: [{ label: "ورودی", value: "" }],
     })),
@@ -45,6 +49,7 @@ function fromDefined(item: DefinedConnection): Connection {
 export function ConnectionsProvider({ initialConnections, children }: { initialConnections: Connection[]; children: ReactNode }) {
   const [defined, setDefined] = useState<Connection[] | null>(null);
   const [signedIn, setSignedIn] = useState<string[]>([]);
+  const policies = usePolicies();
 
   useEffect(() => {
     const groupIds = getCurrentUser().groupIds;
@@ -60,9 +65,12 @@ export function ConnectionsProvider({ initialConnections, children }: { initialC
 
   const value = useMemo<ConnectionsContextValue>(() => {
     const base = defined ? [...defined, ...initialConnections.filter((item) => plantConnectionIds.includes(item.id))] : initialConnections;
-    const connections = base.map((item) => (signedIn.includes(item.id) ? { ...item, status: "ready" as const } : item));
+    const groupIds = getCurrentUser().groupIds;
+    // A group limited to reading never gets the tools that write.
+    const allowed = base.map((item) => (toolModeFor(policies, item.openTo?.filter((id) => groupIds.includes(id)) ?? groupIds, item.id) === "read" ? { ...item, tools: item.tools.filter((tool) => !tool.writes) } : item));
+    const connections = allowed.map((item) => (signedIn.includes(item.id) ? { ...item, status: "ready" as const } : item));
     return { connections, available: connections, signIn: (id) => setSignedIn((list) => [...list, id]) };
-  }, [defined, initialConnections, signedIn]);
+  }, [defined, initialConnections, signedIn, policies]);
 
   return <ConnectionsContext.Provider value={value}>{children}</ConnectionsContext.Provider>;
 }

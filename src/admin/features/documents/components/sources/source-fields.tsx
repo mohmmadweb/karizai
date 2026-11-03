@@ -72,7 +72,9 @@ export function SourceFields({ idPrefix, values, errors, disabled, passwordOptio
       </Field>
       {text("host", "نشانی سرور", { ltr: true, placeholder: "fs.company.local" })}
       {text("port", "درگاه", { ltr: true })}
-      {text("folderPath", "مسیر پوشه", { ltr: true, placeholder: "/Technical/Datasheets", help: "سامانه فقط از این پوشه می‌خواند و چیزی در آن نمی‌نویسد." })}
+      {values.protocol === "seafile"
+        ? text("folderPath", "کتابخانه و مسیر پوشه", { ltr: true, placeholder: "Docs/Contracts", help: "نام کتابخانه و سپس مسیر پوشه، مثل Docs/Contracts. سامانه فقط می‌خواند و چیزی در آن نمی‌نویسد." })
+        : text("folderPath", "مسیر پوشه", { ltr: true, placeholder: "/Technical/Datasheets", help: "سامانه فقط از این پوشه می‌خواند و چیزی در آن نمی‌نویسد." })}
       {text("username", "نام کاربری", { ltr: true })}
       <Field data-invalid={errors.password ? true : undefined}>
         <FieldLabel htmlFor={`${idPrefix}-password`}>رمز عبور</FieldLabel>

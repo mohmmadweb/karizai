@@ -54,6 +54,8 @@ const messages: GroupMessage[] = [
   { id: "gm-7", groupId: "grp-line2", authorId: "col-mehdi", createdAt: "2026-11-02T04:30:00.000Z", text: "عصر گرمکن را بازبینی می‌کنم." },
   { id: "gm-8", groupId: "grp-maint", authorId: "col-mehdi", createdAt: "2026-11-01T09:00:00.000Z", text: "سرویس گیربکس اکسترودر خط ۱ را برای ۱۵ آبان گذاشتم." },
   { id: "gm-9", groupId: "grp-supply", authorId: "col-ali", createdAt: "2026-11-02T05:00:00.000Z", text: "پیشنهاد سفارش ۸۰ تن HD5502 آمد؛ منتظر تأیید خانم احمدی هستیم." },
+  { id: "gm-11", groupId: "grp-sales", authorId: "col-narges", createdAt: "2026-11-01T09:10:00.000Z", text: "قیمت پایه‌ی PP این هفته ۲٪ بالا رفته؛ در پیش‌فاکتورها اعتبار را ۵ روزه بنویسید." },
+  { id: "gm-12", groupId: "grp-sales", authorId: "col-mohammad", createdAt: "2026-11-01T09:25:00.000Z", text: "موافقم. پیش‌فاکتورهای بالای سقف را برای تأیید من بفرستید." },
   { id: "gm-10", groupId: "grp-sales", authorId: "col-mohammad", createdAt: "2026-11-01T12:00:00.000Z", text: "پیش‌فاکتور آریاپلاست را دیدم، فردا تأیید می‌کنم." },
 ];
 

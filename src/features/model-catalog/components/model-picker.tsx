@@ -25,6 +25,9 @@ type ModelPickerProps = {
   lockedLabel?: string;
 };
 
+/** Name of the default automatic choice: the smart router picks the model. */
+const smartRouterLabel = "مسیریاب هوشمند";
+
 /** Why a model cannot be chosen right now, or `null`. */
 function blockedReason(model: CatalogModel, allowed: boolean, offline: boolean): string | null {
   if (!allowed) return "این مدل برای گروه شما مجاز نیست";
@@ -39,9 +42,9 @@ export function ModelPicker({ value, onChange, lockedLabel }: ModelPickerProps) 
   const { offline } = useDemoFlags();
   const current = models.find((model) => model.id === value);
   const routerName = (id: string) => routers.find((router) => router.id === id)?.name;
-  const autoLabel = value.startsWith("auto:") ? (routerName(value.slice(5)) ?? "خودکار") : "خودکار";
+  const autoLabel = value.startsWith("auto:") ? (routerName(value.slice(5)) ?? smartRouterLabel) : smartRouterLabel;
   const label = lockedLabel ?? current?.name ?? autoLabel;
-  const autoEntries = routers.length > 0 ? routers.map((router) => ({ value: router.isDefault ? "auto" : `auto:${router.id}`, label: router.name })) : [{ value: "auto", label: "انتخاب خودکار" }];
+  const autoEntries = routers.length > 0 ? routers.map((router) => ({ value: router.isDefault ? "auto" : `auto:${router.id}`, label: router.isDefault ? smartRouterLabel : router.name })) : [{ value: "auto", label: smartRouterLabel }];
 
   return (
     <DropdownMenu>

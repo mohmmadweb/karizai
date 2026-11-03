@@ -43,6 +43,10 @@ export function hasNoAccess(doc: DocumentRecord, grants: AccessGrant[]) {
 
 export const protocolLabel = { smb: "SMB", ftp: "FTP", sftp: "SFTP", seafile: "Seafile" } as const;
 
+/** Host and folder joined with one slash, since a Seafile path starts with a library name. */
+export const sourceLocation = (s: { host: string; folderPath: string }) =>
+  `${s.host}${s.folderPath.startsWith("/") ? "" : "/"}${s.folderPath}`;
+
 export const defaultPort = { smb: 445, ftp: 21, sftp: 22, seafile: 443 } as const;
 
 export const intervalLabel: Record<number, string> = {

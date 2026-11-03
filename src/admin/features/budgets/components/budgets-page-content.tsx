@@ -11,10 +11,9 @@ import { Button } from "@/components/ui/button";
 import { useDirectory } from "@/admin/features/user-management/hooks/use-directory";
 import { buildCsv, downloadCsv } from "@/admin/features/usage-report/lib/export-csv";
 import { formatNumber } from "@/admin/lib/format";
-import { usePolicies } from "@/lib/policy-store";
-import { budgetMonth, getUserLimits, type UserLimit } from "../data/user-limits";
+import { budgetMonth, exhaustedByGroup, exhaustedLabels, getUserLimits, type UserLimit } from "../data/user-limits";
 import { forecast, spentOf, toman } from "../lib/forecast";
-import { exhaustedLabels, GroupBudgets } from "./group-budgets";
+import { GroupBudgets } from "./group-budgets";
 import { LimitDialog } from "./limit-dialog";
 import { MeterBar } from "./meter-bar";
 
@@ -23,14 +22,13 @@ type Row = UserLimit & { spent: number; monthEnd: number; exhaustDay: number | n
 /** Monthly limits per person in toman with a month-end forecast; group budgets come from the policy center. */
 export function BudgetsPageContent() {
   const { groups } = useDirectory();
-  const { budgets } = usePolicies();
   const [limits, setLimits] = useState(getUserLimits);
   const [editing, setEditing] = useState<UserLimit | null>(null);
 
   const rows: Row[] = limits.map((u) => {
     const spent = spentOf(u);
-    const budget = budgets.find((b) => b.groupId === u.groupId);
-    return { ...u, spent, ...forecast(spent, u.monthlyToman), groupName: groups.find((g) => g.id === u.groupId)?.name ?? "—", policy: budget ? exhaustedLabels[budget.onExhausted] : "قفل" };
+    const policy = exhaustedLabels[exhaustedByGroup[u.groupId] ?? "lock"];
+    return { ...u, spent, ...forecast(spent, u.monthlyToman), groupName: groups.find((g) => g.id === u.groupId)?.name ?? "—", policy };
   });
   const total = rows.reduce((s, r) => ({ limit: s.limit + r.monthlyToman, spent: s.spent + r.spent, end: s.end + r.monthEnd }), { limit: 0, spent: 0, end: 0 });
   const atRisk = rows.filter((r) => r.exhaustDay !== null).length;

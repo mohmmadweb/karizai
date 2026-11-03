@@ -25,7 +25,7 @@ const templates: ConnectionTemplate[] = [
     endpoint: "https://erp.parsapolymer.local/rahkaran/api",
     tools: [
       { id: "tpl-rk-1", name: "موجودی کالا در انبارها", description: "موجودی یک کالا یا ماده‌ی اولیه را در همه‌ی انبارها می‌خواند.", requiresApproval: false },
-      { id: "tpl-rk-2", name: "پیش‌نویس سفارش خرید در راهکاران", description: "پیش‌نویس سفارش خرید می‌سازد؛ ثبت نهایی با کارشناس تدارکات است.", requiresApproval: true },
+      { id: "tpl-rk-2", name: "پیش‌نویس سفارش خرید در راهکاران", description: "پیش‌نویس سفارش خرید می‌سازد؛ ثبت نهایی با کارشناس تدارکات است.", requiresApproval: true, writes: true },
       { id: "tpl-rk-3", name: "وضعیت سفارش فروش", description: "مرحله‌ی یک سفارش فروش و موعد تحویلش را می‌خواند.", requiresApproval: false },
       { id: "tpl-rk-4", name: "فاکتورهای باز مشتری", description: "فاکتورهای پرداخت‌نشده‌ی یک مشتری را فهرست می‌کند.", requiresApproval: false },
     ],

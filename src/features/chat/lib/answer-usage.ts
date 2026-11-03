@@ -1,4 +1,4 @@
-import { tomanPer1kTokens } from "@/lib/policy-store";
+import { tomanPer1kTokens } from "@/lib/pricing";
 import type { Message } from "../types";
 import { countTokens } from "./prompt-optimizer";
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { useDocConfidential } from "../../hooks/use-doc-confidential";
 import Link from "next/link";
 import { EyeIcon, RefreshCwIcon, Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
@@ -20,7 +19,6 @@ const linkClass =
 export function DocumentsList({ docs }: { docs: DocumentRecord[] }) {
   const { sources, reprocess } = useDocuments();
   const { removeDocument } = useDeleteDocuments();
-  const { isConfidential } = useDocConfidential();
   const origin = (d: DocumentRecord) => sourceOf(d, sources)?.name ?? "بارگذاری دستی";
 
   const columns: DataTableColumn<DocumentRecord>[] = [
@@ -30,7 +28,7 @@ export function DocumentsList({ docs }: { docs: DocumentRecord[] }) {
       cell: (d) => (
         <span className="flex flex-col items-start gap-1">
           <Link href={`/admin/documents/${d.id}`} className={linkClass}>{d.name}</Link>
-          <ConfidentialBadge confidential={isConfidential(d)} />
+          <ConfidentialBadge confidential={d.confidential} />
         </span>
       ),
     },
@@ -89,7 +87,7 @@ export function DocumentsList({ docs }: { docs: DocumentRecord[] }) {
           </div>
           <div className="flex flex-wrap items-center gap-2">
             <DocStatusBadge status={d.status} />
-            <ConfidentialBadge confidential={isConfidential(d)} />
+            <ConfidentialBadge confidential={d.confidential} />
           </div>
           <p className="text-body-sm text-muted-foreground">
             <bdi dir="ltr" className="uppercase">{d.extension}</bdi> · {languageLabel[d.language]} · {formatBytes(d.sizeBytes)} · {origin(d)}

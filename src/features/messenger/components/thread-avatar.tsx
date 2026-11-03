@@ -1,7 +1,8 @@
-import { BellRingIcon, WorkflowIcon } from "lucide-react";
+import { BellRingIcon, MegaphoneIcon, UsersIcon, WorkflowIcon } from "lucide-react";
 import { PersonAvatar } from "@/components/shared/person-avatar";
 import { cn } from "@/lib/utils";
 import { getBotById } from "../data/bots";
+import { getGroupById } from "../data/groups";
 import { getColleagueById } from "../data/colleagues";
 import { alertsThreadId } from "../types";
 
@@ -16,6 +17,11 @@ export function ThreadAvatar({ threadId, className }: { threadId: string; classN
         <Icon className="size-1/2" />
       </span>
     );
+  }
+  const group = getGroupById(threadId);
+  if (group) {
+    const Icon = group.kind === "channel" ? MegaphoneIcon : UsersIcon;
+    return <span aria-hidden className={cn("flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary", className)}><Icon className="size-1/2" /></span>;
   }
   const person = getColleagueById(threadId);
   return <PersonAvatar seed={threadId} name={person?.name ?? ""} className={className} />;

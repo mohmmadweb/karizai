@@ -1,3 +1,4 @@
+import { isConfidential, type Policies } from "@/lib/policies";
 import type { KnowledgeDocument } from "../types";
 
 const quality = { type: "رویه‌ی اجرایی", owner: "واحد کیفیت", confidentiality: "داخلی" };
@@ -14,7 +15,7 @@ const documents: KnowledgeDocument[] = [
   { id: "doc-15", title: "دستورالعمل ایمنی کارخانه", source: "پوشه‌ی ایمنی", collection: "ایمنی", updatedAt: "2026-10-17T08:00:00.000Z", kind: "pdf", sizeKb: 8190, tags: ["ایمنی", "دستورالعمل"], summary: "قواعد ایمنی سالن تولید، تجهیزات حفاظت فردی و گزارش حادثه.", keywords: ["ایمنی", "حادثه"], meta: { type: "دستورالعمل", owner: "HSE", confidentiality: "داخلی" }, adminDocId: "doc-007" },
   { id: "doc-1", title: "آیین‌نامه‌ی معاملات سازمان", source: "پوشه‌ی مقررات", collection: "مقررات", updatedAt: "2026-09-12T08:00:00.000Z", kind: "word", sizeKb: 482, tags: ["آیین‌نامه"], summary: "سقف معاملات، کمیته‌ی معاملات و روش استعلام.", keywords: ["معامله", "خرید", "استعلام"], meta: { type: "آیین‌نامه", owner: "امور مالی", confidentiality: "داخلی" } },
   { id: "doc-16", title: "سیاست‌های منابع انسانی", source: "پوشه‌ی منابع انسانی", collection: "منابع انسانی", updatedAt: "2026-10-02T08:30:00.000Z", kind: "pdf", sizeKb: 2400, tags: ["منابع انسانی"], summary: "مرخصی، اضافه‌کار، ارزیابی عملکرد و حقوق.", keywords: ["مرخصی", "حقوق", "کارکنان"], meta: { type: "سیاست", owner: "منابع انسانی", confidentiality: "محرمانه" }, adminDocId: "doc-001" },
-  { id: "doc-17", title: "قرارداد تأمین مواد اولیه", source: "پوشه‌ی تدارکات", collection: "تدارکات", updatedAt: "2026-10-11T09:00:00.000Z", kind: "word", sizeKb: 1100, tags: ["قرارداد", "تأمین"], summary: "قرارداد ۱۲ماهه‌ی تأمین PP و مستربچ با جریمه‌ی تأخیر روزانه.", keywords: ["قرارداد", "تأمین", "مستربچ", "تأخیر"], meta: { type: "قرارداد", owner: "تدارکات", confidentiality: "محرمانه" }, adminDocId: "doc-003" },
+  { id: "doc-17", title: "قرارداد تأمین مواد اولیه", source: "پوشه‌ی تدارکات", collection: "تدارکات", updatedAt: "2026-10-11T09:00:00.000Z", kind: "word", sizeKb: 1100, tags: ["قرارداد", "تأمین"], summary: "قرارداد ۱۲ماهه‌ی تأمین PP و مستربچ با جریمه‌ی تأخیر روزانه.", keywords: ["قرارداد", "تأمین", "مستربچ", "تأخیر"], meta: { type: "قرارداد", owner: "تدارکات", confidentiality: "محرمانه" }, adminDocId: "doc-003", confidential: true },
   { id: "doc-18", title: "گزارش فروش مهر", source: "سرور فایل فروش", collection: "فروش", updatedAt: "2026-10-14T11:10:00.000Z", kind: "excel", sizeKb: 640, tags: ["داده", "فروش"], summary: "فروش مهرماه به تفکیک مشتری و گرید.", keywords: ["فروش", "مشتری"], meta: { type: "گزارش", owner: "واحد فروش", confidentiality: "داخلی" }, adminDocId: "doc-004" },
   { id: "doc-12", title: "سیاست قیمت‌گذاری و تخفیف فروش", source: "سرور فایل فروش", collection: "فروش", updatedAt: "2026-09-28T12:00:00.000Z", kind: "word", sizeKb: 142, tags: ["سیاست", "فروش"], summary: "حاشیه‌ی سود هدف و سقف تخفیف به تفکیک مشتری.", keywords: ["قیمت", "تخفیف", "فروش"], meta: { type: "سیاست", owner: "واحد فروش", confidentiality: "داخلی" } },
 ];
@@ -28,7 +29,10 @@ export function getKnowledgeDocument(id: string): KnowledgeDocument | undefined 
   return documents.find((doc) => doc.id === id);
 }
 
-/** True when the admin marked the document confidential (`usePolicies().confidentialDocIds`). */
-export function isConfidentialDocument(doc: KnowledgeDocument, confidentialDocIds: string[]): boolean {
-  return confidentialDocIds.includes(doc.adminDocId ?? doc.id);
+/**
+ * True when the saved policies mark the document confidential (`usePolicies()`), matched by its id in the
+ * admin's document list; before the admin first changes the list, the document's own flag decides.
+ */
+export function isConfidentialDocument(doc: KnowledgeDocument, policies: Policies): boolean {
+  return policies.confidentialDocumentIds === null ? Boolean(doc.confidential) : isConfidential(policies, doc.adminDocId ?? doc.id);
 }

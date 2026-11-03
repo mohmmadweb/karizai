@@ -9,7 +9,8 @@ import type { ChatAction, ChatState } from "../lib/chat-reducer";
 import { buildReply, estimateUsage, resolveRole, type Reply, type Role } from "../lib/mock-reply";
 import { planOrchestration, supervisorStep, type PlannedStep } from "../lib/orchestration";
 import { useOrchestration } from "./use-orchestration";
-import { restoreText } from "../lib/sensitive-check";
+import { restoreText, maskWithPolicy } from "@/lib/masking";
+import { usePolicies } from "@/features/policies/components/policies-provider";
 import { findCannedReply } from "../data/scripted-replies";
 import { optimizePrompt, optimizerStep } from "../lib/prompt-optimizer";
 import type { Attachment, Message, PromptOptimization, ScriptedReply, TimelineStep } from "../types";
@@ -69,6 +70,7 @@ export function useChatEngine(
     isInternalModel: (name: string) => boolean;
   },
 ) {
+  const { masking } = usePolicies();
   const timers = useRef(new Map<string, ReturnType<typeof setInterval | typeof setTimeout>>());
   const contexts = useRef(new Map<string, Context>());
   const controllers = useRef(new Map<string, AbortController>());
@@ -158,7 +160,7 @@ export function useChatEngine(
       controllers.current.set(messageId, controller);
       const history = (stateRef.current.messages[id] ?? [])
         .filter((item) => item.id !== messageId && item.text.trim() && item.status !== "error")
-        .map((item) => ({ role: item.role, content: item.role === "user" ? (item.sentText ?? item.text) : item.text }));
+        .map((item) => ({ role: item.role, content: item.role === "user" ? (item.sentText ?? item.text) : maskWithPolicy(item.text, masking).masked }));
       if (!(history.at(-1)?.role === "user" && history.at(-1)?.content === ctx.sentText)) {
         history.push({ role: "user", content: ctx.sentText });
       }
@@ -197,7 +199,7 @@ export function useChatEngine(
         controllers.current.delete(messageId);
       }
     },
-    [dispatch, patch, stateRef],
+    [dispatch, patch, stateRef, masking],
   );
 
   const begin = useCallback(

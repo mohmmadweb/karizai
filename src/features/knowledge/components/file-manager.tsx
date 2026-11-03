@@ -7,7 +7,7 @@ import { SearchField } from "@/components/shared/search-field";
 import { Button } from "@/components/ui/button";
 import { useAiPanel } from "@/features/ai-panel/components/ai-panel-provider";
 import { formatNumber } from "@/lib/format";
-import { usePolicies } from "@/lib/policy-store";
+import { usePolicies } from "@/features/policies/components/policies-provider";
 import { isConfidentialDocument } from "../data/documents";
 import { folderAnswer, metaAnswer, summaryAnswer } from "../lib/ai-answers";
 import { folderCounts, semanticSearch, sortDocuments, type SortDirection, type SortKey } from "../lib/documents";
@@ -21,7 +21,7 @@ const uploadKinds: Record<string, DocumentKind> = { pdf: "pdf", doc: "word", doc
 /** Folders and files with name or semantic search, smart tags and the AI actions. Added folders, files and tags are temporary. */
 export function FileManager({ initial }: { initial: KnowledgeDocument[] }) {
   const { openPanel } = useAiPanel();
-  const { confidentialDocIds } = usePolicies();
+  const policies = usePolicies();
   const [documents, setDocuments] = useState(initial);
   const [folders, setFolders] = useState<string[]>([]);
   const [folder, setFolder] = useState<string | null>(null);
@@ -82,7 +82,7 @@ export function FileManager({ initial }: { initial: KnowledgeDocument[] }) {
         <p className="text-body-sm text-muted-foreground" aria-live="polite">{folderName} · {formatNumber(shown.length)} سند{ranked ? " · به ترتیب ارتباط معنایی" : ""}</p>
         {shown.length === 0
           ? <p className="py-6 text-center text-body text-muted-foreground">{folder && inFolder.length === 0 ? "این پوشه خالی است. فایلی آپلود کنید." : "سندی پیدا نشد."}</p>
-          : <div className="rounded-xl border bg-card"><DocumentTable documents={shown} sortKey={sortKey} direction={direction} onSort={sortBy} showFolder={folder === null} scores={scores} isConfidential={(doc) => isConfidentialDocument(doc, confidentialDocIds)} onAi={runAi} /></div>}
+          : <div className="rounded-xl border bg-card"><DocumentTable documents={shown} sortKey={sortKey} direction={direction} onSort={sortBy} showFolder={folder === null} scores={scores} isConfidential={(doc) => isConfidentialDocument(doc, policies)} onAi={runAi} /></div>}
       </section>
       <NewFolderDialog open={folderOpen} onOpenChange={setFolderOpen} existing={allFolders.map((item) => item.name)} onCreate={(name) => { setFolders((list) => [...list, name]); setFolder(name); }} />
     </div>

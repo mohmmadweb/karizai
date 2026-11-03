@@ -21,7 +21,7 @@ type SidebarNavProps = {
   onNavigate?: () => void;
 };
 
-function Item({ section, pathname, collapsed, onNavigate }: { section: UserSection; pathname: string; collapsed: boolean; onNavigate?: () => void }) {
+export function Item({ section, pathname, collapsed, onNavigate }: { section: UserSection; pathname: string; collapsed: boolean; onNavigate?: () => void }) {
   const Icon = section.icon;
   const current = isSectionPath(pathname, section) ? "page" : undefined;
   const link = <Link href={section.href} aria-current={current} aria-label={collapsed ? section.title : undefined} onClick={onNavigate} className={cn(itemClass, collapsed && "justify-center px-0")} />;
@@ -56,10 +56,10 @@ export function SidebarNav({ groups, pathname, collapsed = false, flat = false, 
   return (
     <nav aria-label="بخش‌های پنل کاربر" className="flex flex-col gap-3">
       {groups.map((group, index) => {
-        const open = collapsed || !closed.includes(group.id);
+        const open = collapsed || group.bare || !closed.includes(group.id);
         return (
           <section key={group.id} aria-label={group.title} className={cn("flex flex-col gap-1", collapsed && index > 0 && "border-t border-sidebar-border pt-3")}>
-            {collapsed ? null : (
+            {collapsed || group.bare ? null : (
               <button
                 type="button"
                 aria-expanded={open}

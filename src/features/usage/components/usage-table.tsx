@@ -1,6 +1,6 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { formatNumber } from "@/lib/format";
-import { tomanPer1kTokens } from "@/lib/policy-store";
+import { tomanPer1kTokens } from "@/lib/pricing";
 import type { UsageRow } from "../types";
 
 /** Toman cost of a row: internal and external tokens at the organization's rates. */

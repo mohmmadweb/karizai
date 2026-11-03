@@ -21,6 +21,22 @@ const users: UserLimit[] = [
   { id: "user-008", name: "فاطمه حیدری", groupId: "group-005", monthlyToman: 600_000, internalTokens: 1_100_000, externalTokens: 180_000 },
 ];
 
+export type ExhaustAction = "lock" | "internal-light" | "notify";
+
+export const exhaustedLabels: Record<ExhaustAction, string> = {
+  lock: "قفل",
+  "internal-light": "تغییر به مدل سبک داخلی",
+  notify: "هشدار به مدیر واحد",
+};
+
+/** What happens to a group's people when their monthly limit runs out; a missing group locks. */
+export const exhaustedByGroup: Record<string, ExhaustAction> = {
+  "group-001": "internal-light",
+  "group-002": "notify",
+  "group-003": "internal-light",
+  "group-005": "lock",
+};
+
 export function getUserLimits(): UserLimit[] {
   return users;
 }

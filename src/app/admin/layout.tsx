@@ -5,10 +5,10 @@ import { AdminShell } from "@/admin/features/admin-shell/components/admin-shell"
 import { DataSourcesProvider } from "@/admin/features/data-sources/components/data-sources-provider";
 import { getSchemaDescriptions } from "@/admin/features/data-sources/data/descriptions";
 import { getDataSources } from "@/admin/features/data-sources/data/data-sources";
+import { getDataSchemas } from "@/admin/features/data-sources/data/schemas";
 import { DocumentsProvider } from "@/admin/features/documents/components/documents-provider";
 import { getDocuments } from "@/admin/features/documents/data/documents";
 import { getFileSources } from "@/admin/features/documents/data/file-sources";
-import { ApiKeysProvider } from "@/admin/features/api-keys/components/api-keys-provider";
 import { ConnectionsProvider } from "@/admin/features/connections/components/connections-provider";
 import { RoutersProvider } from "@/admin/features/smart-router/components/routers-provider";
 import { ModelsProvider } from "@/admin/features/models/components/models-provider";
@@ -31,14 +31,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
           <DataSourcesProvider
             initialSources={getDataSources()}
             initialDescriptions={getSchemaDescriptions()}
+            initialDataSchemas={getDataSchemas()}
           >
             <RoutersProvider>
               <ConnectionsProvider>
-                <ApiKeysProvider>
-                  <DocumentsProvider initialDocuments={getDocuments()} initialSources={getFileSources()}>
-                    <AdminShell>{children}</AdminShell>
-                  </DocumentsProvider>
-                </ApiKeysProvider>
+                {/* Policies come from the root shared providers, so admin edits reach the user chat. */}
+                <DocumentsProvider initialDocuments={getDocuments()} initialSources={getFileSources()}>
+                  <AdminShell>{children}</AdminShell>
+                </DocumentsProvider>
               </ConnectionsProvider>
             </RoutersProvider>
           </DataSourcesProvider>

@@ -10,7 +10,8 @@ import { QuotaBar } from "@/features/chat/components/quota-bar";
 import { useChat } from "@/features/chat/components/chat-provider";
 import { formatDate, formatNumber } from "@/lib/format";
 import { getCurrentUser, getQuota } from "@/features/user-session/data/session";
-import { tomanPer1kTokens, usePolicies, type GroupBudget } from "@/lib/policy-store";
+import { usePolicies } from "@/features/policies/components/policies-provider";
+import { tomanPer1kTokens } from "@/lib/pricing";
 import { getUsageReport } from "../data/usage";
 import type { UsagePeriod } from "../types";
 import { UsageTable } from "./usage-table";
@@ -21,12 +22,11 @@ const periods: { value: UsagePeriod; label: string }[] = [
   { value: "monthly", label: "ماهانه" },
 ];
 
-const afterLimit: Record<GroupBudget["onExhausted"], string> = { "internal-light": "تغییر به مدل سبک داخلی", lock: "توقف تا بازنشانی", notify: "ادامه با اعلان به مدیر" };
-
 export function UsagePageContent() {
   const { state } = useChat();
-  const { budgets } = usePolicies();
-  const budget = budgets.find((item) => getCurrentUser().groupIds.includes(item.groupId));
+  const { weeklyLimits } = usePolicies();
+  // The weekly toman ceiling the admin set for the user's group (the first group that has one).
+  const weeklyLimit = getCurrentUser().groupIds.map((id) => weeklyLimits[id]).find((limit): limit is number => typeof limit === "number");
   // The remaining tokens priced at the external rate, in rial, rounded to ten thousand.
   const rial = (tokens: number) => Math.round(((tokens / 1000) * tomanPer1kTokens.external * 10) / 10000) * 10000;
   const quota = getQuota();
@@ -56,7 +56,7 @@ export function UsagePageContent() {
         </div>
         <QuotaBar quota={quota} used={state.used} />
         <p data-ai className="text-caption text-muted-foreground">
-          معادل حدود {formatNumber(rial(Math.max(quota.limit - state.used, 0)))} ریال · بازنشانی: {formatDate(quota.resetsAt)} · پس از اتمام: {afterLimit[budget?.onExhausted ?? "internal-light"]}
+          معادل حدود {formatNumber(rial(Math.max(quota.limit - state.used, 0)))} ریال · بازنشانی: {formatDate(quota.resetsAt)} · سقف هفتگی گروه: {weeklyLimit === undefined ? "بدون سقف" : `${formatNumber(weeklyLimit)} تومان`}
         </p>
       </section>
       <Tabs value={period} onValueChange={(value) => setPeriod(value as UsagePeriod)}>

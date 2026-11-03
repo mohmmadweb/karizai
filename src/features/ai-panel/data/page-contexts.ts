@@ -2,8 +2,8 @@ import type { PageContext, QuickKey } from "../types";
 
 /** Page names by route; the longest matching prefix wins. */
 const pages: { prefix: string; key: QuickKey; title: string }[] = [
-  { prefix: "/messenger/desk", key: "dash", title: "میز کار من" },
-  { prefix: "/messenger/calendar", key: "default", title: "تقویم کاری" },
+  { prefix: "/desk", key: "dash", title: "میز کار من" },
+  { prefix: "/calendar", key: "default", title: "تقویم کاری" },
   { prefix: "/messenger/groups", key: "groups", title: "گروه‌ها" },
   { prefix: "/messenger/channels", key: "default", title: "کانال‌ها" },
   { prefix: "/messenger/news", key: "default", title: "اخبار سازمان" },
@@ -15,7 +15,9 @@ const pages: { prefix: string; key: QuickKey; title: string }[] = [
   { prefix: "/agents", key: "default", title: "عامل‌های من" },
   { prefix: "/agent-repository", key: "default", title: "مخزن عامل‌ها" },
   { prefix: "/skills", key: "default", title: "اسکیل‌های من" },
+  { prefix: "/compare", key: "default", title: "مقایسه‌ی مدل‌ها" },
   { prefix: "/workflows", key: "default", title: "جریان‌های خودکار" },
+  { prefix: "/alerts", key: "default", title: "هشدارها و گزارش‌ها" },
   { prefix: "/connections", key: "default", title: "اتصال‌ها" },
   { prefix: "/knowledge", key: "files", title: "دانش سازمانی" },
   { prefix: "/data", key: "default", title: "داده و تحلیل" },

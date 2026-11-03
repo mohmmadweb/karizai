@@ -1,10 +1,12 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
+import { useMessenger } from "@/features/messenger/components/messenger-provider";
 import { currentUserId } from "@/features/workspace/lib/people";
 import { formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -21,11 +23,22 @@ import { GroupView } from "./group-view";
 export function GroupsPageContent() {
   const [groups, setGroups] = useState(getGroups);
   const [messages, setMessages] = useState(getGroupMessages);
-  const [selectedId, setSelectedId] = useState(groups[0].id);
+  // `?id=` (from the chat list or the sidebar) opens that group.
+  const requested = useSearchParams().get("id");
+  const [selectedId, setSelectedId] = useState(() => (requested && groups.some((g) => g.id === requested) ? requested : groups[0].id));
+  const [seenRequest, setSeenRequest] = useState(requested);
+  if (requested !== seenRequest) {
+    setSeenRequest(requested);
+    if (requested && groups.some((g) => g.id === requested)) setSelectedId(requested);
+  }
+  const { messagesOf, markRead } = useMessenger();
   const [creating, setCreating] = useState(false);
   const [addingAgent, setAddingAgent] = useState(false);
   const counter = useRef(0);
   const selected = groups.find((g) => g.id === selectedId) ?? groups[0];
+  // What workflows announced in the group during this visit, for example the pricing workflow in «فروش».
+  const announcements: GroupMessage[] = messagesOf(selected.id).map((item) => ({ id: item.id, groupId: selected.id, authorId: "workflows", createdAt: item.createdAt, text: item.text, alert: item.alert }));
+  useEffect(() => { markRead(selected.id); }, [selected.id, announcements.length, markRead]);
   const post = (message: Omit<GroupMessage, "id" | "createdAt">) => setMessages((list) => [...list, { ...message, id: `gm-new-${++counter.current}`, createdAt: new Date().toISOString() }]);
 
   function send(text: string) {
@@ -63,7 +76,7 @@ export function GroupsPageContent() {
             </li>
           ))}
         </ul>
-        <GroupView key={selected.id} group={selected} messages={messages.filter((m) => m.groupId === selected.id)} onSend={send} onAddAgent={() => setAddingAgent(true)} />
+        <GroupView key={selected.id} group={selected} messages={[...messages.filter((m) => m.groupId === selected.id), ...announcements].sort((a, b) => a.createdAt.localeCompare(b.createdAt))} onSend={send} onAddAgent={() => setAddingAgent(true)} />
       </div>
       <CreateGroupDialog open={creating} onOpenChange={setCreating} onCreate={create} />
       <AddAgentDialog key={selected.id} open={addingAgent} onOpenChange={setAddingAgent} groupName={selected.name} current={selected.agentIds} onAdd={(ids) => {

@@ -8,7 +8,7 @@ import { demoToday } from "@/features/workspace/lib/today";
 import { formatFullDate } from "../lib/jalali";
 import { ApprovalInbox, sampleApproval } from "./approval-inbox";
 import { DeskBrief } from "./desk-brief";
-import { DeskAlerts, DeskEvents, DeskGroups } from "./desk-cards";
+import { DeskAlerts, DeskChats, DeskEvents, DeskGroups, DeskTasks } from "./desk-cards";
 
 /** «میز کار من»: the day at a glance, with the assistant's brief and what waits for the user. */
 export function DeskPageContent() {
@@ -25,6 +25,8 @@ export function DeskPageContent() {
         <DeskEvents />
         <DeskGroups />
         <DeskAlerts />
+        <DeskTasks />
+        <DeskChats />
       </div>
     </div>
   );

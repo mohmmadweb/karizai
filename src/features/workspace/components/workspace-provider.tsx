@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useRef, useState, type R
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useWorkflows } from "@/features/workflows/components/workflows-provider";
+import { formatDate } from "@/lib/format";
 import { taskFromStep } from "@/features/workflows/lib/task-step";
 import { currentUserId } from "../lib/people";
 import { addDays } from "../lib/today";
@@ -48,8 +49,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         registered.current.add(key);
         const project = getProjects().find((item) => item.name === wanted.projectName) ?? getProjects()[0];
         const id = `task-flow-${registered.current.size}`;
-        setTasks((list) => [...list, { id, projectId: project.id, title: wanted.title, assigneeId: currentUserId(), status: "todo", priority: wanted.priority, dueDate: new Date(Date.now() + 3 * 864e5).toISOString(), source: "reorder-flow" }]);
-        toast.success("وظیفه‌ی تازه ثبت شد", { description: `«${wanted.title}» در «فعالیت و وظایف من» ثبت شد.`, action: { label: "دیدن وظایف", onClick: () => router.push("/messenger/tasks") } });
+        setTasks((list) => [...list, { id, projectId: project.id, title: wanted.title, assigneeId: currentUserId(), status: "todo", priority: wanted.priority, dueDate: new Date(Date.now() + 3 * 864e5).toISOString(), source: "reorder-flow", createdAt: new Date().toISOString() }]);
+        toast.success("وظیفه‌ی تازه ثبت شد", { description: `«${wanted.title}» ساعت ${formatDate(new Date(), { timeStyle: "medium" })} در «فعالیت و وظایف من» ثبت شد.`, action: { label: "دیدن وظایف", onClick: () => router.push("/messenger/tasks") } });
       }
     }
   }, [runs, workflows, knownRunIds, router]);
@@ -58,7 +59,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     tasks,
     setStatus: (taskId, status) => setTasks((list) => list.map((task) => (task.id === taskId ? { ...task, status } : task))),
     addTask: (projectId, title, assigneeId, priority = "normal", extras = {}) =>
-      setTasks((list) => [...list, { id: `task-new-${++counter.current}`, projectId, title, assigneeId, status: "todo", priority, dueDate: extras.dueDate ?? addDays(7), source: extras.source ?? "manual" }]),
+      setTasks((list) => [...list, { id: `task-new-${++counter.current}`, projectId, title, assigneeId, status: "todo", priority, dueDate: extras.dueDate ?? addDays(7), source: extras.source ?? "manual", createdAt: new Date().toISOString() }]),
     addProject: (name, description, dueDate) => {
       const id = `proj-new-${++counter.current}`;
       setProjects((list) => [...list, { id, name, description, ownerId: currentUserId(), memberIds: [currentUserId()], dueDate }]);

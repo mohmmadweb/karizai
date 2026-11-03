@@ -8,7 +8,7 @@ import type { DataTableActionGroup, DataTableColumn } from "@/admin/components/s
 import { formatDateTime, formatNumber } from "@/admin/lib/format";
 import { useDeleteDocuments } from "../../hooks/use-delete-document";
 import { useDocuments } from "../../hooks/use-documents";
-import { documentsOfSource, intervalLabel, protocolLabel } from "../../lib/selectors";
+import { documentsOfSource, intervalLabel, protocolLabel, sourceLocation } from "../../lib/selectors";
 import type { FileSource } from "../../types";
 import { SourceTestBadge } from "./source-badges";
 
@@ -29,8 +29,8 @@ export function SourcesList({ sources }: { sources: FileSource[] }) {
       hideBelow: "xl",
       className: "text-muted-foreground",
       cell: (s) => (
-        <bdi dir="ltr" className="block max-w-56 truncate" title={`${protocolLabel[s.protocol]} ${s.host}${s.folderPath}`}>
-          {protocolLabel[s.protocol]} · {s.host}{s.folderPath}
+        <bdi dir="ltr" className="block max-w-56 truncate" title={`${protocolLabel[s.protocol]} ${sourceLocation(s)}`}>
+          {protocolLabel[s.protocol]} · {sourceLocation(s)}
         </bdi>
       ),
     },
@@ -85,7 +85,7 @@ export function SourcesList({ sources }: { sources: FileSource[] }) {
             <Link href={`/admin/documents/sources/${s.id}`} className={linkClass}>{s.name}</Link>
             {actions}
           </div>
-          <p className="truncate text-body-sm text-muted-foreground"><bdi dir="ltr">{protocolLabel[s.protocol]} · {s.host}{s.folderPath}</bdi></p>
+          <p className="truncate text-body-sm text-muted-foreground"><bdi dir="ltr">{protocolLabel[s.protocol]} · {sourceLocation(s)}</bdi></p>
           <div className="flex flex-wrap items-center gap-2">
             <SourceTestBadge result={s.testResult} />
             <span className="text-body-sm text-muted-foreground">{intervalLabel[s.syncIntervalMinutes]} · {formatNumber(count(s))} سند</span>

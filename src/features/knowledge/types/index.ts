@@ -20,6 +20,8 @@ export type KnowledgeDocument = {
   meta?: { type: string; code?: string; owner: string; confidentiality: string };
   /** The same document in the admin's document list; the admin can mark it confidential there. */
   adminDocId?: string;
+  /** The document's own flag; the saved policies override it once the admin changes the list. */
+  confidential?: boolean;
 };
 
 /** A source the organization's knowledge is built from, with its sync state. */

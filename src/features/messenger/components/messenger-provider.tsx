@@ -1,9 +1,12 @@
 "use client";
 
-import { createContext, useContext, useMemo, useRef, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { useWorkflows } from "@/features/workflows/components/workflows-provider";
 import { getInitialMessages } from "../data/messages";
-import { alertForRun, notifiesSomeone } from "../lib/run-alert";
+import { alertForRun, alertThreadFor, notifiesSomeone } from "../lib/run-alert";
+import { getGroupById } from "../data/groups";
 import { alertsThreadId, flowsThreadId, type MessengerMessage, type PostAlertInput } from "../types";
 
 type MessengerContextValue = {
@@ -33,6 +36,21 @@ export function MessengerProvider({ children }: { children: ReactNode }) {
   // Runs that existed on arrival already have their alerts in the seed.
   const [knownRunIds] = useState(() => new Set(runs.map((run) => run.id)));
 
+  const router = useRouter();
+  const announced = useRef(new Set<string>());
+  // A run that finishes and notifies someone says so at once, with a way to open the message.
+  useEffect(() => {
+    for (const run of runs) {
+      if (run.status !== "succeeded" || knownRunIds.has(run.id) || announced.current.has(run.id)) continue;
+      const workflow = workflows.find((item) => item.id === run.workflowId);
+      if (!workflow || !notifiesSomeone(workflow)) continue;
+      announced.current.add(run.id);
+      const thread = alertThreadFor(workflow);
+      const group = getGroupById(thread);
+      toast.success(`پیام تازه در «${group?.name ?? "ربات هشدار"}»`, { description: `جریان «${workflow.name}» اعلام کرد.`, action: { label: "مشاهده پیام", onClick: () => router.push(group?.href ?? `/messenger/${thread}`) } });
+    }
+  }, [runs, workflows, knownRunIds, router]);
+
   const value = useMemo<MessengerContextValue>(() => {
     const fromRuns: MessengerMessage[] = [];
     for (const run of runs) {
@@ -45,7 +63,11 @@ export function MessengerProvider({ children }: { children: ReactNode }) {
       const make = (threadId: string, text: string, alert = report): MessengerMessage => ({ id: `msg-${threadId}-${run.id}`, threadId, from: "system", read: readAlertIds.includes(`msg-${threadId}-${run.id}`), createdAt, text, alert });
       fromRuns.push(make(flowsThreadId, failed ? `اجرای جریان «${workflow.name}» به خطا خورد.` : `جریان «${workflow.name}» با موفقیت اجرا شد.`));
       // The reorder flow (wf-6) posts its own detailed shortage alert through postAlert (see workflows/run-notifier).
-      if (!failed && workflow.id !== "wf-6" && notifiesSomeone(workflow)) fromRuns.push(make(alertsThreadId, `جریان «${workflow.name}» برای شما پیام فرستاد.`));
+      if (!failed && workflow.id !== "wf-6" && notifiesSomeone(workflow)) {
+        // The sales workflow announces itself in the sales group (shown on the groups page), the others in the alert bot.
+        const thread = alertThreadFor(workflow);
+        fromRuns.push({ ...make(thread, thread === alertsThreadId ? `جریان «${workflow.name}» برای شما پیام فرستاد.` : `جریان «${workflow.name}» این پیام را در گروه اعلام کرد.`), ...(thread === alertsThreadId ? {} : { sender: "جریان‌ها" }) });
+      }
     }
     const messages = [...stored, ...fromRuns];
     const unread = (item: MessengerMessage) => !item.read && item.from !== "me";

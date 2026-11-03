@@ -1,7 +1,6 @@
 import crypto from "node:crypto";
 import { promises as fs } from "node:fs";
 import path from "node:path";
-import type { ApiKeyKind, ApiKeyPolicy, ApiKeyRecord } from "@/lib/api-keys";
 
 /**
  * Phase 2 MVP storage: two small JSON files in a folder shared by the admin
@@ -124,10 +123,10 @@ export type StoredConnection = {
   name: string;
   domain: string;
   description: string;
-  type: "mcp" | "api" | "n8n" | "dify" | "erp" | "opcua";
+  type: "mcp" | "api" | "n8n" | "dify" | "gitlab" | "mattermost" | "confluence" | "erp" | "opcua";
   endpoint: string;
   auth: "none" | "shared-key" | "user-login";
-  tools: { id: string; name: string; description: string; requiresApproval: boolean }[];
+  tools: { id: string; name: string; description: string; requiresApproval: boolean; writes?: boolean }[];
   groupIds: string[];
   active: boolean;
 };
@@ -147,57 +146,5 @@ export async function writeConnections(connections: StoredConnection[]) {
   if (Object.keys(kept).length !== Object.keys(keys).length) await writeJson(keysFile, kept);
 }
 
-type StoredApiKey = ApiKeyRecord & { hash: string };
-
-const apiKeysFile = path.join(dataDir, "apikeys.json");
-
-async function readApiKeysFile(): Promise<{ policies: ApiKeyPolicy[]; keys: StoredApiKey[] }> {
-  const file = await readJson<{ policies?: ApiKeyPolicy[]; keys?: StoredApiKey[] }>(apiKeysFile, {});
-  return { policies: file.policies ?? [], keys: file.keys ?? [] };
-}
-
-function withoutHash(stored: StoredApiKey): ApiKeyRecord {
-  const record: Partial<StoredApiKey> = { ...stored };
-  delete record.hash;
-  return record as ApiKeyRecord;
-}
-
-/** Policies and keys. The hash of a key never leaves this module. */
-export async function readApiKeys(): Promise<{ policies: ApiKeyPolicy[]; keys: ApiKeyRecord[] }> {
-  const { policies, keys } = await readApiKeysFile();
-  return { policies, keys: keys.map(withoutHash) };
-}
-
-export async function writeApiKeyPolicies(policies: ApiKeyPolicy[]) {
-  const file = await readApiKeysFile();
-  await writeJson(apiKeysFile, { ...file, policies });
-}
-
-export type NewApiKey = { name: string; ownerId: string; ownerName: string; kind: ApiKeyKind; resourceId: string; resourceName: string; expiresAt: string | null };
-
-/** Creates a key. The secret is returned once; only its hash is kept. */
-export async function createApiKey(input: NewApiKey): Promise<{ record: ApiKeyRecord; secret: string }> {
-  const file = await readApiKeysFile();
-  const secret = `msk_${crypto.randomBytes(32).toString("base64url")}`;
-  const stored: StoredApiKey = {
-    ...input,
-    id: `key-${crypto.randomBytes(6).toString("hex")}`,
-    last4: secret.slice(-4),
-    createdAt: new Date().toISOString(),
-    lastUsedAt: null,
-    revokedAt: null,
-    hash: crypto.createHash("sha256").update(secret).digest("hex"),
-  };
-  await writeJson(apiKeysFile, { ...file, keys: [...file.keys, stored] });
-  return { record: withoutHash(stored), secret };
-}
-
-/** Revokes a key. With `ownerId`, only the owner's own key can be revoked. */
-export async function revokeApiKey(id: string, ownerId?: string): Promise<boolean> {
-  const file = await readApiKeysFile();
-  const target = file.keys.find((key) => key.id === id && (ownerId === undefined || key.ownerId === ownerId));
-  if (!target) return false;
-  if (!target.revokedAt) target.revokedAt = new Date().toISOString();
-  await writeJson(apiKeysFile, file);
-  return true;
-}
+/** Policies live in the same `policies.json` the user panel reads, through one implementation. */
+export { readPolicies, writePolicies } from "@/server/provider-store";

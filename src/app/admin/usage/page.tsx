@@ -1,6 +1,6 @@
-import { UsageReportContent } from "@/admin/features/usage-report/components/usage-report-content";
+import { redirect } from "next/navigation";
 
-/** Old link kept alive; the same report is the «گزارش مصرف» tab of the dashboard. */
+/** The usage report now lives inside the dashboard. */
 export default function UsagePage() {
-  return <UsageReportContent />;
+  redirect("/admin/dashboard");
 }

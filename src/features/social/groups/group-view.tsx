@@ -6,6 +6,7 @@ import { PersonAvatar } from "@/components/shared/person-avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { currentUserId, personName } from "@/features/workspace/lib/people";
+import { AlertCard } from "@/features/messenger/components/message-item";
 import { formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { AiAnswer } from "../components/ai-answer";
@@ -47,6 +48,12 @@ export function GroupView({ group, messages, onSend, onAddAgent }: GroupViewProp
           const agent = getAgentMember(message.authorId);
           const mine = message.authorId === currentUserId();
           if (message.system) return <li key={message.id} className="text-center text-caption text-muted-foreground">{message.text}</li>;
+          if (message.alert) return (
+            <li key={message.id} className="flex flex-col items-end gap-1">
+              <span className="text-caption text-muted-foreground">✦ جریان‌ها · {formatTime(message.createdAt)}</span>
+              <AlertCard id={message.id} alert={message.alert} text={message.text} />
+            </li>
+          );
           return (
             <li key={message.id} className={cn("flex items-end gap-2", mine && "flex-row-reverse")}>
               {agent ? <span aria-hidden className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">✦</span> : <PersonAvatar seed={message.authorId} name={personName(message.authorId)} className="size-8" />}

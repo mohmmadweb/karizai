@@ -13,7 +13,7 @@ export type PeriodId = "today" | "week" | "month" | "custom";
 
 export type ReportView = "system" | "user" | "group" | "agent";
 
-export type Metric = "requests" | "tokens";
+export type Metric = "requests" | "tokens" | "cost";
 
 /** Custom range as `YYYY-MM-DD` strings; empty while not chosen. */
 export type CustomRange = { from: string; to: string };

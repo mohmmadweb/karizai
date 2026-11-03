@@ -1,6 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useId, useMemo, useState } from "react";
+import { ChevronDownIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDataSources } from "@/admin/features/data-sources/hooks/use-data-sources";
 import { useDocuments } from "@/admin/features/documents/hooks/use-documents";
@@ -35,6 +37,8 @@ export function DashboardContent() {
   const { sources: dataSources } = useDataSources();
   const { sources: fileSources } = useDocuments();
   const [period, setPeriod] = useState<DashboardPeriod>("month");
+  const [open, setOpen] = useState(false);
+  const bodyId = useId();
   const [checks, setChecks] = useState<Record<string, number | undefined>>({});
   const [checking, setChecking] = useState<Record<string, boolean | undefined>>({});
 
@@ -63,29 +67,38 @@ export function DashboardContent() {
 
   const counts = countByStatus(view.components);
   return (
-    <div className="flex flex-col gap-10">
-      <div className="flex flex-col gap-4">
-        <p className="text-body-sm text-muted-foreground">سلامت اجزا، سرعت مدل‌ها و تطبیق اعتبار تأمین‌کننده‌ها.</p>
-        <Tabs value={period} onValueChange={(v) => setPeriod(v as DashboardPeriod)}>
-          <TabsList aria-label="بازه‌ی زمانی">
-            {periods.map((p) => <TabsTrigger key={p.id} value={p.id}>{p.label}</TabsTrigger>)}
-          </TabsList>
-        </Tabs>
+    <section aria-labelledby="system-health-title" className="flex flex-col gap-4">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div className="flex flex-col gap-1">
+          <h2 id="system-health-title" className="text-h3 text-foreground">سلامت سامانه و مدل‌ها</h2>
+          <p className="text-body-sm text-muted-foreground">سلامت اجزا، سرعت مدل‌ها و تطبیق اعتبار تأمین‌کننده‌ها.</p>
+        </div>
+        <Button variant="outline" aria-expanded={open} aria-controls={bodyId} onClick={() => setOpen((o) => !o)}>
+          <ChevronDownIcon data-icon="inline-start" aria-hidden className={open ? "rotate-180" : undefined} />
+          {open ? "پنهان‌کردن جزئیات" : "نمایش جزئیات"}
+        </Button>
       </div>
       <div className="flex flex-col gap-4">
         <StatusBanner status={overallStatus(view.components)} {...counts} />
         <OfflinePanel offline={isOffline(providers, models)} />
       </div>
-      <KeyFigures figures={view.figures} />
-      <DashboardSection title="سلامت اجزا" description="وضعیت هر جزء با تأخیر میانه و صدک ۹۵ و زمان آخرین بررسی.">
-        <HealthGrid components={view.components} />
-      </DashboardSection>
-      <DashboardSection title="سرعت مدل‌ها" description="مدل‌های فعال با زمان تا اولین کلمه، سرعت تولید و زمان کامل درخواست.">
-        <ModelSpeedTable speeds={view.speeds} hasEnabledModel={models.some((m) => m.enabled)} />
-      </DashboardSection>
-      <DashboardSection title="اعتبار تأمین‌کننده‌ها" description="مصرف طبق گزارش تأمین‌کننده در برابر مصرف ثبت‌شده‌ی سامانه.">
-        <ProviderCredits credits={view.credits} checking={checking} onCheck={checkAgain} />
-      </DashboardSection>
-    </div>
+      <div id={bodyId} hidden={!open} className="flex flex-col gap-10 pt-4">
+        <Tabs value={period} onValueChange={(v) => setPeriod(v as DashboardPeriod)}>
+          <TabsList aria-label="بازه‌ی زمانی سلامت سامانه">
+            {periods.map((p) => <TabsTrigger key={p.id} value={p.id}>{p.label}</TabsTrigger>)}
+          </TabsList>
+        </Tabs>
+        <KeyFigures figures={view.figures} />
+        <DashboardSection title="سلامت اجزا" description="وضعیت هر جزء با تأخیر میانه و صدک ۹۵ و زمان آخرین بررسی.">
+          <HealthGrid components={view.components} />
+        </DashboardSection>
+        <DashboardSection title="سرعت مدل‌ها" description="مدل‌های فعال با زمان تا اولین کلمه، سرعت تولید و زمان کامل درخواست.">
+          <ModelSpeedTable speeds={view.speeds} hasEnabledModel={models.some((m) => m.enabled)} />
+        </DashboardSection>
+        <DashboardSection title="اعتبار تأمین‌کننده‌ها" description="مصرف طبق گزارش تأمین‌کننده در برابر مصرف ثبت‌شده‌ی سامانه.">
+          <ProviderCredits credits={view.credits} checking={checking} onCheck={checkAgain} />
+        </DashboardSection>
+      </div>
+    </section>
   );
 }

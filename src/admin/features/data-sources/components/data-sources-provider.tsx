@@ -9,7 +9,6 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { seedAccessSchemas } from "../data/access-schemas";
 import { getSourceSchema } from "../data/source-schemas";
 import {
   createDataSourcesState,
@@ -19,12 +18,12 @@ import {
 import { simulateConnectionTest } from "../lib/simulate-test";
 import { simulateRequest } from "@/lib/simulate-request";
 import type {
-  AccessSchema,
   ActionResult,
-  SchemaGrant,
   AddSourceResult,
+  DataSchema,
   DataSource,
   SchemaDescriptions,
+  SchemaInput,
   SourceInput,
   SourceTable,
   TestResult,
@@ -34,6 +33,8 @@ export type DataSourcesContextValue = {
   sources: DataSource[];
   descriptions: SchemaDescriptions;
   schemas: Record<string, SourceTable[]>;
+  /** Named sets of tables, with access given to each set. */
+  dataSchemas: DataSchema[];
   /** Source ids with a test or a structure fetch in progress. */
   testing: Record<string, boolean | undefined>;
   fetchingSchema: Record<string, boolean | undefined>;
@@ -44,20 +45,9 @@ export type DataSourcesContextValue = {
   deleteSource: (id: string) => void;
   saveDescriptions: (id: string, map: Record<string, string>) => void;
   refetchSchema: (id: string) => Promise<void>;
-  /** Defined schemas by source id. */
-  accessSchemas: Record<string, AccessSchema[]>;
-  saveAccessSchema: (
-    sourceId: string,
-    schema: Omit<AccessSchema, "id" | "grants"> & { id?: string },
-  ) => ActionResult;
-  deleteAccessSchema: (sourceId: string, schemaId: string) => void;
-  setSchemaGrant: (sourceId: string, schemaId: string, grant: SchemaGrant) => void;
-  removeSchemaGrant: (
-    sourceId: string,
-    schemaId: string,
-    subjectType: SchemaGrant["subjectType"],
-    subjectId: string,
-  ) => void;
+  addDataSchema: (sourceId: string, input: SchemaInput) => string;
+  updateDataSchema: (id: string, input: SchemaInput) => void;
+  deleteDataSchema: (id: string) => void;
 };
 
 export const DataSourcesContext = createContext<DataSourcesContextValue | null>(null);
@@ -65,14 +55,23 @@ export const DataSourcesContext = createContext<DataSourcesContextValue | null>(
 const fail = (error: string) => ({ ok: false, error }) as const;
 const same = (a: string, b: string) => a.trim().toLowerCase() === b.trim().toLowerCase();
 
+const schemaFields = (input: SchemaInput) => ({
+  name: input.name.trim(),
+  description: input.description.trim(),
+  tableIds: input.tableIds,
+  rowFilter: input.rowFilter?.trim() ?? "",
+  confidential: input.confidential ?? false,
+});
+
 type Props = {
   initialSources: DataSource[];
   initialDescriptions: SchemaDescriptions;
+  initialDataSchemas?: DataSchema[];
   children: ReactNode;
 };
 
 /** Temporary in-memory state shared by the data list and connection pages. */
-export function DataSourcesProvider({ initialSources, initialDescriptions, children }: Props) {
+export function DataSourcesProvider({ initialSources, initialDescriptions, initialDataSchemas = [], children }: Props) {
   const [state, dispatch] = useReducer(dataSourcesReducer, undefined, () =>
     createDataSourcesState(
       initialSources,
@@ -80,9 +79,10 @@ export function DataSourcesProvider({ initialSources, initialDescriptions, child
       Object.fromEntries(
         initialSources.filter((s) => s.testResult === "success").map((s) => [s.id, getSourceSchema(0, s.id)]),
       ),
-      seedAccessSchemas,
     ),
   );
+  const [dataSchemas, setDataSchemas] = useState<DataSchema[]>(initialDataSchemas);
+  const nextSchema = useRef(initialDataSchemas.length + 1);
   const latest = useRef(state);
   useEffect(() => {
     latest.current = state;
@@ -98,6 +98,7 @@ export function DataSourcesProvider({ initialSources, initialDescriptions, child
       sources: state.sources,
       descriptions: state.descriptions,
       schemas: state.schemas,
+      dataSchemas,
       testing,
       fetchingSchema,
       addSource: (input) => {
@@ -128,24 +129,11 @@ export function DataSourcesProvider({ initialSources, initialDescriptions, child
         dispatch({ type: "setActive", id, active });
         return { ok: true };
       },
-      deleteSource: (id) => dispatch({ type: "delete", id }),
-      saveDescriptions: (id, map) => dispatch({ type: "setDescriptions", id, map }),
-      accessSchemas: state.accessSchemas,
-      saveAccessSchema: (sourceId, schema) => {
-        const name = schema.name.trim();
-        if (!name) return fail("نام اسکیما را وارد کنید.");
-        if ((state.accessSchemas[sourceId] ?? []).some((x) => x.id !== schema.id && same(x.name, name))) {
-          return fail("اسکیمایی با این نام وجود دارد.");
-        }
-        if (schema.tableIds.length === 0) return fail("دست‌کم یک جدول انتخاب کنید.");
-        dispatch({ type: "saveSchema", sourceId, schema: { ...schema, name } });
-        return { ok: true };
+      deleteSource: (id) => {
+        dispatch({ type: "delete", id });
+        setDataSchemas((list) => list.filter((s) => s.sourceId !== id));
       },
-      deleteAccessSchema: (sourceId, schemaId) => dispatch({ type: "deleteSchema", sourceId, schemaId }),
-      setSchemaGrant: (sourceId, schemaId, grant) =>
-        dispatch({ type: "setSchemaGrant", sourceId, schemaId, grant }),
-      removeSchemaGrant: (sourceId, schemaId, subjectType, subjectId) =>
-        dispatch({ type: "removeSchemaGrant", sourceId, schemaId, subjectType, subjectId }),
+      saveDescriptions: (id, map) => dispatch({ type: "setDescriptions", id, map }),
       refetchSchema: async (id) => {
         setFetchingSchema((f) => ({ ...f, [id]: true }));
         await simulateRequest(900);
@@ -154,8 +142,16 @@ export function DataSourcesProvider({ initialSources, initialDescriptions, child
         dispatch({ type: "setSchema", id, tables: getSourceSchema(round, id) });
         setFetchingSchema((f) => ({ ...f, [id]: undefined }));
       },
+      addDataSchema: (sourceId, input) => {
+        const id = padId("schema", nextSchema.current++ + 100);
+        setDataSchemas((list) => [...list, { id, sourceId, ...schemaFields(input) }]);
+        return id;
+      },
+      updateDataSchema: (id, input) =>
+        setDataSchemas((list) => list.map((s) => (s.id === id ? { ...s, ...schemaFields(input) } : s))),
+      deleteDataSchema: (id) => setDataSchemas((list) => list.filter((s) => s.id !== id)),
     };
-  }, [state, testing, fetchingSchema]);
+  }, [state, dataSchemas, testing, fetchingSchema]);
 
   return <DataSourcesContext.Provider value={value}>{children}</DataSourcesContext.Provider>;
 }

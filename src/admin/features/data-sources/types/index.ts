@@ -42,20 +42,18 @@ export type ActionResult = { ok: true } | { ok: false; error: string };
 
 export type AddSourceResult = { ok: true; id: string } | { ok: false; error: string };
 
-/** Read-only access of one group or user to a schema, optionally narrowed by a row filter. */
-export type SchemaGrant = {
-  subjectType: "group" | "user";
-  subjectId: string;
-  /** Free text, e.g. «فقط خط‌های ۱ و ۲»; empty means all rows. */
-  rowFilter: string;
-};
-
-/** A named subset of a database's tables that access can be granted on. */
-export type AccessSchema = {
+/** A named set of tables of one connection. Access can be given to the set instead of the whole database. */
+export type DataSchema = {
   id: string;
+  sourceId: string;
   name: string;
   description: string;
+  /** Ids of `SourceTable`; an id that is no longer in the structure is shown as missing. */
   tableIds: string[];
-  confidential: boolean;
-  grants: SchemaGrant[];
+  /** Free text narrowing the rows, such as «فقط خط‌های ۱ و ۲»; empty means all rows. */
+  rowFilter?: string;
+  /** Confidential data: only internal models may read it. */
+  confidential?: boolean;
 };
+
+export type SchemaInput = { name: string; description: string; tableIds: string[]; rowFilter?: string; confidential?: boolean };

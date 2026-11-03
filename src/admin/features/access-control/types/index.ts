@@ -1,5 +1,5 @@
 /** What can be shared. Later features add their own resource types. */
-export type AccessResourceType = "model" | "database" | "document" | "folder" | "agent";
+export type AccessResourceType = "model" | "database" | "document" | "folder" | "agent" | "schema";
 
 export type AccessSubjectType = "group" | "user";
 

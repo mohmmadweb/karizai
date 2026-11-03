@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useRef, useState, type FormEvent } from "react";
+import { useSearchParams } from "next/navigation";
 import { MegaphoneIcon, PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
@@ -11,31 +12,31 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useWorkflows } from "@/features/workflows/components/workflows-provider";
 import { getCurrentUser } from "@/features/user-session/data/session";
 import { formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { AiAction } from "../components/ai-dialog";
 import { announcementDrafts, getChannelPosts, getChannels } from "../data/channels";
 import { formatDay, formatTime } from "../lib/jalali";
-import type { Channel, ChannelPost } from "../types";
+import type { Channel } from "../types";
 
-/** «کانال‌ها»: one-way channels; «هشدارهای تولید» is written by workflows and Agents. Posts stay until reload. */
+/** «کانال‌ها»: one-way channels; «هشدارهای تولید» is written by alert rules and Agents. Posts stay until reload. */
 export function ChannelsPageContent() {
-  const { runs } = useWorkflows();
-  const [knownRuns] = useState(() => new Set(runs.map((run) => run.id)));
   const [channels, setChannels] = useState(getChannels);
   const [posts, setPosts] = useState(getChannelPosts);
-  const [selectedId, setSelectedId] = useState("ch-alerts");
+  // `?id=` (from the chat list or the sidebar) opens that channel.
+  const requested = useSearchParams().get("id");
+  const [selectedId, setSelectedId] = useState(() => (requested && channels.some((c) => c.id === requested) ? requested : "ch-alerts"));
+  const [seenRequest, setSeenRequest] = useState(requested);
+  if (requested !== seenRequest) {
+    setSeenRequest(requested);
+    if (requested && channels.some((c) => c.id === requested)) setSelectedId(requested);
+  }
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");
   const counter = useRef(0);
   const selected = channels.find((c) => c.id === selectedId) ?? channels[0];
-  // A run of the indicators workflow during this visit posts to «هشدارهای تولید» by itself.
-  const live: ChannelPost[] = runs.filter((run) => run.workflowId === "wf-4" && run.status === "succeeded" && !knownRuns.has(run.id)).map((run) => ({
-    id: `cp-run-${run.id}`, channelId: "ch-alerts", author: "تحلیل‌گر شاخص‌های تولید", createdAt: run.endedAt ?? run.startedAt, text: "اجرای تازه‌ی جریان شاخص‌ها تمام شد؛ شاخص‌های خارج از حد برای مسئولان فرستاده شد.", automatic: { workflowId: "wf-4", label: "مرکز شاخص‌ها و هشدار هوشمند" },
-  }));
-  const shown = [...posts, ...live].filter((p) => p.channelId === selected.id).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const shown = posts.filter((p) => p.channelId === selected.id).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   const publish = (text: string) => { setPosts((list) => [...list, { id: `cp-new-${++counter.current}`, channelId: selected.id, author: getCurrentUser().name, createdAt: new Date().toISOString(), text }]); toast.success(`در کانال «${selected.name}» منتشر شد`); };
 
   function create(event: FormEvent) {
@@ -71,7 +72,7 @@ export function ChannelsPageContent() {
               <li key={p.id} className={cn("flex flex-col gap-1 rounded-xl p-3", p.automatic ? "border border-primary/20 bg-primary/5" : "bg-muted/60")}>
                 <span className="text-caption text-muted-foreground"><span className="font-medium text-foreground">{p.automatic ? "✦ " : ""}{p.author}</span> · {formatDay(p.createdAt)} {formatTime(p.createdAt)}</span>
                 <p className="text-body">{p.text}</p>
-                {p.automatic ? <Link href={`/workflows/${p.automatic.workflowId}`} className="w-fit text-caption text-primary hover:underline">خودکار از جریان «{p.automatic.label}»</Link> : null}
+                {p.automatic ? <Link href={p.automatic.href} className="w-fit text-caption text-primary hover:underline">خودکار از {p.automatic.label}</Link> : null}
               </li>
             ))}
           </ul>

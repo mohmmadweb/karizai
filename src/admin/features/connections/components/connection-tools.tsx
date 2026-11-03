@@ -54,6 +54,10 @@ export function ConnectionTools({ tools, onChange }: ConnectionToolsProps) {
                   <Switch size="sm" checked={tool.requiresApproval} onCheckedChange={(checked) => onChange(tools.map((item) => (item.id === tool.id ? { ...item, requiresApproval: checked } : item)))} aria-label={`نیازمند تأیید کاربر: ${tool.name}`} />
                   نیازمند تأیید کاربر
                 </label>
+                <label className="flex items-center gap-2 text-body-sm">
+                  <Switch size="sm" checked={Boolean(tool.writes)} onCheckedChange={(checked) => onChange(tools.map((item) => (item.id === tool.id ? { ...item, writes: checked } : item)))} aria-label={`این ابزار چیزی را تغییر می‌دهد: ${tool.name}`} />
+                  تغییر می‌دهد
+                </label>
                 <Button variant="ghost" size="icon-sm" aria-label={`حذف ${tool.name}`} onClick={() => onChange(tools.filter((item) => item.id !== tool.id))}><Trash2Icon aria-hidden /></Button>
               </div>
             </li>

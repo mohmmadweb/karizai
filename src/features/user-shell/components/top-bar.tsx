@@ -5,8 +5,9 @@ import { BellIcon, Building2Icon, ChevronDownIcon, LogOutIcon, MoonIcon, Setting
 import { BrandLockup } from "@/components/brand/brand-lockup";
 import { PersonAvatar } from "@/components/shared/person-avatar";
 import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { getCurrentUser } from "@/features/user-session/data/session";
+import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { getCurrentUser, getDemoUsers } from "@/features/user-session/data/session";
+import { useUserSwitch } from "@/features/user-session/components/user-session-boundary";
 import { useLayoutStyle } from "@/lib/use-layout-style";
 import { useTheme } from "@/lib/use-theme";
 import { AiLayerSwitch } from "@/features/ai-panel/components/ai-layer-switch";
@@ -40,28 +41,38 @@ function ThemeSwitch() {
 /** Top bar: user, search (with «✦ پرسش از AI»), the AI layer switch, organization, notifications, theme, and sign-out. Below `lg` it also holds the menu button. */
 export function TopBar({ query, onQueryChange }: TopBarProps) {
   const user = getCurrentUser();
+  const { userId, switchUser } = useUserSwitch();
   const { classic } = useLayoutStyle();
   if (classic) {
     // Classic look: only a small bar below `lg` with the menu button and the logo.
     return (
       <header className="flex h-12 shrink-0 items-center gap-2 border-b page-gutter lg:hidden">
         <MobileMenu query={query} onQueryChange={onQueryChange} />
-        <BrandLockup alt="موشکاف" markClassName="w-8" textClassName="w-20" />
+        <BrandLockup alt="کاریز" markClassName="w-8" textClassName="w-20" />
       </header>
     );
   }
   return (
     <header className="z-sticky flex h-[4.75rem] shrink-0 items-center gap-3 border-b bg-card page-gutter">
       <MobileMenu query={query} onQueryChange={onQueryChange} />
-      <span className="flex lg:hidden"><BrandLockup alt="موشکاف" markClassName="w-7" textClassName="w-16" /></span>
+      <span className="flex lg:hidden"><BrandLockup alt="کاریز" markClassName="w-7" textClassName="w-16" /></span>
       <DropdownMenu>
         <DropdownMenuTrigger render={<button type="button" aria-label="پروفایل" className="flex h-11 items-center gap-3 rounded-lg px-1 text-start outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50" />}>
           <span className="hidden text-body-lg font-semibold lg:block">{user.name}</span>
           <PersonAvatar seed={user.id} name={user.name} className="size-10" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="min-w-52">
-          <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
-          <DropdownMenuItem render={<Link href="/settings" />}><SettingsIcon aria-hidden />تنظیمات</DropdownMenuItem>
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
+            <DropdownMenuItem render={<Link href="/settings" />}><SettingsIcon aria-hidden />تنظیمات</DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuGroup>
+            <DropdownMenuLabel>تغییر کاربر</DropdownMenuLabel>
+            <DropdownMenuRadioGroup value={userId} onValueChange={switchUser}>
+              {getDemoUsers().map((item) => <DropdownMenuRadioItem key={item.id} value={item.id}>{item.name}</DropdownMenuRadioItem>)}
+            </DropdownMenuRadioGroup>
+          </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
       <div className="flex min-w-0 flex-1 justify-center"><TopBarSearch query={query} onQueryChange={onQueryChange} /></div>
@@ -72,15 +83,19 @@ export function TopBar({ query, onQueryChange }: TopBarProps) {
             <Building2Icon aria-hidden />{organization}<ChevronDownIcon aria-hidden />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="min-w-52">
-            <DropdownMenuLabel>سازمان</DropdownMenuLabel>
-            <DropdownMenuCheckboxItem checked>{organization}</DropdownMenuCheckboxItem>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>سازمان</DropdownMenuLabel>
+              <DropdownMenuCheckboxItem checked>{organization}</DropdownMenuCheckboxItem>
+            </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
         <DropdownMenu>
           <DropdownMenuTrigger render={<Button type="button" variant="ghost" size="icon" aria-label="اعلان‌ها" />}><BellIcon aria-hidden /></DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="min-w-60">
-            <DropdownMenuLabel>اعلان‌ها</DropdownMenuLabel>
-            <DropdownMenuItem disabled>اعلان تازه‌ای ندارید.</DropdownMenuItem>
+            <DropdownMenuGroup>
+              <DropdownMenuLabel>اعلان‌ها</DropdownMenuLabel>
+              <DropdownMenuItem disabled>اعلان تازه‌ای ندارید.</DropdownMenuItem>
+            </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
         <ThemeSwitch />

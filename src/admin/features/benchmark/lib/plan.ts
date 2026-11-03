@@ -1,6 +1,6 @@
 import type { AiModel } from "@/admin/features/models/types";
 import { getModelProfile } from "@/admin/features/smart-router/data/model-profiles";
-import { tomanPer1kTokens } from "@/lib/policy-store";
+import { tomanPer1kTokens } from "@/lib/pricing";
 import type { BenchmarkPreset } from "../data/presets";
 
 export type Mode = "direct" | "multi";

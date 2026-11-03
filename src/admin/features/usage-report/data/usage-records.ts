@@ -29,12 +29,14 @@ const users = [
   { id: "user-008", weight: 1 },
 ];
 
+// Each record is one work session of a user (many requests), so weekly costs reach the
+// million-toman group ceilings set in «سیاست‌ها».
 const models = [
-  { id: "model-001", weight: 5, size: 900 },
-  { id: "model-002", weight: 3, size: 1400 },
-  { id: "model-004", weight: 4, size: 700 },
-  { id: "model-005", weight: 2, size: 400 },
-  { id: "model-006", weight: 1, size: 600 },
+  { id: "model-001", weight: 5, size: 225_000 },
+  { id: "model-002", weight: 3, size: 350_000 },
+  { id: "model-004", weight: 4, size: 175_000 },
+  { id: "model-005", weight: 2, size: 100_000 },
+  { id: "model-006", weight: 1, size: 150_000 },
 ];
 
 function pick<T extends { weight: number }>(items: T[], r: number): T {

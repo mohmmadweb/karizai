@@ -51,7 +51,7 @@ export function SourceDetail({ sourceId }: { sourceId: string }) {
         <TabsList>
           <TabsTrigger value="info">اطلاعات</TabsTrigger>
           <TabsTrigger value="structure">ساختار</TabsTrigger>
-          <TabsTrigger value="schemas">اسکیماها و دسترسی</TabsTrigger>
+          <TabsTrigger value="schemas">اسکیماها</TabsTrigger>
           <TabsTrigger value="access">دسترسی</TabsTrigger>
         </TabsList>
         <TabsContent value="info" className="pt-4">

@@ -6,6 +6,14 @@ export type Colleague = {
   online: boolean;
 };
 
+/**
+ * A group of colleagues or an announcement channel, as the chat list shows it. Groups and channels have their
+ * own pages (`/messenger/groups`, `/messenger/channels`); `href` opens the item there.
+ */
+export type Group = { id: string; name: string; description: string; kind: "group" | "channel"; href: string };
+
+export const salesGroupId = "grp-sales";
+
 export type AlertField = { label: string; value: string };
 
 /** What a workflow tells the user: a title, a few figures and the workflow it came from. */
@@ -24,6 +32,8 @@ export type MessengerMessage = {
   /** "agent" is an Agent answering inside a colleague chat after «@دستیار». */
   from: "me" | "other" | "system" | "agent";
   text: string;
+  /** Who wrote it, shown in groups; absent in one-to-one chats. */
+  sender?: string;
   /** ISO date. */
   createdAt: string;
   read: boolean;

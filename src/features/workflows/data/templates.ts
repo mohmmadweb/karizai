@@ -48,25 +48,6 @@ const templates: WorkflowTemplate[] = [
     edges: [{ id: "e1", source: "n1", target: "n2" }],
   },
   {
-    id: "tpl-indicator-center",
-    name: "مرکز شاخص‌ها و هشدار هوشمند",
-    description: "شاخص‌های خط تولید و حسگر دمای اکسترودر را می‌خواند؛ اگر از حد مجاز بیرون رفته باشد، علت احتمالی را می‌نویسد و برای مسئول در شبکه اجتماعی سازمان هشدار می‌فرستد.",
-    triggers: [{ kind: "schedule", every: "hourly", time: "00:00" }, { kind: "event", event: "indicator-breach" }],
-    nodes: [
-      { id: "n1", kind: "tool", label: "شاخص‌های خط ۲", position: { x: 0, y: 0 }, config: { connectionId: "conn-14", toolId: "tool-24", params: { line: "خط ۲", indicators: "دما، فشار، ضایعات، OEE" }, instruction: "شاخص‌های خط و حد مجاز هرکدام را بخوان." } },
-      { id: "n5", kind: "tool", label: "دمای ناحیه ۴", position: { x: 0, y: 117 }, config: { connectionId: "conn-19", toolId: "tool-33", params: { topic: "plant/line2/zone4/temp", unit: "°C", windowSeconds: "60" }, instruction: "آخرین مقدار حسگر دمای ناحیه‌ی ۴ را بخوان." } },
-      { id: "n2", kind: "condition", label: "دما بالاتر از ۲۴۰؟", position: { x: 0, y: 234 }, config: { condition: "آخرین مقدار حسگر بیشتر از ۲۴۰ °C", rule: { sourceNodeId: "n5", field: "value", operator: ">", value: "240" } } },
-      { id: "n3", kind: "agent", label: "تحلیل علت", position: { x: -120, y: 351 }, config: { agentId: "agent-indicators", params: { inputFrom: "previous", maxOutputTokens: "1500" }, instruction: "روند ۲۴ ساعت شاخص‌های خارج از حد را بخوان و علت احتمالی را برای مسئول بنویس." } },
-      { id: "n4", kind: "tool", label: "هشدار به مسئول", position: { x: -120, y: 468 }, config: { connectionId: "conn-15", toolId: "tool-26", params: { recipient: "سرپرست خط ۲", severity: "هشدار", message: "دمای ناحیه‌ی ۴ اکسترودر خط ۲ از حد مجاز (۲۴۰ درجه) بالاتر رفته است." }, instruction: "هشدار و علت احتمالی را برای مسئول همان واحد بفرست." } },
-    ],
-    edges: [
-      { id: "e0", source: "n1", target: "n5" },
-      { id: "e1", source: "n5", target: "n2" },
-      { id: "e2", source: "n2", target: "n3", label: "بله" },
-      { id: "e3", source: "n3", target: "n4" },
-    ],
-  },
-  {
     id: "tpl-pricing",
     name: "پیش‌فاکتور و قیمت‌گذاری خودکار",
     description: "از ایمیل استعلام مشتری، قیمت و حاشیه‌ی سود را حساب می‌کند، اگر ماده گران باشد تأیید مدیر فروش می‌گیرد و پیش‌فاکتور را آماده می‌کند.",

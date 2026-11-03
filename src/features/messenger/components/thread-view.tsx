@@ -10,6 +10,7 @@ import { getBotById } from "../data/bots";
 import { getColleagueById } from "../data/colleagues";
 import { agentAnswer, callsAssistant, mentionedAgentId } from "@/features/social/lib/agent-replies";
 import { ComposerAi } from "./composer-ai";
+import { ThreadList } from "./thread-list";
 import { MessageItem } from "./message-item";
 import { useMessenger } from "./messenger-provider";
 import { ThreadAiActions } from "./thread-ai-actions";
@@ -42,7 +43,9 @@ export function ThreadView({ threadId }: { threadId: string }) {
   }
 
   return (
-    <div className="mx-auto flex h-full min-h-0 w-full max-w-3xl flex-col">
+    <div className="flex h-full min-h-0 w-full">
+    <ThreadList activeId={threadId} />
+    <div className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-3xl flex-col">
       <header className="flex flex-wrap items-center gap-3 border-b bg-card page-gutter py-3">
         <ThreadAvatar threadId={threadId} className="size-11" />
         <div className="min-w-0">
@@ -66,6 +69,7 @@ export function ThreadView({ threadId }: { threadId: string }) {
           </form>
         </div>
       )}
+    </div>
     </div>
   );
 }

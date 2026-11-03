@@ -1,3 +1,4 @@
+import type { AlertContent } from "@/features/messenger/types";
 /** A task the assistant proposes (from minutes, a group or a chat) before the user adds it. */
 export type SuggestedTask = { title: string; assigneeId: string; /** ISO date. */ dueDate: string; projectId: string };
 
@@ -36,6 +37,8 @@ export type GroupMessage = {
   sources?: string[];
   /** A short note from the system, for example an Agent that is not in the group. */
   system?: boolean;
+  /** An announcement a workflow made in the group (for example the pricing workflow in «فروش»), shown as a card. */
+  alert?: AlertContent;
 };
 
 export type CalendarEvent = {
@@ -69,11 +72,11 @@ export type ChannelPost = {
   text: string;
   /** ISO date. */
   createdAt: string;
-  /** Posted by a workflow or an Agent, with the workflow to open. */
-  automatic?: { workflowId: string; label: string };
+  /** Posted by an alert rule or an Agent, with the page to open. */
+  automatic?: { href: string; label: string };
 };
 
-export type Channel = { id: string; name: string; description: string; memberCount: number; /** Who may post, for example «جریان شاخص‌ها». */ publisher?: string; automatic?: boolean };
+export type Channel = { id: string; name: string; description: string; memberCount: number; /** Who may post, for example «هشدارها و Agentها». */ publisher?: string; automatic?: boolean };
 
 export type NewsCategory = "quality" | "production" | "events" | "culture";
 

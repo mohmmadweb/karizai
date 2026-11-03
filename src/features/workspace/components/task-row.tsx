@@ -19,7 +19,7 @@ export function TaskRow({ task, projectName }: { task: Task; projectName?: strin
     <li className="flex flex-wrap items-center gap-x-4 gap-y-2 rounded-xl border bg-card p-3">
       <div className="flex min-w-0 flex-1 basis-56 flex-col gap-0.5">
         <span className={cn("font-medium", done && "text-muted-foreground line-through")}>{task.title}</span>
-        <span className="text-caption text-muted-foreground">{projectName ? `${projectName} · ` : ""}موعد: {formatDate(task.dueDate)}</span>
+        <span className="text-caption text-muted-foreground">{projectName ? `${projectName} · ` : ""}موعد: {formatDate(task.dueDate)}{task.createdAt ? <> · ثبت‌شده: <time dateTime={task.createdAt} className="tabular-nums">{formatDate(task.createdAt, { dateStyle: "medium", timeStyle: "medium" })}</time></> : null}</span>
       </div>
       <span className="flex items-center gap-1.5 text-caption text-muted-foreground">منبع<Badge variant={(task.source ?? "manual") === "manual" ? "outline" : "info"}>{sourceLabels[task.source ?? "manual"]}</Badge></span>
       <Badge variant={task.priority === "high" ? "destructive" : "secondary"}>{priorityLabels[task.priority]}</Badge>

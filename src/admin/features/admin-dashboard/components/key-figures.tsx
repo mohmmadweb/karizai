@@ -1,4 +1,5 @@
-import Link from "next/link";
+"use client";
+
 import { formatCost } from "@/admin/features/usage-report/lib/format-rows";
 import { formatNumber } from "@/admin/lib/format";
 import { UPTIME_TARGET } from "../data/telemetry";
@@ -9,7 +10,7 @@ const percent = (value: number) => `${formatNumber(value, { maximumFractionDigit
 const linkClass =
   "inline-flex min-h-10 w-fit items-center rounded-sm text-body-sm text-primary underline-offset-4 outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50";
 
-/** The key figures in one strip split by hairlines, with one link to the usage report instead of one per figure. */
+/** The key figures in one strip split by hairlines, with one link to the usage table of the same page instead of one per figure. */
 export function KeyFigures({ figures }: { figures: Figures }) {
   const belowTarget = figures.uptime < UPTIME_TARGET;
   const items = [
@@ -31,7 +32,19 @@ export function KeyFigures({ figures }: { figures: Figures }) {
           </li>
         ))}
       </ul>
-      <Link href="/admin/usage" className={linkClass}>گزارش مصرف</Link>
+      <a
+        href="#usage-table"
+        className={linkClass}
+        onClick={(event) => {
+          const target = document.getElementById("usage-table");
+          if (!target) return;
+          event.preventDefault();
+          target.scrollIntoView({ block: "start" });
+          target.focus({ preventScroll: true });
+        }}
+      >
+        جدول مصرف
+      </a>
     </div>
   );
 }

@@ -50,7 +50,7 @@ export const rfiItems: RfiItem[] = [
     "title": "رصد توکن ورودی و خروجی هر کاربر از هر مدل",
     "status": "demo",
     "href": "/admin/dashboard",
-    "how": "تب «گزارش مصرف»: توکن ورودی و خروجی هر کاربر و مدل"
+    "how": "داشبورد › جدول مصرف، نمای «کاربر»: توکن ورودی و خروجی هر کاربر و مدل"
   },
   {
     "id": "R1.4",
@@ -209,7 +209,7 @@ export const rfiItems: RfiItem[] = [
     "section": "۲. دستیارها و ایجنت‌ها",
     "title": "تأیید انسانی",
     "status": "demo",
-    "href": "/messenger/desk",
+    "href": "/desk",
     "how": "صندوق «نیاز به تأیید شما» و گام تأیید جریان"
   },
   {
@@ -338,7 +338,7 @@ export const rfiItems: RfiItem[] = [
     "title": "محدودسازی اطلاعات ارسالی به مدل‌ها",
     "status": "demo",
     "href": "/admin/policies",
-    "how": "تب «سیاست مدل‌ها» و «محرمانگی اسناد»"
+    "how": "تب «سیاست مدل‌ها» و «محرمانگی»"
   },
   {
     "id": "R3b.5",
@@ -346,7 +346,7 @@ export const rfiItems: RfiItem[] = [
     "title": "پوشاندن داده‌های حساس",
     "status": "demo",
     "href": "/admin/policies",
-    "how": "تب «پوشاندن داده»؛ در چت کد ملی و … پوشانده می‌شود"
+    "how": "تب «پنهان‌سازی» با جعبه‌ی آزمایش؛ در چت کد ملی و … پوشانده می‌شود"
   },
   {
     "id": "R3b.6",
@@ -410,7 +410,7 @@ export const rfiItems: RfiItem[] = [
     "title": "دسترسی به منابع اطلاعاتی، از جمله اسناد محرمانه",
     "status": "demo",
     "href": "/admin/policies",
-    "how": "تب «محرمانگی اسناد»"
+    "how": "تب «محرمانگی»؛ نشان «محرمانه» روی هر سند در بخش اسناد"
   },
   {
     "id": "R4.5",
@@ -418,7 +418,7 @@ export const rfiItems: RfiItem[] = [
     "title": "تفکیک مجوز فقط‌خواندنی و خواندن‌ونوشتن",
     "status": "demo",
     "href": "/admin/policies",
-    "how": "تب «مجوز خواندن / نوشتن» و اسکیماهای داده"
+    "how": "تب «خواندن و نوشتن» و تب «اسکیماها»ی هر اتصال داده"
   },
   {
     "id": "R4.6",
@@ -498,7 +498,7 @@ export const rfiItems: RfiItem[] = [
     "title": "مصرف و هزینه به تفکیک ایجنت",
     "status": "demo",
     "href": "/admin/dashboard",
-    "how": "نمای «عامل» در گزارش مصرف"
+    "how": "نمای «عامل» در جدول مصرف داشبورد و «پرمصرف‌ترین عامل‌ها»"
   },
   {
     "id": "R5.6",
@@ -801,7 +801,7 @@ export const rfiItems: RfiItem[] = [
     "section": "۹. هوشمندسازی فرایندها و صنعت ۴٫۰",
     "title": "کنترل کیفیت",
     "status": "demo",
-    "href": "/messenger/desk",
+    "href": "/desk",
     "how": "تحلیل بچ مردود (RCA)"
   },
   {

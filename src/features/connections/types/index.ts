@@ -24,6 +24,8 @@ export type ConnectionTool = {
   name: string;
   description: string;
   requiresApproval: boolean;
+  /** True when the tool changes data; groups limited to reading do not get it. */
+  writes?: boolean;
   /** False when the user's access was withdrawn after the connection was enabled. */
   userCanUse: boolean;
   /** Example inputs shown to the user before the tool runs. */
@@ -42,6 +44,8 @@ export type AdapterKind = "kariz" | "external";
 export type Connection = {
   id: string;
   name: string;
+  /** Groups the admin opened this connection to; only these groups decide the tool mode. */
+  openTo?: string[];
   /** Business area, for example "مدیریت ارتباط با مشتری CRM". */
   domain: string;
   description: string;

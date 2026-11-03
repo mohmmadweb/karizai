@@ -1,5 +1,6 @@
 "use client";
 
+import { usePolicies } from "@/admin/features/policies/components/policies-provider";
 import { createContext, useEffect, useMemo, useReducer, useRef, useState, type ReactNode } from "react";
 import { simulateRequest } from "@/lib/simulate-request";
 import { usePipelineRunner } from "../hooks/use-pipeline-runner";
@@ -77,12 +78,16 @@ export function DocumentsProvider({ initialDocuments, initialSources, children }
   const [testing, setTesting] = useState<Record<string, boolean | undefined>>({});
   const [syncing, setSyncing] = useState<Record<string, boolean | undefined>>({});
   const runner = usePipelineRunner(dispatch);
+  const { policies, setConfidential } = usePolicies();
 
   const value = useMemo<DocumentsContextValue>(() => {
     const nameTaken = (name: string, exceptId?: string) =>
       state.sources.some((s) => s.id !== exceptId && same(s.name, name));
+    // Confidentiality lives in the policies; until the admin first changes one, each document keeps its own flag.
+    const saved = policies.confidentialDocumentIds;
+    const documents = state.documents.map((d) => ({ ...d, confidential: saved === null ? d.confidential : saved.includes(d.id) }));
     return {
-      documents: state.documents,
+      documents,
       sources: state.sources,
       testing,
       syncing,
@@ -96,6 +101,10 @@ export function DocumentsProvider({ initialDocuments, initialSources, children }
       updateDocument: (id, input) => {
         if (!input.name.trim()) return fail("نام سند را وارد کنید.");
         dispatch({ type: "updateDocument", id, input, now: new Date().toISOString() });
+        const current = documents.find((d) => d.id === id);
+        if (current && current.confidential !== input.confidential) {
+          void setConfidential(id, input.confidential, documents.filter((d) => d.confidential).map((d) => d.id));
+        }
         return { ok: true };
       },
       reprocess: (id) => {
@@ -181,7 +190,7 @@ export function DocumentsProvider({ initialDocuments, initialSources, children }
         return removed;
       },
     };
-  }, [state, testing, syncing, runner]);
+  }, [state, testing, syncing, runner, policies.confidentialDocumentIds, setConfidential]);
 
   return <DocumentsContext.Provider value={value}>{children}</DocumentsContext.Provider>;
 }

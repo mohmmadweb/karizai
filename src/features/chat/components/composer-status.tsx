@@ -53,6 +53,7 @@ export function ComposerStatus(props: ComposerStatusProps) {
           <AlertDescription>
             {notice.text}
             <span className="mt-2 flex flex-wrap gap-2">
+              {notice.suggestions?.map((model) => <Button key={model.id} size="sm" onClick={() => props.onUseSuggestion(model.id)}>استفاده از «{model.name}»</Button>)}
               {notice.suggestion ? <Button size="sm" onClick={() => props.onUseSuggestion(notice.suggestion!.id)}>استفاده از «{notice.suggestion.name}»</Button> : null}
               <Button size="sm" variant="outline" onClick={props.onDismissNotice}>بستن</Button>
             </span>

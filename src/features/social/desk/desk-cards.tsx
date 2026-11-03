@@ -1,10 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { CalendarDaysIcon, FlaskConicalIcon, ThermometerIcon, UsersRoundIcon } from "lucide-react";
+import { CalendarDaysIcon, FlaskConicalIcon, ListChecksIcon, MessageSquareTextIcon, ThermometerIcon, UsersRoundIcon } from "lucide-react";
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useChat } from "@/features/chat/components/chat-provider";
+import { useWorkspace } from "@/features/workspace/components/workspace-provider";
+import { currentUserId } from "@/features/workspace/lib/people";
 import { daysFromToday } from "@/features/workspace/lib/today";
-import { formatNumber } from "@/lib/format";
+import { formatDate, formatNumber } from "@/lib/format";
 import { AiAction } from "../components/ai-dialog";
 import { AiBullets } from "../components/ai-parts";
 import { BatchAnalysis } from "../components/batch-analysis";
@@ -23,7 +26,7 @@ export function DeskEvents() {
   const events = getEvents().filter((event) => daysFromToday(event.start) >= 0 && daysFromToday(event.start) <= 3);
   return (
     <Card>
-      <CardHeader><CardTitle>رویدادهای در حال برگزاری</CardTitle>{seeAll("/messenger/calendar")}</CardHeader>
+      <CardHeader><CardTitle>رویدادهای در حال برگزاری</CardTitle>{seeAll("/calendar")}</CardHeader>
       <CardContent>
         <ul className="flex flex-col divide-y">
           {events.map((event) => (
@@ -76,6 +79,52 @@ export function DeskAlerts() {
             <AiAction label="مشاهده‌ی تحلیل" context="بچ B-1405-2217"><BatchAnalysis /></AiAction>
           </li>
         </ul>
+      </CardContent>
+    </Card>
+  );
+}
+
+/** «وظایف باز من»: the user's open tasks, earliest due first. */
+export function DeskTasks() {
+  const { tasks } = useWorkspace();
+  const mine = tasks.filter((task) => task.assigneeId === currentUserId() && task.status !== "done").sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+  return (
+    <Card>
+      <CardHeader><CardTitle>وظایف باز من</CardTitle>{seeAll("/messenger/tasks")}</CardHeader>
+      <CardContent>
+        {mine.length === 0 ? <p className="text-body-sm text-muted-foreground">وظیفه‌ی بازی ندارید.</p> : (
+          <ul className="flex flex-col divide-y">
+            {mine.slice(0, 4).map((task) => (
+              <li key={task.id} className={row}>
+                <span aria-hidden className={`${icon} bg-success/10 text-success`}><ListChecksIcon className="size-5" /></span>
+                <div className="min-w-0 flex-1"><p className="truncate text-label">{task.title}</p><p className="text-body-sm text-muted-foreground">موعد: {formatDate(task.dueDate)}</p></div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
+/** «گفتگوهای اخیر» with the assistant. */
+export function DeskChats() {
+  const { state } = useChat();
+  const recent = state.conversations.slice(0, 4);
+  return (
+    <Card>
+      <CardHeader><CardTitle>گفتگوهای اخیر</CardTitle>{seeAll("/chat")}</CardHeader>
+      <CardContent>
+        {recent.length === 0 ? <p className="text-body-sm text-muted-foreground">هنوز گفتگویی ندارید.</p> : (
+          <ul className="flex flex-col divide-y">
+            {recent.map((item) => (
+              <li key={item.id} className={row}>
+                <span aria-hidden className={`${icon} bg-primary/10 text-primary`}><MessageSquareTextIcon className="size-5" /></span>
+                <Link href={`/chat/${item.id}`} className="min-w-0 flex-1 truncate rounded-md text-label outline-none hover:underline focus-visible:ring-3 focus-visible:ring-ring/50">{item.title}</Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </CardContent>
     </Card>
   );

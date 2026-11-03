@@ -38,7 +38,7 @@ export function getSampleConnections(): DefinedConnection[] {
     type: endpoints[connection.id]?.type ?? (index % 3 === 0 ? "mcp" : "api"),
     endpoint: endpoints[connection.id]?.endpoint ?? `https://mcp.parsapolymer.local/${connection.id}`,
     auth: connection.tools.some((tool) => tool.requiresApproval) ? "user-login" : "shared-key",
-    tools: connection.tools.map(({ id, name, description, requiresApproval }) => ({ id, name, description, requiresApproval })),
+    tools: connection.tools.map(({ id, name, description, requiresApproval, writes }) => ({ id, name, description, requiresApproval, writes })),
     groupIds: ["group-001", "group-003"],
     active: true,
   }));

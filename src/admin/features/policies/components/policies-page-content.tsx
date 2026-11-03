@@ -1,33 +1,30 @@
 "use client";
 
 import { useState } from "react";
-import { MaskingPanel } from "@/admin/features/masking/components/masking-panel";
+import { CircleAlertIcon } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { fallbackModelId, getDataSourceLevels, getPolicyModels } from "../data/policy-models";
 import type { Sensitivity } from "../types";
-import { BudgetsTab } from "./budgets-tab";
-import { DocConfidentiality } from "./doc-confidentiality";
+import { BudgetTab } from "./budget-tab";
+import { ConfidentialityTab } from "./confidentiality-tab";
 import { ExternalRequests } from "./external-requests";
-import { GrantsTab } from "./grants-tab";
+import { MaskingTab } from "./masking-tab";
+import { usePolicies } from "./policies-provider";
 import { PolicyMatrix } from "./policy-matrix";
 import { SourceLevels } from "./source-levels";
-
-const tabs = [
-  { id: "docs", label: "محرمانگی اسناد" },
-  { id: "masking", label: "پوشاندن داده" },
-  { id: "budgets", label: "بودجه تومانی گروه‌ها" },
-  { id: "grants", label: "مجوز خواندن / نوشتن" },
-  { id: "models", label: "سیاست مدل‌ها" },
-  { id: "external", label: "درخواست‌های بیرونی" },
-];
+import { ToolAccessTab } from "./tool-access-tab";
 
 /**
- * «مرکز قواعد و سیاست‌ها»: every policy in one place. Documents, masking,
- * budgets and grants live in the shared policy store, so the user panel obeys
- * them in the same visit; the model matrix is local to this page.
+ * «مرکز قواعد و سیاست‌ها»: confidentiality, group budgets, masking and read or
+ * write access are the shared Policies (the user chat obeys them in the same
+ * visit); the model matrix and the outside-request log are this page's own.
  */
 export function PoliciesPageContent() {
+  const { loading, loadError, reload } = usePolicies();
   const [models, setModels] = useState(getPolicyModels);
   const [sources, setSources] = useState(getDataSourceLevels);
   const fallbackName = models.find((m) => m.id === fallbackModelId)?.name ?? "مدل داخلی";
@@ -43,26 +40,41 @@ export function PoliciesPageContent() {
     <div className="flex flex-col gap-8">
       <PageHeader
         title="مرکز قواعد و سیاست‌ها"
-        description="همه‌ی قواعد هوش مصنوعی سازمان در یک جا: اسناد محرمانه، پوشاندن داده، بودجه‌ی گروه‌ها، مجوزها و مدل‌های مجاز. عامل‌ها نمی‌توانند این قواعد را دور بزنند."
+        description="محرمانگی اسناد، بودجه‌ی هر گروه، پنهان‌سازی فیلدهای حساس، دسترسی خواندن و نوشتن و مدل‌های مجاز را در یک جا تعیین کنید. عامل‌ها نمی‌توانند این قواعد را دور بزنند."
       />
-      <Tabs defaultValue="docs">
-        <div className="overflow-x-auto">
-          <TabsList aria-label="بخش‌های مرکز قواعد">
-            {tabs.map((t) => (
-              <TabsTrigger key={t.id} value={t.id}>{t.label}</TabsTrigger>
-            ))}
-          </TabsList>
+      {loading ? (
+        <div className="flex flex-col gap-3" aria-busy="true" aria-label="در حال بارگذاری سیاست‌ها">
+          <Skeleton className="h-10 w-full max-w-md" />
+          <Skeleton className="h-40 w-full" />
         </div>
-        <TabsContent value="docs" className="pt-6"><DocConfidentiality /></TabsContent>
-        <TabsContent value="masking" className="pt-6"><MaskingPanel /></TabsContent>
-        <TabsContent value="budgets" className="pt-6"><BudgetsTab /></TabsContent>
-        <TabsContent value="grants" className="pt-6"><GrantsTab /></TabsContent>
-        <TabsContent value="models" className="flex flex-col gap-10 pt-6">
-          <PolicyMatrix models={models} fallbackName={fallbackName} onToggle={toggle} onEnabledChange={setEnabled} />
-          <SourceLevels sources={sources} models={models} onLevelChange={setLevel} />
-        </TabsContent>
-        <TabsContent value="external" className="pt-6"><ExternalRequests fallbackName={fallbackName} /></TabsContent>
-      </Tabs>
+      ) : loadError ? (
+        <Alert variant="destructive">
+          <CircleAlertIcon aria-hidden />
+          <AlertTitle>{loadError}</AlertTitle>
+          <AlertDescription>اتصال به سرور برقرار نشد.</AlertDescription>
+          <Button variant="outline" className="mt-2 w-fit" onClick={reload}>تلاش دوباره</Button>
+        </Alert>
+      ) : (
+        <Tabs defaultValue="confidentiality">
+          <TabsList aria-label="بخش‌های مرکز قواعد" className="h-auto max-w-full flex-wrap justify-start">
+            <TabsTrigger value="confidentiality">محرمانگی</TabsTrigger>
+            <TabsTrigger value="budget">بودجه‌ی گروه‌ها</TabsTrigger>
+            <TabsTrigger value="masking">پنهان‌سازی</TabsTrigger>
+            <TabsTrigger value="access">خواندن و نوشتن</TabsTrigger>
+            <TabsTrigger value="models">سیاست مدل‌ها</TabsTrigger>
+            <TabsTrigger value="external">درخواست‌های بیرونی</TabsTrigger>
+          </TabsList>
+          <TabsContent value="confidentiality" className="pt-4"><ConfidentialityTab /></TabsContent>
+          <TabsContent value="budget" className="pt-4"><BudgetTab /></TabsContent>
+          <TabsContent value="masking" className="pt-4"><MaskingTab /></TabsContent>
+          <TabsContent value="access" className="pt-4"><ToolAccessTab /></TabsContent>
+          <TabsContent value="models" className="flex flex-col gap-10 pt-4">
+            <PolicyMatrix models={models} fallbackName={fallbackName} onToggle={toggle} onEnabledChange={setEnabled} />
+            <SourceLevels sources={sources} models={models} onLevelChange={setLevel} />
+          </TabsContent>
+          <TabsContent value="external" className="pt-4"><ExternalRequests fallbackName={fallbackName} /></TabsContent>
+        </Tabs>
+      )}
     </div>
   );
 }

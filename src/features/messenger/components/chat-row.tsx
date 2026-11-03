@@ -7,14 +7,13 @@ import { cn } from "@/lib/utils";
 import { useMessenger } from "./messenger-provider";
 import { ThreadAvatar } from "./thread-avatar";
 
-type ChatRowProps = { threadId: string; name: string; current: boolean; collapsed: boolean; onNavigate?: () => void };
+type ChatRowProps = { threadId: string; name: string; current: boolean; collapsed: boolean; onNavigate?: () => void; /** Where the row opens; a chat thread by default (groups and channels have their own pages). */ href?: string };
 
 /** One chat in the list, like a messenger: picture, name, the start of the last message, and the unread count. */
-export function ChatRow({ threadId, name, current, collapsed, onNavigate }: ChatRowProps) {
+export function ChatRow({ threadId, name, current, collapsed, onNavigate, href = `/messenger/${threadId}` }: ChatRowProps) {
   const { lastOf, unreadOf } = useMessenger();
   const last = lastOf(threadId);
   const unread = unreadOf(threadId);
-  const href = `/messenger/${threadId}`;
   const aria = current ? ("page" as const) : undefined;
   if (collapsed) {
     return (

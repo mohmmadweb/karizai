@@ -26,6 +26,8 @@ export type Task = {
   dueDate: string;
   /** Absent means the task was made by hand. */
   source?: TaskSource;
+  /** ISO date and time the task was registered; only tasks made in this session have it. */
+  createdAt?: string;
 };
 
 /** What the assistant says about a project's delay risk. */

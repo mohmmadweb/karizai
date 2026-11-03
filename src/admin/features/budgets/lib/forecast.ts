@@ -1,4 +1,4 @@
-import { tomanPer1kTokens } from "@/lib/policy-store";
+import { tomanPer1kTokens } from "@/lib/pricing";
 import { budgetMonth } from "../data/user-limits";
 import type { UserLimit } from "../data/user-limits";
 

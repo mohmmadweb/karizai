@@ -6,7 +6,7 @@ import { SearchField } from "@/components/shared/search-field";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { getKnowledgeDocuments, isConfidentialDocument } from "@/features/knowledge/data/documents";
-import { usePolicies } from "@/lib/policy-store";
+import { usePolicies } from "@/features/policies/components/policies-provider";
 import type { AttachmentKind } from "../types";
 
 type KnowledgeFileDialogProps = {
@@ -17,7 +17,7 @@ type KnowledgeFileDialogProps = {
 
 /** «📎 فایل از کاریز»: attach one of the organization's files the user may read. */
 export function KnowledgeFileDialog({ open, onOpenChange, onPick }: KnowledgeFileDialogProps) {
-  const { confidentialDocIds } = usePolicies();
+  const policies = usePolicies();
   const [query, setQuery] = useState("");
   const docs = getKnowledgeDocuments().filter((doc) => `${doc.title} ${doc.source}`.includes(query.trim()));
   return (
@@ -31,7 +31,7 @@ export function KnowledgeFileDialog({ open, onOpenChange, onPick }: KnowledgeFil
         <ul className="flex max-h-80 flex-col gap-1 overflow-y-auto">
           {docs.length === 0 ? <li className="py-6 text-center text-body-sm text-muted-foreground">فایلی پیدا نشد.</li> : null}
           {docs.map((doc) => {
-            const confidential = isConfidentialDocument(doc, confidentialDocIds);
+            const confidential = isConfidentialDocument(doc, policies);
             const Icon = doc.kind === "excel" ? FileSpreadsheetIcon : FileTextIcon;
             return (
               <li key={doc.id}>

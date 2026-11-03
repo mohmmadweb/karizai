@@ -7,7 +7,7 @@ import { groupAccessSide, userAccessSide } from "@/admin/features/access-control
 import { useDirectory } from "@/admin/features/user-management/hooks/use-directory";
 import type { DataSource } from "../../types";
 
-/** Who may use the data assistant on this database: all of it, never a part. */
+/** Who may use the data assistant on the whole database; parts of it are given from the schemas tab. */
 export function AccessTab({ source }: { source: DataSource }) {
   const { users, groups, memberships } = useDirectory();
   const { grants, grant, revoke } = useAccess();
@@ -22,13 +22,13 @@ export function AccessTab({ source }: { source: DataSource }) {
   return (
     <div className="flex flex-col gap-6">
       <p className="text-body-sm text-muted-foreground">
-        هر کس اینجا اضافه شود به کل انبار داده دسترسی دارد؛ دسترسی به بخشی از جدول‌ها وجود ندارد.
+        هر کس اینجا اضافه شود به کل انبار داده دسترسی دارد. برای دسترسی به بخشی از جدول‌ها از تب «اسکیماها» استفاده کنید.
       </p>
       <AccessGrantsPanel
         idPrefix="source-access"
         groups={groupAccessSide(input)}
         users={userAccessSide(input)}
-        emptyMessage="هنوز هیچ‌کس به این انبار داده دسترسی ندارد."
+        emptyMessage="هنوز هیچ‌کس به کل این انبار داده دسترسی ندارد."
         onGrant={(type, id) => {
           grant(key(type, id));
           toast.success(type === "group" ? "دسترسی گروه اضافه شد." : "دسترسی کاربر اضافه شد.");

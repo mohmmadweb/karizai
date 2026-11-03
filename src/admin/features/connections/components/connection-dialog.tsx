@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { connectionEndpointHints, connectionTypeLabels, type ConnectionType } from "@/lib/connections";
 import { formatNumber } from "@/admin/lib/format";
+import { getCatalogEntry } from "../data/connection-catalog";
 import { getConnectionTemplates, type ConnectionTemplate } from "../data/templates";
 import { endpointError, isValidEndpoint } from "../lib/validation";
 import { useConnections } from "./connections-provider";
@@ -51,7 +52,10 @@ export function ConnectionDialog({ open, onOpenChange }: ConnectionDialogProps) 
     if (!isValidEndpoint(type, values.endpoint)) found.endpoint = endpointError(type);
     setErrors(found);
     if (Object.keys(found).length > 0) return;
-    const id = addConnection({ ...values, type, description: template?.description, tools: template?.tools });
+    // Without a template, GitLab, Mattermost and Confluence still come with their ready domain and tools.
+    const ready = template ? null : getCatalogEntry(type);
+    const tools = template?.tools ?? ready?.tools.map((tool, index) => ({ ...tool, id: `ready-${index + 1}` }));
+    const id = addConnection({ ...values, domain: values.domain.trim() || ready?.domain || "", type, description: template?.description, tools });
     toast.success(template ? "اتصال با ابزارهای قالب ساخته شد؛ دسترسی را تعیین کنید." : "اتصال ساخته شد؛ ابزارها و دسترسی را تعیین کنید.");
     setValues({ name: "", domain: "", endpoint: "" });
     setTemplate(null);

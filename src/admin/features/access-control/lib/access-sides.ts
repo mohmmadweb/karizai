@@ -9,6 +9,8 @@ type Input = {
   users: User[];
   groups: Group[];
   memberships: Membership[];
+  /** A wider resource whose grants also count, for example the whole database for one schema. */
+  alsoVia?: { resourceType: AccessResourceType; resourceId: string; label: string };
 };
 
 const forResource = (grants: AccessGrant[], type: AccessResourceType, resourceId: string) =>
@@ -33,23 +35,34 @@ export function groupAccessSide({ resourceType, resourceId, grants, groups }: In
 }
 
 /** Users with special access. Notes tell when a user also gets access through a group. */
-export function userAccessSide({ resourceType, resourceId, grants, users, groups, memberships }: Input): AccessSide {
+export function userAccessSide({ resourceType, resourceId, grants, users, groups, memberships, alsoVia }: Input): AccessSide {
   const own = forResource(grants, resourceType, resourceId);
   const userIds = new Set(own.filter((g) => g.subjectType === "user").map((g) => g.subjectId));
   const groupIds = new Set(own.filter((g) => g.subjectType === "group").map((g) => g.subjectId));
-  const viaGroup = (userId: string) =>
+  const reaches = (ids: Set<string>, userId: string) =>
     memberships.some(
       (m) =>
         m.userId === userId &&
-        groupIds.has(m.groupId) &&
+        ids.has(m.groupId) &&
         groups.some((g) => g.id === m.groupId && g.status === "active"),
     );
+  const viaGroup = (userId: string) => reaches(groupIds, userId);
+  const wide = alsoVia ? forResource(grants, alsoVia.resourceType, alsoVia.resourceId) : [];
+  const wideUsers = new Set(wide.filter((g) => g.subjectType === "user").map((g) => g.subjectId));
+  const wideGroups = new Set(wide.filter((g) => g.subjectType === "group").map((g) => g.subjectId));
+  const viaWide = (userId: string) => wideUsers.has(userId) || reaches(wideGroups, userId);
   const toSubject = (u: User): AccessSubject => ({
     id: u.id,
     label: u.name,
     hint: u.email,
     inactive: u.status === "inactive",
-    note: viaGroup(u.id) ? "از طریق گروه‌هایش هم دسترسی دارد." : undefined,
+    note:
+      [
+        viaGroup(u.id) ? "از طریق گروه‌هایش هم دسترسی دارد." : "",
+        viaWide(u.id) && alsoVia ? `از طریق ${alsoVia.label} هم دسترسی دارد.` : "",
+      ]
+        .filter(Boolean)
+        .join(" ") || undefined,
     permission: own.find((g) => g.subjectType === "user" && g.subjectId === u.id)?.permission ?? "read",
   });
   return {

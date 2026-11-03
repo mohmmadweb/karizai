@@ -1,4 +1,5 @@
 import {
+  BellRingIcon,
   BookOpenIcon,
   BotIcon,
   BotMessageSquareIcon,
@@ -15,6 +16,7 @@ import {
   MessagesSquareIcon,
   NewspaperIcon,
   PlugIcon,
+  ScaleIcon,
   SparklesIcon,
   SquarePenIcon,
   UserRoundIcon,
@@ -26,17 +28,19 @@ import {
 import type { UserSection, UserSectionGroup } from "../types";
 
 /** Pages under /messenger that are not a chat thread. */
-const workspacePages = ["desk", "calendar", "members", "groups", "channels", "news", "projects", "tasks"];
+const workspacePages = ["members", "groups", "channels", "news", "projects", "tasks"];
 
 const sections: UserSection[] = [
   { id: "new-chat", title: "گفتگوی تازه", href: "/chat", icon: SquarePenIcon, exact: true },
-  { id: "desk", title: "میز کار من", href: "/messenger/desk", icon: LayoutDashboardIcon },
-  { id: "calendar", title: "تقویم کاری من", href: "/messenger/calendar", icon: CalendarDaysIcon },
+  { id: "desk", title: "میز کار من", href: "/desk", icon: LayoutDashboardIcon },
+  { id: "calendar", title: "تقویم کاری من", href: "/calendar", icon: CalendarDaysIcon },
   { id: "assistant", title: "دستیار هوشمند من", href: "/chat", icon: BotMessageSquareIcon },
   { id: "agents", title: "عامل‌های من", href: "/agents", icon: BotIcon },
   { id: "agent-repository", title: "مخزن عامل‌ها", href: "/agent-repository", icon: LibraryBigIcon },
   { id: "skills", title: "اسکیل‌های من", href: "/skills", icon: SparklesIcon },
+  { id: "compare", title: "مقایسه‌ی مدل‌ها", href: "/compare", icon: ScaleIcon },
   { id: "workflows", title: "جریان‌های خودکار", href: "/workflows", icon: WorkflowIcon },
+  { id: "alerts", title: "هشدارها و گزارش‌ها", href: "/alerts", icon: BellRingIcon },
   { id: "knowledge", title: "دانش و فایل‌های من", href: "/knowledge", icon: BookOpenIcon },
   { id: "data", title: "داده و تحلیل", href: "/data", icon: DatabaseZapIcon },
   { id: "connections", title: "اتصال‌ها", href: "/connections", icon: PlugIcon },
@@ -62,7 +66,7 @@ const byId = (ids: string[]) => ids.map((id) => sections.find((section) => secti
 /** One sidebar for the whole app, grouped like the Kariz mockup: AI and the messenger side by side. */
 const groups: UserSectionGroup[] = [
   { id: "dashboard", title: "داشبورد", icon: LayoutDashboardIcon, sections: byId(["desk", "calendar"]) },
-  { id: "ai", title: "✦ کاریز AI", icon: SparklesIcon, sections: byId(["assistant", "agents", "agent-repository", "skills", "workflows", "knowledge", "data", "connections"]) },
+  { id: "ai", title: "✦ کاریز AI", icon: SparklesIcon, sections: byId(["assistant", "agents", "agent-repository", "skills", "compare", "workflows", "alerts", "knowledge", "data", "connections"]) },
   { id: "network", title: "همکاران و شبکه", icon: NetworkIcon, sections: byId(["messenger", "members", "groups", "channels", "news"]) },
   { id: "work", title: "پروژه‌ها و فعالیت‌ها", icon: BriefcaseBusinessIcon, sections: byId(["projects", "tasks"]) },
   { id: "account", title: "حساب", icon: UserRoundIcon, sections: byId(["usage", "developer"]) },
