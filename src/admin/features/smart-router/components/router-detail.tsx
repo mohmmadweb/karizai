@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { useDirectory } from "@/admin/features/user-management/hooks/use-directory";
 import { RouterMembers } from "./router-members";
 import { RouterTestPanel } from "./router-test-panel";
+import { RouterWeightsEditor } from "./router-weights";
 import { useRouters } from "./routers-provider";
 
 export function RouterDetail({ routerId }: { routerId: string }) {
@@ -79,6 +80,13 @@ export function RouterDetail({ routerId }: { routerId: string }) {
           <p className="text-body-sm text-muted-foreground">برای هر مدل مشخص کنید پاسخ پرسش‌های ساده، متوسط یا پیچیده را بدهد. اگر برای سطحی مدلی نباشد، نزدیک‌ترین سطح استفاده می‌شود.</p>
         </div>
         <RouterMembers router={router} onChange={(members) => updateRouter(routerId, { members })} />
+      </section>
+      <section className="flex flex-col gap-3" aria-label="وزن معیارها">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-h4">وزن کیفیت، سرعت و هزینه</h2>
+          <p className="text-body-sm text-muted-foreground">وقتی چند مدل برای یک سطح هستند، مسیریاب با این وزن‌ها انتخاب می‌کند. تغییر همان لحظه اعمال می‌شود.</p>
+        </div>
+        <RouterWeightsEditor router={router} onChange={(weights) => updateRouter(routerId, { weights })} />
       </section>
       <details className="rounded-xl border p-4 [&_summary]:cursor-pointer">
         <summary className="text-label">آزمایش مسیریاب با یک پرسش نمونه</summary>

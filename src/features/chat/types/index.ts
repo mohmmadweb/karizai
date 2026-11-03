@@ -10,6 +10,10 @@ export type Attachment = {
   kind: AttachmentKind;
   status: AttachmentStatus;
   error?: string;
+  /** Set for a file picked from the organization's files («📎 فایل از کاریز»). */
+  docId?: string;
+  /** The admin marked the file confidential: only internal models may read it. */
+  confidential?: boolean;
 };
 
 export type Source = {
@@ -47,6 +51,12 @@ export type GeneratedFile = {
   rows?: (string | number)[][];
 };
 
+/** Buttons under an answer of the root-cause analysis. */
+export type AnswerAction = "send-to-group" | "corrective-action";
+
+/** What the prompt optimizer did before the request went out. */
+export type PromptOptimization = { original: string; compressed: string; before: number; after: number };
+
 export type MessageStatus = "streaming" | "done" | "stopped" | "error";
 
 export type Message = {
@@ -78,6 +88,10 @@ export type Message = {
   routerReason?: string;
   /** Number of sensitive values replaced before sending. */
   maskedCount?: number;
+  /** ISO date the answer finished; with `createdAt` it gives the answer time. */
+  finishedAt?: string;
+  optimization?: PromptOptimization;
+  actions?: AnswerAction[];
 };
 
 export type TimelineStatus = "pending" | "running" | "waiting-approval" | "done" | "failed";
@@ -85,7 +99,7 @@ export type TimelineStatus = "pending" | "running" | "waiting-approval" | "done"
 /** One step of a multi-agent answer, shown above the final text. */
 export type TimelineStep = {
   id: string;
-  kind: "thinking" | "agent" | "tool" | "approval" | "supervisor";
+  kind: "thinking" | "agent" | "tool" | "approval" | "supervisor" | "optimizer";
   title: string;
   status: TimelineStatus;
   modelName?: string;
@@ -120,6 +134,8 @@ export type ConversationSettings = {
   webSearch: boolean;
   /** Answers come from the organization's documents (retrieval), with sources. */
   knowledge: boolean;
+  /** «✦ بهینه‌ساز پرامپت»: the prompt and context are compressed before sending; off when absent. */
+  optimizer?: boolean;
 };
 
 export type Conversation = {
@@ -145,6 +161,7 @@ export type ScriptedReply = {
   sources?: Source[];
   structured?: StructuredResult;
   files?: GeneratedFile[];
+  actions?: AnswerAction[];
   /** True when no model answered, so no model badge is shown. */
   fixed?: boolean;
 };

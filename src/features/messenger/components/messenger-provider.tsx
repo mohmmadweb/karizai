@@ -4,7 +4,7 @@ import { createContext, useContext, useMemo, useRef, useState, type ReactNode } 
 import { useWorkflows } from "@/features/workflows/components/workflows-provider";
 import { getInitialMessages } from "../data/messages";
 import { alertForRun, notifiesSomeone } from "../lib/run-alert";
-import { alertsThreadId, flowsThreadId, type MessengerMessage } from "../types";
+import { alertsThreadId, flowsThreadId, type MessengerMessage, type PostAlertInput } from "../types";
 
 type MessengerContextValue = {
   messages: MessengerMessage[];
@@ -16,6 +16,10 @@ type MessengerContextValue = {
   /** Adds the user's own message; it stays in the page only until it is reloaded. */
   send: (threadId: string, text: string) => void;
   markRead: (threadId: string) => void;
+  /** An Agent's answer in a chat (after «@دستیار»), with its sources. */
+  addAgentReply: (threadId: string, name: string, text: string, sources: string[]) => void;
+  /** Adds an unread alert card to «ربات هشدار», for example from a workflow run. A run posts once per runId. */
+  postAlert: (input: PostAlertInput) => void;
 };
 
 const MessengerContext = createContext<MessengerContextValue | null>(null);
@@ -40,7 +44,8 @@ export function MessengerProvider({ children }: { children: ReactNode }) {
       const report = { ...alertForRun(workflow, run), ...(failed ? { title: `اجرای جریان «${workflow.name}» ناموفق بود`, tone: "warning" as const } : {}) };
       const make = (threadId: string, text: string, alert = report): MessengerMessage => ({ id: `msg-${threadId}-${run.id}`, threadId, from: "system", read: readAlertIds.includes(`msg-${threadId}-${run.id}`), createdAt, text, alert });
       fromRuns.push(make(flowsThreadId, failed ? `اجرای جریان «${workflow.name}» به خطا خورد.` : `جریان «${workflow.name}» با موفقیت اجرا شد.`));
-      if (!failed && notifiesSomeone(workflow)) fromRuns.push(make(alertsThreadId, `جریان «${workflow.name}» برای شما پیام فرستاد.`));
+      // The reorder flow (wf-6) posts its own detailed shortage alert through postAlert (see workflows/run-notifier).
+      if (!failed && workflow.id !== "wf-6" && notifiesSomeone(workflow)) fromRuns.push(make(alertsThreadId, `جریان «${workflow.name}» برای شما پیام فرستاد.`));
     }
     const messages = [...stored, ...fromRuns];
     const unread = (item: MessengerMessage) => !item.read && item.from !== "me";
@@ -51,6 +56,12 @@ export function MessengerProvider({ children }: { children: ReactNode }) {
       unreadTotal: messages.filter(unread).length,
       lastOf: (threadId) => messages.filter((item) => item.threadId === threadId).sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0],
       send: (threadId, text) => setStored((list) => [...list, { id: `msg-me-${++counter.current}`, threadId, from: "me", read: true, createdAt: new Date().toISOString(), text }]),
+      addAgentReply: (threadId, name, text, sources) => setStored((list) => [...list, { id: `msg-agent-${++counter.current}`, threadId, from: "agent", read: false, createdAt: new Date().toISOString(), text, agent: { name, sources } }]),
+      postAlert: ({ title, text, workflowId, runId, tone = "warning", fields = [] }) => setStored((list) => {
+        const id = runId ? `msg-alert-run-${runId}` : `msg-alert-${++counter.current}`;
+        if (list.some((item) => item.id === id)) return list;
+        return [...list, { id, threadId: alertsThreadId, from: "system", read: false, createdAt: new Date().toISOString(), text, alert: { title, tone, fields, workflowId } }];
+      }),
       markRead: (threadId) => {
         setStored((list) => (list.some((item) => item.threadId === threadId && !item.read) ? list.map((item) => (item.threadId === threadId ? { ...item, read: true } : item)) : list));
         const ids = fromRuns.filter((item) => item.threadId === threadId && !item.read).map((item) => item.id);

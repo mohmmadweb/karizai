@@ -10,9 +10,10 @@ import { databaseTypeLabel } from "../../lib/database-types";
 import { ActiveBadge, TestResultBadge } from "../list/source-badges";
 import { AccessTab } from "./access-tab";
 import { InfoTab } from "./info-tab";
+import { SchemasTab } from "./schemas-tab";
 import { StructureTab } from "./structure-tab";
 
-type Tab = "info" | "structure" | "access";
+type Tab = "info" | "structure" | "schemas" | "access";
 
 export function SourceDetail({ sourceId }: { sourceId: string }) {
   const { sources, descriptions } = useDataSources();
@@ -50,6 +51,7 @@ export function SourceDetail({ sourceId }: { sourceId: string }) {
         <TabsList>
           <TabsTrigger value="info">اطلاعات</TabsTrigger>
           <TabsTrigger value="structure">ساختار</TabsTrigger>
+          <TabsTrigger value="schemas">اسکیماها و دسترسی</TabsTrigger>
           <TabsTrigger value="access">دسترسی</TabsTrigger>
         </TabsList>
         <TabsContent value="info" className="pt-4">
@@ -61,6 +63,9 @@ export function SourceDetail({ sourceId }: { sourceId: string }) {
             source={source}
             onGoToInfo={() => setTab("info")}
           />
+        </TabsContent>
+        <TabsContent value="schemas" className="pt-4">
+          <SchemasTab source={source} onGoToInfo={() => setTab("info")} />
         </TabsContent>
         <TabsContent value="access" className="pt-4">
           <AccessTab source={source} />

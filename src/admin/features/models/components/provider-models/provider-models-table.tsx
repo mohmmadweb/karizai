@@ -4,7 +4,8 @@ import Link from "next/link";
 import { EyeIcon } from "lucide-react";
 import { DataTable } from "@/admin/components/shared/data-table/data-table";
 import type { DataTableColumn } from "@/admin/components/shared/data-table/types";
-import { formatDateTime, formatNumber } from "@/admin/lib/format";
+import { formatDate, formatDateTime, formatNumber } from "@/admin/lib/format";
+import { isNewModel } from "../../lib/selectors";
 import { getModelMetrics } from "../../data/model-metrics";
 import type { AiModel } from "../../types";
 import { ModelFlags } from "../models/model-badges";
@@ -37,11 +38,12 @@ export function ProviderModelsTable({ models, setAside }: { models: AiModel[]; s
       cell: (m) => (
         <span className="flex flex-col items-start gap-1">
           <Link href={`/admin/models/${m.id}`} className={linkClass}>{m.displayName}</Link>
-          <ModelFlags selfHosted={m.selfHosted} setAside={setAside} />
+          <ModelFlags selfHosted={m.selfHosted} setAside={setAside} isNew={isNewModel(m)} />
         </span>
       ),
     },
     { id: "enabled", header: "وضعیت", cell: (m) => <ModelEnabledSwitch model={m} /> },
+    { id: "released", header: "تاریخ انتشار", hideBelow: "lg", cell: (m) => (m.releasedAt ? formatDate(m.releasedAt, { dateStyle: "medium" }) : dash) },
     {
       id: "latency",
       header: "تأخیر (میانه)",
@@ -100,7 +102,7 @@ export function ProviderModelsTable({ models, setAside }: { models: AiModel[]; s
               <Link href={`/admin/models/${m.id}`} className={linkClass}>{m.displayName}</Link>
               {actions}
             </div>
-            <ModelFlags selfHosted={m.selfHosted} setAside={setAside} />
+            <ModelFlags selfHosted={m.selfHosted} setAside={setAside} isNew={isNewModel(m)} />
             <ModelEnabledSwitch model={m} />
             {m.enabled ? (
               <dl className="grid grid-cols-2 gap-x-3 gap-y-1 text-body-sm">

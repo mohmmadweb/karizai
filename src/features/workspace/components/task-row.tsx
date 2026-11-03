@@ -6,7 +6,7 @@ import { PersonAvatar } from "@/components/shared/person-avatar";
 import { formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { personName } from "../lib/people";
-import { priorityLabels, statusLabels, type Task, type TaskStatus } from "../types";
+import { priorityLabels, sourceLabels, statusLabels, type Task, type TaskStatus } from "../types";
 import { useWorkspace } from "./workspace-provider";
 
 const statusItems = (Object.keys(statusLabels) as TaskStatus[]).map((value) => ({ value, label: statusLabels[value] }));
@@ -21,6 +21,7 @@ export function TaskRow({ task, projectName }: { task: Task; projectName?: strin
         <span className={cn("font-medium", done && "text-muted-foreground line-through")}>{task.title}</span>
         <span className="text-caption text-muted-foreground">{projectName ? `${projectName} · ` : ""}موعد: {formatDate(task.dueDate)}</span>
       </div>
+      <span className="flex items-center gap-1.5 text-caption text-muted-foreground">منبع<Badge variant={(task.source ?? "manual") === "manual" ? "outline" : "info"}>{sourceLabels[task.source ?? "manual"]}</Badge></span>
       <Badge variant={task.priority === "high" ? "destructive" : "secondary"}>{priorityLabels[task.priority]}</Badge>
       <span className="flex items-center gap-2 text-body-sm text-muted-foreground"><PersonAvatar seed={task.assigneeId} name={personName(task.assigneeId)} className="size-6" />{personName(task.assigneeId)}</span>
       <Select items={statusItems} value={task.status} onValueChange={(next) => next && setStatus(task.id, next as TaskStatus)}>

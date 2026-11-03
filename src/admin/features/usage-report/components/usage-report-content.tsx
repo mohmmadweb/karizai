@@ -16,6 +16,7 @@ import {
   buckets as bucketize,
   filterRows,
   inRange,
+  rowsByAgent,
   rowsByGroup,
   rowsByModel,
   recordsForRow,
@@ -78,7 +79,9 @@ export function UsageReportContent() {
         ? rowsFromBuckets(buckets, applied)
         : view === "user"
           ? rowsByUser(records, ctx)
-          : rowsByGroup(records, ctx);
+          : view === "agent"
+            ? rowsByAgent(records, ctx)
+            : rowsByGroup(records, ctx);
     return { records, totals, unpricedModelIds, buckets, rows };
   }, [applied, view, users, groups, memberships, models, providers]);
 
@@ -111,7 +114,7 @@ export function UsageReportContent() {
     <div className="flex flex-col gap-8">
       <PageHeader
         title="گزارش مصرف"
-        description="مصرف درخواست و توکن را در بازه‌ی دلخواه به تفکیک کل سیستم، کاربر و گروه ببینید؛ مصرف هر مدل در صفحه‌ی مدل‌های هر ارائه‌دهنده است."
+        description="مصرف درخواست و توکن را در بازه‌ی دلخواه به تفکیک کل سیستم، کاربر، گروه و عامل ببینید؛ مصرف هر مدل در صفحه‌ی مدل‌های هر ارائه‌دهنده است."
       />
       <div className="flex flex-col gap-5">
         <PeriodPicker

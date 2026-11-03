@@ -8,7 +8,6 @@ import { getDataSources } from "@/admin/features/data-sources/data/data-sources"
 import { DocumentsProvider } from "@/admin/features/documents/components/documents-provider";
 import { getDocuments } from "@/admin/features/documents/data/documents";
 import { getFileSources } from "@/admin/features/documents/data/file-sources";
-import { BiProvider } from "@/admin/features/bi-dashboard/components/bi-provider";
 import { ApiKeysProvider } from "@/admin/features/api-keys/components/api-keys-provider";
 import { ConnectionsProvider } from "@/admin/features/connections/components/connections-provider";
 import { RoutersProvider } from "@/admin/features/smart-router/components/routers-provider";
@@ -37,7 +36,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               <ConnectionsProvider>
                 <ApiKeysProvider>
                   <DocumentsProvider initialDocuments={getDocuments()} initialSources={getFileSources()}>
-                    <BiProvider><AdminShell>{children}</AdminShell></BiProvider>
+                    <AdminShell>{children}</AdminShell>
                   </DocumentsProvider>
                 </ApiKeysProvider>
               </ConnectionsProvider>

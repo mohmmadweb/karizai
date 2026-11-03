@@ -3,6 +3,8 @@
 import { BackLink } from "@/components/shared/back-link";
 import { EntityNotFound } from "@/components/shared/entity-not-found";
 import { PageHeader } from "@/components/shared/page-header";
+import { projectStatus } from "../lib/project-status";
+import { ProjectAiActions, RiskChip } from "./project-ai-actions";
 import { TaskList } from "./task-list";
 import { useWorkspace } from "./workspace-provider";
 
@@ -13,7 +15,8 @@ export function ProjectDetail({ projectId }: { projectId: string }) {
   return (
     <div className="mx-auto flex w-full max-w-page flex-col gap-8 page-gutter py-8">
       <BackLink href="/messenger/projects">پروژه‌ها</BackLink>
-      <PageHeader title={project.name} description={project.description} />
+      <PageHeader title={project.name} description={project.description} action={<RiskChip risk={projectStatus(project, tasks).insight.risk} />} />
+      <ProjectAiActions project={project} status={projectStatus(project, tasks)} />
       <TaskList tasks={tasks.filter((task) => task.projectId === project.id)} />
     </div>
   );

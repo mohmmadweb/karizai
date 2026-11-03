@@ -11,6 +11,8 @@ import {
   ScaleIcon,
   ScrollTextIcon,
   ServerCogIcon,
+  ListChecksIcon,
+  SparklesIcon,
   WalletIcon,
   WebhookIcon,
   ChartColumnIcon,
@@ -112,8 +114,8 @@ const sections: AdminSection[] = [
   {
     id: "section-policies",
     slug: "policies",
-    title: "سیاست مدل‌ها",
-    description: "سطح محرمانگی داده و مدل‌های مجاز برای هر سطح؛ درخواست‌هایی که بیرون رفتند.",
+    title: "مرکز قواعد و سیاست‌ها",
+    description: "همه‌ی قاعده‌ها در یک جا: محرمانگی اسناد، پوشاندن داده، بودجه‌ی تومانی گروه‌ها، مجوز خواندن و نوشتن و مدل‌های مجاز.",
     icon: ScaleIcon,
   },
   {
@@ -133,7 +135,7 @@ const sections: AdminSection[] = [
   {
     id: "section-budgets",
     slug: "budgets",
-    title: "بودجه و سهمیه",
+    title: "سهمیه‌ی کاربران",
     description: "بودجه‌ی ماهانه‌ی هر واحد و کاربر و رفتار پس از اتمام آن.",
     icon: WalletIcon,
   },
@@ -179,17 +181,31 @@ const sections: AdminSection[] = [
     description: "ثبت مدل‌های پیش‌بینی و بهینه‌سازی و مدل‌های اختصاصی سازمان.",
     icon: ServerCogIcon,
   },
+  {
+    id: "section-rfi",
+    slug: "rfi",
+    title: "نقشه‌ی پوشش RFI",
+    description: "همه‌ی نیازمندی‌های RFI پارسا پلیمر و جای نمایش هر کدام در دمو.",
+    icon: ListChecksIcon,
+  },
+  {
+    id: "section-skills",
+    slug: "skills",
+    title: "مهارت‌ها",
+    description: "بارگذاری مهارت‌های سازمان برای استفاده‌ی کاربران در عامل‌ها.",
+    icon: SparklesIcon,
+  },
 ];
 
 const byId = (ids: string[]) =>
   ids.map((id) => sections.find((section) => section.id === id)!);
 
 const groups: AdminSectionGroup[] = [
-  { id: "monitoring", title: "پایش", sections: byId(["section-dashboard", "section-usage", "section-status", "section-audit"]) },
-  { id: "governance", title: "حاکمیت هوش مصنوعی", sections: byId(["section-approvals", "section-agents", "section-evaluations", "section-policies", "section-masking"]) },
-  { id: "intelligence", title: "هوش و دانش", sections: byId(["section-models", "section-ml-models", "section-benchmark", "section-documents", "section-data", "section-connections", "section-webhooks"]) },
-  { id: "cost", title: "هزینه و ظرفیت", sections: byId(["section-budgets", "section-limits"]) },
-  { id: "access", title: "دسترسی", sections: byId(["section-users", "section-groups", "section-organization", "section-api-keys"]) },
+  { id: "overview", title: "نمای کلی", sections: byId(["section-dashboard", "section-rfi"]) },
+  { id: "people", title: "کاربران و ساختار", sections: byId(["section-users", "section-groups", "section-organization"]) },
+  { id: "governance", title: "قواعد و حاکمیت", sections: byId(["section-policies", "section-approvals", "section-agents", "section-evaluations", "section-audit"]) },
+  { id: "intelligence", title: "هوش و دانش", sections: byId(["section-models", "section-ml-models", "section-benchmark", "section-documents", "section-data", "section-connections", "section-skills", "section-webhooks"]) },
+  { id: "operations", title: "ظرفیت و پایداری", sections: byId(["section-budgets", "section-limits", "section-status"]) },
 ];
 
 export function getAdminSectionGroups(): AdminSectionGroup[] {

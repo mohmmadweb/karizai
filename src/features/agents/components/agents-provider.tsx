@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useMemo, useRef, useState, type ReactNode } from "react";
+import { nextVersion } from "../lib/version";
 import type { Agent, AgentDraft, ShareTarget, Skill, SkillContent } from "../types";
 
 type AgentsContextValue = {
@@ -43,7 +44,8 @@ export function AgentsProvider({
       saveAgent: (id, draft) => {
         const now = new Date().toISOString();
         if (id) {
-          setAgents((list) => list.map((item) => (item.id === id ? { ...item, ...draft, updatedAt: now } : item)));
+          // Every save is a new version, so evaluation results and approvals refer to a known version.
+          setAgents((list) => list.map((item) => (item.id === id ? { ...item, ...draft, version: nextVersion(item.version), updatedAt: now } : item)));
           return id;
         }
         const created: Agent = {
@@ -54,6 +56,7 @@ export function AgentsProvider({
           kind: "personal",
           shareRequests: [],
           useCount: 0,
+          version: "1.0",
           updatedAt: now,
         };
         setAgents((list) => [created, ...list]);

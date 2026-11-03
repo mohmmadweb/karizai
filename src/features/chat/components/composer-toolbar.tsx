@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { PlusIcon } from "lucide-react";
+import { FolderOpenIcon, PlusIcon } from "lucide-react";
 import { PromptInputAction } from "@/components/ui/prompt-input";
 import { Button } from "@/components/ui/button";
 import type { Agent } from "@/features/agents/types";
@@ -24,6 +24,10 @@ type ComposerToolbarProps = {
   supervisor: boolean;
   onSupervisorChange: (on: boolean) => void;
   onFiles: (files: FileList) => void;
+  /** Opens «📎 فایل از کاریز». */
+  onKnowledgeFile: () => void;
+  optimizer: boolean;
+  onOptimizerChange: (on: boolean) => void;
   disabled: boolean;
 };
 
@@ -36,6 +40,11 @@ export function ComposerToolbar(props: ComposerToolbarProps) {
       <PromptInputAction tooltip="پیوست فایل (PDF، Word، Excel، تصویر)">
         <Button type="button" variant="ghost" size="icon" className="rounded-full" aria-label="پیوست فایل" disabled={props.disabled} onClick={() => fileRef.current?.click()}>
           <PlusIcon aria-hidden />
+        </Button>
+      </PromptInputAction>
+      <PromptInputAction tooltip="📎 فایل از کاریز">
+        <Button type="button" variant="ghost" size="icon" className="rounded-full" aria-label="فایل از کاریز" disabled={props.disabled} onClick={props.onKnowledgeFile}>
+          <FolderOpenIcon aria-hidden />
         </Button>
       </PromptInputAction>
       <input
@@ -64,6 +73,8 @@ export function ComposerToolbar(props: ComposerToolbarProps) {
         onKnowledgeChange={props.onKnowledgeChange}
         supervisor={props.supervisor}
         onSupervisorChange={props.onSupervisorChange}
+        optimizer={props.optimizer}
+        onOptimizerChange={props.onOptimizerChange}
       />
     </div>
   );

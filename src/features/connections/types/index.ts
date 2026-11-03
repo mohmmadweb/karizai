@@ -33,6 +33,12 @@ export type ConnectionTool = {
   outputs?: ToolOutput[];
 };
 
+/** A «درگاه»: one standard contract per kind of system; Kariz or the organization's own system plugs into it. */
+export type GatewayId = "identity" | "documents" | "work" | "messaging" | "calendar" | "data" | "plant" | "other";
+
+/** kariz: Kariz's own adapter; external: an adapter to the organization's system. */
+export type AdapterKind = "kariz" | "external";
+
 export type Connection = {
   id: string;
   name: string;
@@ -43,6 +49,11 @@ export type Connection = {
   endpoint?: string;
   status: ConnectionStatus;
   tools: ConnectionTool[];
+  /** Gateway it plugs into; without it the gateway is found from the id or the area. */
+  gateway?: GatewayId;
+  adapter?: AdapterKind;
+  /** Only reads; nothing in the system changes. */
+  readOnly?: boolean;
 };
 
 export type ToolRunStatus =

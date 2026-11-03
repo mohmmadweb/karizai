@@ -7,6 +7,13 @@ const knownLists: Record<string, string[]> = {
   "api.example-provider.com": ["mistral-large", "mistral-small"],
 };
 
+/** Newer versions a provider publishes later; they appear from the second fetch on. */
+const newerModels: Record<string, string> = {
+  "openrouter.ai": "anthropic/claude-sonnet-4.5",
+  "10.0.0.15": "qwen3-coder-30b",
+  "api.example-provider.com": "mistral-medium-3",
+};
+
 const genericList = ["general/model-a", "general/model-b", "general/model-c"];
 
 /**
@@ -23,5 +30,5 @@ export function getRemoteModels(baseUrl: string, round: number): string[] {
   }
   if (host.startsWith("error.")) throw new FetchModelsError("فهرست مدل‌ها دریافت نشد.");
   const list = knownLists[host] ?? genericList;
-  return round >= 1 ? [...list, `${host}/new-model-preview`] : list;
+  return round >= 1 ? [...list, newerModels[host] ?? `${host}/new-model-preview`] : list;
 }

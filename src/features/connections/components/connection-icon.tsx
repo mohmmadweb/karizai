@@ -1,8 +1,11 @@
-import { BookOpenTextIcon, ChartGanttIcon, DatabaseIcon, FileTextIcon, GitBranchIcon, FactoryIcon, FlaskConicalIcon, MessageSquareIcon, MessagesSquareIcon, PlugIcon, RadioIcon, TagsIcon, UsersIcon, WrenchIcon, type LucideIcon } from "lucide-react";
+import { CalendarDaysIcon, CpuIcon, IdCardIcon, BookOpenTextIcon, ChartGanttIcon, DatabaseIcon, FileTextIcon, GitBranchIcon, FactoryIcon, FlaskConicalIcon, MessageSquareIcon, MessagesSquareIcon, PlugIcon, RadioIcon, TagsIcon, UsersIcon, WrenchIcon, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /** What a connection is about, found from its name and area, with a colour that tells the kinds apart. */
 const kinds: { match: RegExp; icon: LucideIcon; tone: string }[] = [
+  { match: /SCADA|OPC/i, icon: CpuIcon, tone: "bg-red-500/15 text-red-600 dark:text-red-400" },
+  { match: /Active Directory|LDAP|SSO/i, icon: IdCardIcon, tone: "bg-slate-500/15 text-slate-600 dark:text-slate-300" },
+  { match: /Exchange|تقویم/i, icon: CalendarDaysIcon, tone: "bg-cyan-500/15 text-cyan-600 dark:text-cyan-400" },
   { match: /GitLab|گیت‌لب/i, icon: GitBranchIcon, tone: "bg-orange-500/15 text-orange-600 dark:text-orange-400" },
   { match: /Confluence|کانفلوئنس/i, icon: BookOpenTextIcon, tone: "bg-blue-500/15 text-blue-600 dark:text-blue-400" },
   { match: /MSP|Microsoft Project|مایکروسافت پروجکت/i, icon: ChartGanttIcon, tone: "bg-green-500/15 text-green-600 dark:text-green-400" },

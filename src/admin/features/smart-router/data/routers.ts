@@ -14,6 +14,7 @@ export function getSampleRouters(): SmartRouter[] {
         { modelId: "model-002", tier: "medium" },
         { modelId: "model-001", tier: "heavy" },
       ],
+      weights: { quality: 50, speed: 25, cost: 25 },
     },
     {
       id: "router-sensitive",
@@ -26,6 +27,7 @@ export function getSampleRouters(): SmartRouter[] {
         { modelId: "model-004", tier: "medium" },
         { modelId: "model-004", tier: "heavy" },
       ],
+      weights: { quality: 40, speed: 20, cost: 40 },
     },
   ];
 }

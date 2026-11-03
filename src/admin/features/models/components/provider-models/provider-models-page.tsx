@@ -12,6 +12,7 @@ import { useModels } from "../../hooks/use-models";
 import { modelsOfProvider } from "../../lib/selectors";
 import { ProviderStatusBadge } from "../models/model-badges";
 import { ProviderModelsTable } from "./provider-models-table";
+import { ProviderSyncField } from "./provider-sync-field";
 
 export function ProviderModelsPage({ providerId }: { providerId: string }) {
   const { providers, models, fetchStatus, fetchModels } = useModels();
@@ -42,6 +43,7 @@ export function ProviderModelsPage({ providerId }: { providerId: string }) {
           </Button>
         }
       />
+      <ProviderSyncField provider={provider} />
       {all.length === 0 ? (
         <EmptyState icon={<BotIcon />} title="هنوز مدلی دریافت نشده" description="فهرست مدل‌ها را از این ارائه‌دهنده به‌روز کنید." />
       ) : (

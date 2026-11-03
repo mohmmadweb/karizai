@@ -3,13 +3,14 @@
 import { hasServer } from "@/lib/static-params";
 import { nextFreeId } from "@/lib/static-params";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import type { ConnectionType, DefinedConnection } from "@/lib/connections";
+import type { ConnectionType, DefinedConnection, DefinedTool } from "@/lib/connections";
 import { getSampleConnections } from "../data/connections";
 
 type ConnectionsContextValue = {
   connections: DefinedConnection[];
   /** Returns the id of the new connection. */
-  addConnection: (input: { name: string; domain: string; type: ConnectionType; endpoint: string }) => string;
+  /** A template may also bring a description and ready tools. */
+  addConnection: (input: { name: string; domain: string; type: ConnectionType; endpoint: string; description?: string; tools?: DefinedTool[] }) => string;
   updateConnection: (id: string, change: Partial<Omit<DefinedConnection, "id">>) => void;
   removeConnection: (id: string) => void;
 };
@@ -47,9 +48,10 @@ export function ConnectionsProvider({ children }: { children: ReactNode }) {
   const value = useMemo<ConnectionsContextValue>(
     () => ({
       connections,
-      addConnection: ({ name, domain, type, endpoint }) => {
+      addConnection: ({ name, domain, type, endpoint, description = "", tools = [] }) => {
         const id = nextFreeId("conn-new", connections.map((item) => item.id));
-        setConnections((list) => [...list, { id, name: name.trim(), domain: domain.trim(), description: "", type, endpoint: endpoint.trim(), auth: "shared-key", tools: [], groupIds: [], active: false }]);
+        const ownTools = tools.map((tool, index) => ({ ...tool, id: `${id}-tool-${index + 1}` }));
+        setConnections((list) => [...list, { id, name: name.trim(), domain: domain.trim(), description: description.trim(), type, endpoint: endpoint.trim(), auth: "shared-key", tools: ownTools, groupIds: [], active: false }]);
         return id;
       },
       updateConnection: (id, change) => setConnections((list) => list.map((item) => (item.id === id ? { ...item, ...change } : item))),

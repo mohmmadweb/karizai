@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { defaultChecks, getMlModel, sampleCode } from "../data/ml-models";
 import type { NodeConfig, NodeKind, Trigger, Workflow, WorkflowEdge, WorkflowNode } from "../types";
 
 /** What the «+» on a block adds: a kind of step, or an existing Agent, skill, or tool already filled in. */
@@ -13,6 +14,13 @@ export const nodeKindLabels: Record<NodeKind, string> = {
   condition: "شرط",
   approval: "تأیید انسانی",
   orchestrator: "هماهنگ‌کننده‌ی چند Agent",
+  code: "کد یا اسکریپت",
+  "ml-model": "مدل ML",
+  "prompt-optimizer": "بهینه‌ساز پرامپت",
+  router: "مسیریاب هوشمند",
+  supervisor: "ناظر",
+  fork: "شاخه‌ی موازی",
+  join: "پیوستن شاخه‌ها",
 };
 
 const defaultLabels: Record<NodeKind, string> = {
@@ -22,7 +30,32 @@ const defaultLabels: Record<NodeKind, string> = {
   condition: "شرط تازه",
   approval: "تأیید شما",
   orchestrator: "هماهنگ‌کننده",
+  code: "اسکریپت",
+  "ml-model": "مدل ML",
+  "prompt-optimizer": "✦ بهینه‌ساز پرامپت",
+  router: "✦ مسیریاب هوشمند",
+  supervisor: "✦ ناظر",
+  fork: "شاخه‌ی موازی",
+  join: "پیوستن شاخه‌ها",
 };
+
+/** Settings a new step of each kind starts with. */
+function defaultConfig(kind: NodeKind, extra: NodeConfig | undefined): NodeConfig {
+  const base: Partial<Record<NodeKind, NodeConfig>> = {
+    orchestrator: { childAgentIds: [], maxSteps: 8 },
+    code: { language: "python", code: sampleCode.python },
+    router: { childAgentIds: [] },
+    supervisor: { checks: defaultChecks },
+    "prompt-optimizer": { instruction: "پرسش کاربر را روشن، کامل و با قالب خروجی جدول بازنویسی کن." },
+  };
+  return { ...base[kind], ...extra };
+}
+
+function labelOf(block: NewBlock): string {
+  if (block.label) return block.label;
+  if (block.kind === "ml-model") return `✦ ${getMlModel(block.config?.mlModelId)?.name ?? "مدل ML"}`;
+  return defaultLabels[block.kind];
+}
 
 /** The workflow being edited: changes stay here until the user saves. */
 export function useWorkflowDraft(saved: Workflow) {
@@ -48,9 +81,9 @@ export function useWorkflowDraft(saved: Workflow) {
         const node: WorkflowNode = {
           id: `n-${Date.now().toString(36)}-0`,
           kind: block.kind,
-          label: block.label ?? defaultLabels[block.kind],
+          label: labelOf(block),
           position: { x: 0, y: 0 },
-          config: { ...(block.kind === "orchestrator" ? { childAgentIds: [], maxSteps: 8 } : {}), ...block.config },
+          config: defaultConfig(block.kind, block.config),
         };
         setSelectedId(node.id);
         return { ...current, nodes: [node], edges: [] };
@@ -64,11 +97,11 @@ export function useWorkflowDraft(saved: Workflow) {
         const node: WorkflowNode = {
           id: `n-${Date.now().toString(36)}-${current.nodes.length}`,
           kind: block.kind,
-          label: block.label ?? defaultLabels[block.kind],
+          label: labelOf(block),
           position: { x: source.position.x + outgoing * 230, y: source.position.y + 130 },
-          config: { ...(block.kind === "orchestrator" ? { childAgentIds: [], maxSteps: 8 } : {}), ...block.config },
+          config: defaultConfig(block.kind, block.config),
         };
-        const label = source.kind === "condition" ? (outgoing === 0 ? "بله" : "خیر") : undefined;
+        const label = source.kind === "condition" ? (outgoing === 0 ? "بله" : "خیر") : source.kind === "fork" ? `شاخه ${(outgoing + 1).toLocaleString("fa-IR")}` : undefined;
         setSelectedId(node.id);
         return { ...current, nodes: [...current.nodes, node], edges: [...current.edges, { id: `e-${sourceId}-${node.id}`, source: sourceId, target: node.id, label }] };
       }),
@@ -86,6 +119,15 @@ export function useWorkflowDraft(saved: Workflow) {
       setSelectedId(null);
     },
     setGraph: (nodes: WorkflowNode[], edges: WorkflowEdge[]) => setDraft((current) => ({ ...current, nodes, edges })),
+    /** Points the «خطا» path of a step at another step, or removes it (null). */
+    setErrorTarget: (sourceId: string, targetId: string | null) =>
+      setDraft((current) => ({
+        ...current,
+        edges: [
+          ...current.edges.filter((edge) => !(edge.source === sourceId && edge.label === "خطا")),
+          ...(targetId ? [{ id: `e-err-${sourceId}-${targetId}`, source: sourceId, target: targetId, label: "خطا" }] : []),
+        ],
+      })),
   };
 }
 

@@ -22,6 +22,10 @@ type ResolveInput = {
   historyLength?: number;
   /** The user chose to send sensitive text to an internal model instead of masking it. */
   forceInternal?: boolean;
+  /** Internet is cut: only internal models can answer. */
+  offline?: boolean;
+  /** Why only an internal model may answer, for example a field or file the admin marked; shown under the answer. */
+  internalReason?: string;
 };
 
 type Needs = { images: boolean; tools: boolean };
@@ -35,13 +39,13 @@ const fits = (model: CatalogModel, needs: Needs) =>
  * uses its own default model. If the wanted model is down, a permitted
  * alternative with the same rules takes over.
  */
-export function resolveModel({ choice, agent, attachments, usesTools, models, routers = [], prompt = "", historyLength = 0, forceInternal }: ResolveInput): ModelResolution {
+export function resolveModel({ choice, agent, attachments, usesTools, models, routers = [], prompt = "", historyLength = 0, forceInternal, offline, internalReason }: ResolveInput): ModelResolution {
   const needs: Needs = {
     images: attachments.some((item) => item.kind === "image"),
     tools: usesTools || (agent?.tools.length ?? 0) > 0,
   };
 
-  if (agent?.isSensitive || forceInternal) {
+  if (agent?.isSensitive || forceInternal || offline || internalReason) {
     const internal = models.filter((model) => model.isInternal && model.isAvailable);
     if (internal.length === 0) {
       return { status: "blocked", reason: "این درخواست باید فقط با مدل داخلی سازمان اجرا شود، اما الان مدل داخلی در دسترس نیست. کمی بعد دوباره تلاش کنید یا با ادمین تماس بگیرید." };
@@ -50,7 +54,15 @@ export function resolveModel({ choice, agent, attachments, usesTools, models, ro
     if (!match) {
       return { status: "blocked", reason: "مدل داخلی با پیوست یا ابزار این پیام سازگار نیست. پیوست را بردارید و دوباره بفرستید." };
     }
-    return { status: "ok", model: match, note: agent?.isSensitive ? "چون Agent حساس است، مدل داخلی استفاده شد." : "طبق انتخاب شما، پیام فقط با مدل داخلی پردازش شد." };
+    const wantedName = choice === "auto" || choice.startsWith("auto:") ? null : models.find((model) => model.id === choice && !model.isInternal)?.name;
+    const note = agent?.isSensitive
+      ? "چون Agent حساس است، مدل داخلی استفاده شد."
+      : internalReason
+        ? `${internalReason} پس پیام فقط با مدل داخلی «${match.name}» پردازش شد.`
+        : offline
+          ? `اتصال اینترنت قطع است؛ ${wantedName ? `درخواست «${wantedName}» به` : "پاسخ با"} مدل داخلی «${match.name}» ${wantedName ? "سپرده شد" : "ساخته شد"}.`
+          : "طبق انتخاب شما، پیام فقط با مدل داخلی پردازش شد.";
+    return { status: "ok", model: match, note };
   }
 
   // An Agent whose default model is not in the list (for example after the admin changed providers) falls back to the automatic choice.

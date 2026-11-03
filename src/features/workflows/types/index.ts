@@ -1,4 +1,22 @@
-export type NodeKind = "agent" | "skill" | "tool" | "condition" | "approval" | "orchestrator";
+export type NodeKind =
+  | "agent" | "skill" | "tool" | "condition" | "approval" | "orchestrator"
+  /** Runs a short Python or JavaScript script. */
+  | "code"
+  /** Calls a registered machine-learning model; its numbers can feed a condition. */
+  | "ml-model"
+  | "prompt-optimizer"
+  /** Smart router: sends the request to the best fitting Agent. */
+  | "router"
+  /** Supervisor: checks the output of the steps before it against rules. */
+  | "supervisor"
+  /** Parallel branch: every path that leaves it runs at the same time; `join` waits for all of them. */
+  | "fork"
+  | "join";
+
+/** What a step does when it fails after its retries. branch: follow its «خطا» path. */
+export type OnError = "stop" | "continue" | "branch";
+
+export type CodeLanguage = "python" | "javascript";
 
 export type ConditionOperator = ">" | "<" | ">=" | "<=" | "=" | "!=";
 
@@ -24,6 +42,17 @@ export type NodeConfig = {
   /** Orchestrator nodes: Agents it may call, and the limits that stop endless loops. */
   childAgentIds?: string[];
   maxSteps?: number;
+  /** Code steps. */
+  language?: CodeLanguage;
+  code?: string;
+  /** ML model steps: id from `getMlModels`. */
+  mlModelId?: string;
+  /** Supervisor steps: rules the output must meet. */
+  checks?: string[];
+  /** Error handling of any working step. */
+  retries?: number;
+  timeoutSec?: number;
+  onError?: OnError;
 };
 
 export type WorkflowNode = {
@@ -38,7 +67,7 @@ export type WorkflowEdge = {
   id: string;
   source: string;
   target: string;
-  /** Condition nodes label their two paths. */
+  /** Condition nodes label their two paths; «خطا» marks the path taken when a step fails. */
   label?: string;
 };
 
@@ -86,6 +115,10 @@ export type RunStep = {
   outputTokens?: number;
   output?: string;
   error?: string;
+  /** The step ran at the same time as another step of the run. */
+  parallel?: boolean;
+  /** Tries it took, when more than one. */
+  attempts?: number;
 };
 
 export type Run = {
@@ -98,6 +131,8 @@ export type Run = {
   /** What started it, for example «دستی» or «زمان‌بندی: هر شنبه ۰۸:۰۰». */
   startedBy: string;
   steps: RunStep[];
+  /** Time saved by running parallel branches at once instead of one after another. */
+  savedMs?: number;
 };
 
 export type WorkflowTemplate = {

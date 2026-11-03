@@ -11,7 +11,7 @@ export type UsageRecord = {
 
 export type PeriodId = "today" | "week" | "month" | "custom";
 
-export type ReportView = "system" | "user" | "group";
+export type ReportView = "system" | "user" | "group" | "agent";
 
 export type Metric = "requests" | "tokens";
 

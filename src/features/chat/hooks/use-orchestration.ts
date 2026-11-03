@@ -14,7 +14,7 @@ type Options = {
   supervisorModels: (options: { sensitive: boolean; answeringModel: string }) => { independent: string | null; stronger: string | null };
 };
 
-type RunInput = { id: string; messageId: string; plan: PlannedStep[]; question: string; modelName: string; sensitive: boolean };
+type RunInput = { id: string; messageId: string; plan: PlannedStep[]; question: string; modelName: string; sensitive: boolean; /** Finished steps shown before the plan, for example the prompt optimizer. */ prefix?: TimelineStep[] };
 
 /** Runs the multi-agent timeline of one answer. Stopping aborts the waits and the approval question. */
 export function useOrchestration({ patch, agentModelName, supervisorModels }: Options) {
@@ -33,7 +33,7 @@ export function useOrchestration({ patch, agentModelName, supervisorModels }: Op
 
   /** Resolves with the outcome, or `null` when the user stopped it. */
   const run = useCallback(
-    async ({ id, messageId, plan, question, modelName, sensitive }: RunInput): Promise<TimelineOutcome | null> => {
+    async ({ id, messageId, plan, question, modelName, sensitive, prefix = [] }: RunInput): Promise<TimelineOutcome | null> => {
       const controller = new AbortController();
       controllers.current.set(messageId, controller);
       const { signal } = controller;
@@ -50,7 +50,7 @@ export function useOrchestration({ patch, agentModelName, supervisorModels }: Op
           question,
           thinkingModel: modelName,
           agentModelName: (agentId) => names.current(agentId),
-          update: (steps: TimelineStep[]) => patch(id, messageId, { timeline: steps }),
+          update: (steps: TimelineStep[]) => patch(id, messageId, { timeline: [...prefix, ...steps] }),
           wait,
           supervisor: (() => { const picked = supervisorRef.current({ sensitive, answeringModel: modelName }); return { sensitive, independentModel: picked.independent, strongerModel: picked.stronger }; })(),
           askApproval: () =>

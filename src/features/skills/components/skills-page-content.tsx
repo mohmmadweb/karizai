@@ -7,6 +7,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import { SearchField } from "@/components/shared/search-field";
 import { Button } from "@/components/ui/button";
 import { useAgents } from "@/features/agents/components/agents-provider";
+import { OrgSkillsSection } from "./org-skills-section";
 import { SkillCard } from "./skill-card";
 import { SkillFormDialog } from "./skill-form-dialog";
 
@@ -27,6 +28,7 @@ export function SkillsPageContent() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{filtered.map((skill) => <SkillCard key={skill.id} skill={skill} />)}</div>
       )}
+      <OrgSkillsSection />
       {creating ? <SkillFormDialog open onOpenChange={setCreating} onSave={(content) => addSkill(content)} /> : null}
     </div>
   );

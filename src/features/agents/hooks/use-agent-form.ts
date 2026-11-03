@@ -12,12 +12,15 @@ export const emptyDraft: AgentDraft = {
   defaultModelId: "",
   tools: [],
   skillIds: [],
+  knowledgeIds: [],
+  modelPolicy: "auto",
+  runIn: ["assistant"],
 };
 
 function toDraft(agent: Agent | undefined): AgentDraft {
   if (!agent) return emptyDraft;
-  const { name, purpose, instructions, defaultModelId, tools, skillIds } = agent;
-  return { name, purpose, instructions, defaultModelId, tools, skillIds };
+  const { name, purpose, instructions, defaultModelId, tools, skillIds, knowledgeIds = [], modelPolicy = "auto", runIn = ["assistant"], evalScore } = agent;
+  return { name, purpose, instructions, defaultModelId, tools, skillIds, knowledgeIds, modelPolicy, runIn, evalScore };
 }
 
 /** Draft values, errors, and whether anything changed since the last save. */
@@ -35,7 +38,7 @@ export function useAgentForm(agent: Agent | undefined) {
   }
 
   function validate(): boolean {
-    const found = validateAgent(draft, agent?.isSensitive ?? false, modelById);
+    const found = validateAgent(draft, (agent?.isSensitive ?? false) || draft.modelPolicy === "internal-only", modelById);
     setErrors(found);
     return Object.keys(found).length === 0;
   }

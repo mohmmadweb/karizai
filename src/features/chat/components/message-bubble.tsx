@@ -8,6 +8,7 @@ import { Loader } from "@/components/ui/loader";
 import { Message, MessageAction, MessageActions, MessageContent } from "@/components/ui/message";
 import { ToolRunCard } from "@/features/connections/components/tool-run-card";
 import type { Message as ChatMessage } from "../types";
+import { AnswerActions } from "./answer-actions";
 import { AnswerDetails } from "./answer-details";
 import { AttachmentChip } from "./attachment-chip";
 import { GeneratedFilesView } from "./generated-files";
@@ -16,12 +17,14 @@ import { TimelineView } from "./timeline-view";
 
 type MessageBubbleProps = {
   message: ChatMessage;
+  /** The question this answer replies to; used for the usage bar. */
+  question?: string;
   onApprove: () => void;
   onReject: () => void;
   onRetry: () => void;
 };
 
-export function MessageBubble({ message, onApprove, onReject, onRetry }: MessageBubbleProps) {
+export function MessageBubble({ message, question = "", onApprove, onReject, onRetry }: MessageBubbleProps) {
   const [copied, setCopied] = useState(false);
 
   if (message.role === "user") {
@@ -41,7 +44,7 @@ export function MessageBubble({ message, onApprove, onReject, onRetry }: Message
     setTimeout(() => setCopied(false), 1500);
   }
 
-  const waiting = message.status === "streaming" && !message.text && !message.toolRun && !message.timeline;
+  const waiting = message.status === "streaming" && !message.text && !message.toolRun && !message.timeline?.some((step) => step.status !== "done");
   return (
     <Message className="flex-col gap-3">
       {message.timeline ? <TimelineView steps={message.timeline} /> : null}
@@ -71,7 +74,8 @@ export function MessageBubble({ message, onApprove, onReject, onRetry }: Message
               <Button variant="ghost" size="icon-sm" aria-label="پاسخ دوباره" onClick={onRetry}><RefreshCwIcon aria-hidden /></Button>
             </MessageAction>
           </MessageActions>
-          <AnswerDetails message={message} />
+          {message.actions && message.actions.length > 0 && message.status === "done" ? <AnswerActions actions={message.actions} /> : null}
+          <AnswerDetails message={message} question={question} />
         </>
       ) : null}
     </Message>

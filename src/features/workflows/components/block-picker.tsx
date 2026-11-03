@@ -15,6 +15,7 @@ import {
 import { useAgents } from "@/features/agents/components/agents-provider";
 import { useConnections } from "@/features/connections/components/connections-provider";
 import { defaultParams, toolParams } from "@/features/connections/lib/tool-params";
+import { getMlModels } from "../data/ml-models";
 import { agentParams } from "../lib/agent-params";
 import { nodeKindLabels, type NewBlock } from "../hooks/use-workflow-draft";
 
@@ -77,9 +78,21 @@ export function BlockMenu({ trigger, heading, onPick, nativeTrigger = true }: { 
             </DropdownMenuSubContent>
           </DropdownMenuSub>
           <DropdownMenuSub>
+            <DropdownMenuSubTrigger>✦ گام‌های هوشمند و کد</DropdownMenuSubTrigger>
+            <DropdownMenuSubContent className="max-h-72 overflow-y-auto">
+              {(["prompt-optimizer", "router", "supervisor", "code"] as const).map((kind) => <DropdownMenuItem key={kind} onClick={() => onPick({ kind })}>{nodeKindLabels[kind]}</DropdownMenuItem>)}
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>{nodeKindLabels["ml-model"]}</DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  {getMlModels().map((model) => <DropdownMenuItem key={model.id} onClick={() => onPick({ kind: "ml-model", config: { mlModelId: model.id } })}>{model.name}</DropdownMenuItem>)}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+          <DropdownMenuSub>
             <DropdownMenuSubTrigger>کنترل مسیر</DropdownMenuSubTrigger>
             <DropdownMenuSubContent>
-              {(["condition", "approval"] as const).map((kind) => <DropdownMenuItem key={kind} onClick={() => onPick({ kind })}>{nodeKindLabels[kind]}</DropdownMenuItem>)}
+              {(["condition", "approval", "fork", "join"] as const).map((kind) => <DropdownMenuItem key={kind} onClick={() => onPick({ kind })}>{nodeKindLabels[kind]}</DropdownMenuItem>)}
             </DropdownMenuSubContent>
           </DropdownMenuSub>
         </DropdownMenuGroup>

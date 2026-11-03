@@ -5,7 +5,7 @@ export function getCurrentUser(): CurrentUser {
 }
 
 export function getQuota(): Quota {
-  return { limit: 200000, used: 128400, resetsAt: "2026-11-01T00:00:00.000Z" };
+  return { limit: 200000, used: 128400, resetsAt: "2026-11-22T00:00:00.000Z" };
 }
 
 export function getAccount(): Account {

@@ -1,5 +1,6 @@
 "use client";
 
+import { useDocConfidential } from "../../hooks/use-doc-confidential";
 import { BackLink } from "@/components/shared/back-link";
 import { EntityNotFound } from "@/components/shared/entity-not-found";
 import { PageHeader } from "@/components/shared/page-header";
@@ -12,6 +13,7 @@ import { PipelineTab } from "./pipeline-tab";
 
 export function DocumentDetail({ docId }: { docId: string }) {
   const { documents } = useDocuments();
+  const { isConfidential } = useDocConfidential();
   const doc = documents.find((d) => d.id === docId);
 
   if (!doc) {
@@ -33,7 +35,7 @@ export function DocumentDetail({ docId }: { docId: string }) {
           <span className="flex flex-wrap items-center gap-3">
             {doc.name}
             <DocStatusBadge status={doc.status} />
-            <ConfidentialBadge confidential={doc.confidential} />
+            <ConfidentialBadge confidential={isConfidential(doc)} />
           </span>
         }
         description={<bdi dir="ltr" className="uppercase">{doc.extension}</bdi>}

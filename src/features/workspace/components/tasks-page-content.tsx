@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AiAnswer } from "@/features/social/components/ai-answer";
+import { AiButton } from "@/features/social/components/ai-button";
 import { currentUserId } from "../lib/people";
+import { TodayPriorities } from "./today-priorities";
 import { TaskList } from "./task-list";
 import { useWorkspace } from "./workspace-provider";
 
@@ -16,6 +19,7 @@ export function TasksPageContent() {
   const { projects, tasks, addTask } = useWorkspace();
   const [scope, setScope] = useState<"mine" | "all">("mine");
   const [title, setTitle] = useState("");
+  const [prioritiesKey, setPrioritiesKey] = useState<number | null>(null);
   const [projectId, setProjectId] = useState(projects[0].id);
   const items = projects.map((p) => ({ value: p.id, label: p.name }));
   const shown = tasks.filter((task) => scope === "all" || task.assigneeId === currentUserId());
@@ -30,7 +34,13 @@ export function TasksPageContent() {
 
   return (
     <div className="mx-auto flex w-full max-w-page flex-col gap-6 page-gutter py-8">
-      <PageHeader title="فعالیت و وظایف من" description="وظایف پروژه‌ها را ببینید و وضعیتشان را عوض کنید." />
+      <PageHeader title="فعالیت و وظایف من" description="وظایف پروژه‌ها را ببینید و وضعیتشان را عوض کنید." action={<AiButton label="اولویت‌بندی امروز من" size="default" onClick={() => setPrioritiesKey(Date.now())} />} />
+      {prioritiesKey ? (
+        <AiAnswer key={prioritiesKey}>
+          <h2 className="text-label">ترتیب پیشنهادی کارهای امروز</h2>
+          <TodayPriorities tasks={tasks.filter((task) => task.assigneeId === currentUserId())} projects={projects} />
+        </AiAnswer>
+      ) : null}
       <form onSubmit={submit} className="flex flex-wrap items-center gap-2">
         <Input className="min-w-56 flex-1" name="task-title" autoComplete="off" aria-label="عنوان وظیفه‌ی تازه" placeholder="وظیفه‌ی تازه..." value={title} onChange={(e) => setTitle(e.target.value)} />
         <Select items={items} value={projectId} onValueChange={(v) => v && setProjectId(v)}>
@@ -43,6 +53,7 @@ export function TasksPageContent() {
         <TabsList aria-label="نمایش وظایف"><TabsTrigger value="mine">وظایف من</TabsTrigger><TabsTrigger value="all">همه‌ی وظایف</TabsTrigger></TabsList>
       </Tabs>
       <TaskList tasks={shown} projects={projects} />
+      <p className="text-body-sm text-muted-foreground"><span aria-hidden className="text-primary">✦ </span>وظایفی که عامل‌ها می‌سازند در همین بخش و با همان دسترسی‌ها مدیریت می‌شوند؛ اگر سازمان از GitLab یا MS Project استفاده کند، از درگاه «کار و وظایف» به همان‌جا می‌روند.</p>
     </div>
   );
 }

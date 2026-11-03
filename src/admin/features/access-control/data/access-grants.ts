@@ -17,6 +17,15 @@ const grants: AccessGrant[] = [
   { resourceType: "document", resourceId: "doc-004", subjectType: "group", subjectId: "group-001" },
   { resourceType: "document", resourceId: "doc-008", subjectType: "group", subjectId: "group-003" },
   { resourceType: "folder", resourceId: "fsrc-001", subjectType: "group", subjectId: "group-003" },
+  { resourceType: "agent", resourceId: "agent-pricing", subjectType: "group", subjectId: "group-001", permission: "readwrite" },
+  { resourceType: "agent", resourceId: "agent-pricing", subjectType: "group", subjectId: "group-002", permission: "read" },
+  { resourceType: "agent", resourceId: "agent-quality", subjectType: "group", subjectId: "group-003", permission: "read" },
+  { resourceType: "agent", resourceId: "agent-quality", subjectType: "user", subjectId: "user-003", permission: "readwrite" },
+  { resourceType: "agent", resourceId: "agent-maint", subjectType: "group", subjectId: "group-003", permission: "readwrite" },
+  { resourceType: "agent", resourceId: "agent-indicators", subjectType: "group", subjectId: "group-003", permission: "read" },
+  { resourceType: "agent", resourceId: "agent-3", subjectType: "group", subjectId: "group-005", permission: "read" },
+  { resourceType: "agent", resourceId: "agent-1", subjectType: "group", subjectId: "group-001", permission: "read" },
+  { resourceType: "agent", resourceId: "org-reorder", subjectType: "group", subjectId: "group-002", permission: "readwrite" },
 ];
 
 export function getAccessGrants(): AccessGrant[] {

@@ -53,10 +53,16 @@ export function useAttachments() {
     }
   }, []);
 
+  /** A file from the organization's files («📎 فایل از کاریز»); it is already processed, so it is ready at once. */
+  const addKnown = useCallback((file: { docId: string; name: string; kind: AttachmentKind; confidential: boolean }) => {
+    setProblem(null);
+    setItems((list) => (list.some((item) => item.docId === file.docId) ? list : [...list, { id: `att-doc-${++counter.current}`, name: file.name, kind: file.kind, status: "ready", docId: file.docId, confidential: file.confidential }]));
+  }, []);
+
   const remove = useCallback((id: string) => setItems((list) => list.filter((item) => item.id !== id)), []);
   const clear = useCallback(() => setItems([]), []);
 
   const busy = items.some((item) => item.status === "uploading" || item.status === "processing");
   const failed = items.some((item) => item.status === "failed");
-  return { items, problem, add, remove, clear, busy, failed };
+  return { items, problem, add, addKnown, remove, clear, busy, failed };
 }

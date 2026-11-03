@@ -31,6 +31,21 @@ const sources: FileSource[] = [
     lastSyncSummary: null,
     createdAt: "2026-10-12T12:00:00.000Z",
   },
+  {
+    id: "fsrc-003",
+    name: "Seafile واحد فنی",
+    protocol: "seafile",
+    host: "seafile.parsapolymer.local",
+    port: 443,
+    folderPath: "/اسناد فنی و QC",
+    username: "readonly_ai",
+    hasPassword: true,
+    testResult: "success",
+    syncIntervalMinutes: 360,
+    lastSyncAt: "2026-10-18T07:30:00.000Z",
+    lastSyncSummary: { added: 6, changed: 2, removed: 0 },
+    createdAt: "2026-10-15T10:00:00.000Z",
+  },
 ];
 
 export function getFileSources(): FileSource[] {

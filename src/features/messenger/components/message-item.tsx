@@ -4,6 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { formatDateTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { MessengerMessage } from "../types";
+import { SourceChips } from "@/features/social/components/ai-parts";
 import { ThreadAvatar } from "./thread-avatar";
 
 function AlertCard({ message }: { message: MessengerMessage }) {
@@ -24,7 +25,7 @@ function AlertCard({ message }: { message: MessengerMessage }) {
           </div>
         ))}
       </dl>
-      <Link href={`/workflows/${alert.workflowId}`} className={cn(buttonVariants({ variant: "outline", size: "sm" }), "w-fit")}>مشاهده‌ی جریان</Link>
+      {alert.workflowId ? <Link href={`/workflows/${alert.workflowId}`} className={cn(buttonVariants({ variant: "outline", size: "sm" }), "w-fit")}>مشاهده‌ی جریان</Link> : null}
     </article>
   );
 }
@@ -34,9 +35,15 @@ export function MessageItem({ message }: { message: MessengerMessage }) {
   const mine = message.from === "me";
   return (
     <li className={cn("flex items-end gap-2", mine ? "justify-start" : "justify-end")}>
-      {mine ? null : <ThreadAvatar threadId={message.threadId} className="size-8" />}
+      {mine ? null : message.agent ? <span aria-hidden className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">✦</span> : <ThreadAvatar threadId={message.threadId} className="size-8" />}
       <div className={cn("flex min-w-0 max-w-[85%] flex-col gap-1", mine ? "items-start" : "items-end")}>
-        {message.alert ? (
+        {message.agent ? (
+          <div className="flex flex-col gap-2 rounded-2xl rounded-ee-sm border border-primary/20 bg-primary/5 px-4 py-2">
+            <p className="text-caption font-medium text-primary"><span aria-hidden>✦ </span>{message.agent.name}</p>
+            <p className="whitespace-pre-wrap text-body">{message.text}</p>
+            <SourceChips sources={message.agent.sources} />
+          </div>
+        ) : message.alert ? (
           <>
             <p className="rounded-2xl rounded-ee-sm bg-muted px-4 py-2 text-body">{message.text}</p>
             <AlertCard message={message} />

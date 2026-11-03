@@ -1,4 +1,5 @@
 import type {
+  SyncInterval,
   AiModel,
   ModelFeaturesInput,
   ModelInfoInput,
@@ -21,6 +22,7 @@ export type ModelsAction =
   | { type: "setEnabled"; id: string; enabled: boolean }
   | { type: "updateInfo"; id: string; input: ModelInfoInput }
   | { type: "updateFeatures"; id: string; input: ModelFeaturesInput }
+  | { type: "setSync"; id: string; every: SyncInterval }
   | { type: "replaceAll"; providers: ModelProvider[]; models: AiModel[] };
 
 export function createModelsState(
@@ -98,6 +100,7 @@ export function modelsReducer(state: ModelsState, action: ModelsAction): ModelsS
           supportsImages: false,
           supportsTools: false,
           contextWindow: null,
+          releasedAt: action.now,
         }));
       return {
         ...state,
@@ -118,6 +121,8 @@ export function modelsReducer(state: ModelsState, action: ModelsAction): ModelsS
       });
     case "updateFeatures":
       return patchModel(state, action.id, action.input);
+    case "setSync":
+      return { ...state, providers: state.providers.map((p) => (p.id === action.id ? { ...p, syncEvery: action.every } : p)) };
     case "replaceAll":
       return createModelsState(action.providers, action.models);
   }

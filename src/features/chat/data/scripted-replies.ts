@@ -2,6 +2,7 @@ import type { Agent } from "@/features/agents/types";
 import type { Connection } from "@/features/connections/types";
 import type { ScriptedEntry, ScriptedReply } from "../types";
 import { getFixedConnectionReply } from "./connection-replies";
+import { attachmentSummaryReply, qcSopSummaryReply } from "./scripted/documents";
 import { knowledgeEntries } from "./scripted/knowledge";
 import { maintenanceEntries } from "./scripted/maintenance";
 import { pricingEntries } from "./scripted/pricing";
@@ -15,6 +16,7 @@ export type CannedInput = {
   connections: Pick<Connection, "id" | "name">[];
   knowledge: boolean;
   text: string;
+  attachments?: { name: string }[];
 };
 
 /**
@@ -22,7 +24,12 @@ export type CannedInput = {
  * selected connections, then organizational knowledge. A question that matches no entry
  * gets the fallback of the first scope that has one.
  */
-export function findCannedReply({ agent, connections, knowledge, text }: CannedInput): ScriptedReply | undefined {
+export function findCannedReply({ agent, connections, knowledge, text, attachments = [] }: CannedInput): ScriptedReply | undefined {
+  // «خلاصه‌ی این سند پیوست»: an attached file and a request to summarize it (or no text at all).
+  const file = attachments[0];
+  if (file && (!text.trim() || /(خلاصه|فایل‌های پیوست)/.test(text))) {
+    return /QC-SOP-07/i.test(file.name) ? qcSopSummaryReply : attachmentSummaryReply(file.name);
+  }
   const fixed = getFixedConnectionReply(connections);
   if (fixed && !agent) {
     return { fixed: true, steps: fixed.steps.map((step) => ({ ...step, kind: "tool" as const, via: `اتصال: ${fixed.connectionName}` })), text: fixed.text };

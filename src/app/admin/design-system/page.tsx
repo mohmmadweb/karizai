@@ -12,7 +12,7 @@ import { PersianTextSection } from "@/admin/features/design-system/components/pe
 import { TokensSection } from "@/admin/features/design-system/components/tokens-section";
 
 export const metadata: Metadata = {
-  title: "سیستم طراحی | موشکاف",
+  title: "سیستم طراحی | کاریز",
   robots: { index: false, follow: false },
 };
 

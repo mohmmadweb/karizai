@@ -15,14 +15,16 @@ type AgentBasicSectionProps = {
   draft: AgentDraft;
   errors: AgentErrors;
   sensitive: boolean;
+  /** The model policy is «فقط مدل داخلی». */
+  internalOnly?: boolean;
   onChange: <K extends keyof AgentDraft>(key: K, value: AgentDraft[K]) => void;
 };
 
-export function AgentBasicSection({ draft, errors, sensitive, onChange }: AgentBasicSectionProps) {
+export function AgentBasicSection({ draft, errors, sensitive, internalOnly = false, onChange }: AgentBasicSectionProps) {
   // A sensitive Agent may only use internal models; the flag is set by the admin.
   const { models: allModels } = useModels();
   const models = allModels
-    .filter((model) => !sensitive || model.isInternal)
+    .filter((model) => !(sensitive || internalOnly) || model.isInternal)
     .map((model) => ({ value: model.id, label: model.name, hint: model.description }));
 
   return (
@@ -41,7 +43,7 @@ export function AgentBasicSection({ draft, errors, sensitive, onChange }: AgentB
       <Field data-invalid={errors.defaultModelId ? true : undefined}>
         <FieldLabel htmlFor="agent-model">مدل پیش‌فرض (اجباری)</FieldLabel>
         <SearchableSelect id="agent-model" items={models} value={draft.defaultModelId || null} onValueChange={(value) => onChange("defaultModelId", value ?? "")} placeholder="انتخاب مدل" searchPlaceholder="جست‌وجوی مدل" emptyText="مدلی پیدا نشد" />
-        {errors.defaultModelId ? <FieldError>{errors.defaultModelId}</FieldError> : <FieldDescription>فقط مدل‌هایی که به آن‌ها دسترسی دارید.</FieldDescription>}
+        {errors.defaultModelId ? <FieldError>{errors.defaultModelId}</FieldError> : <FieldDescription>{internalOnly ? "سیاست مدل «فقط مدل داخلی» است؛ فقط مدل‌های روی سرورهای سازمان فهرست شده‌اند." : "فقط مدل‌هایی که به آن‌ها دسترسی دارید."}</FieldDescription>}
       </Field>
       <Field className="md:col-span-2">
         <FieldLabel htmlFor="agent-purpose">هدف</FieldLabel>

@@ -3,13 +3,25 @@
  * them; the user panel only shows and uses them. The same file lives in both
  * apps; keep the copies identical.
  */
-export type ConnectionType = "mcp" | "api" | "n8n" | "dify";
+export type ConnectionType = "mcp" | "api" | "n8n" | "dify" | "erp" | "opcua";
 
 export const connectionTypeLabels: Record<ConnectionType, string> = {
   mcp: "سرور MCP",
   api: "API مستقیم",
   n8n: "فلوی n8n",
   dify: "اپ Dify",
+  erp: "ERP (راهکاران و مانند آن)",
+  opcua: "SCADA / OPC-UA",
+};
+
+/** Address scheme each type expects; OPC-UA servers use `opc.tcp://`, the rest web addresses. */
+export const connectionEndpointHints: Record<ConnectionType, string> = {
+  mcp: "https://",
+  api: "https://",
+  n8n: "https://",
+  dify: "https://",
+  erp: "https://",
+  opcua: "opc.tcp://",
 };
 
 /** shared-key: one key kept by the server for everyone; user-login: each user signs in with their own account. */

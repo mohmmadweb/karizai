@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckIcon, PlusIcon } from "lucide-react";
+import { CheckIcon, PlusIcon, StarIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,9 +27,14 @@ export function RepositoryAgentCard({ agent, added, onAdd }: RepositoryAgentCard
         <CardDescription className="line-clamp-2">{agent.purpose}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-3 border-t pt-3 text-body-sm">
+        <p className="flex flex-wrap items-center gap-2 text-muted-foreground">
+          <span className="inline-flex items-center gap-1 text-foreground"><StarIcon className="size-4 fill-amber-400 text-amber-500" aria-hidden /><span className="sr-only">امتیاز</span>{formatNumber(agent.rating, { minimumFractionDigits: 1 })}</span>
+          <span>· {formatNumber(agent.usage)} استفاده</span>
+          {agent.official ? <Badge variant="success">بسته رسمی</Badge> : null}
+        </p>
         <p className="text-muted-foreground">ابزارها: {toolNames(agent) || "بدون ابزار"}</p>
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <span className="text-muted-foreground">{agent.author} · {formatNumber(agent.usage)} استفاده</span>
+          <span className="text-muted-foreground">{agent.author}</span>
           <Button size="sm" variant={added ? "ghost" : "outline"} disabled={added} onClick={onAdd}>
             {added ? <CheckIcon aria-hidden /> : <PlusIcon aria-hidden />}
             {added ? "در عامل‌های من" : "افزودن به عامل‌های من"}

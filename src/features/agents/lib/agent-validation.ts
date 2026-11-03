@@ -17,7 +17,9 @@ export function validateAgent(draft: AgentDraft, sensitive: boolean, getModel: (
   if (!draft.defaultModelId || !model) {
     errors.defaultModelId = "یک مدل پیش‌فرض انتخاب کنید.";
   } else if (sensitive && !model.isInternal) {
-    errors.defaultModelId = "این Agent حساس است و فقط مدل داخلی را می‌پذیرد.";
+    errors.defaultModelId = draft.modelPolicy === "internal-only"
+      ? "سیاست مدل «فقط مدل داخلی» است؛ یک مدل داخلی مثل Qwen انتخاب کنید یا سیاست را «خودکار» کنید."
+      : "این Agent حساس است و فقط مدل داخلی را می‌پذیرد.";
   } else if (draft.tools.length > 0 && !model.supportsTools) {
     errors.tools = `مدل «${model.name}» ابزار را پشتیبانی نمی‌کند. مدل دیگری انتخاب کنید یا ابزارها را بردارید.`;
   }

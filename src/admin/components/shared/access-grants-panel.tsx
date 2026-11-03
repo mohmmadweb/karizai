@@ -2,9 +2,9 @@
 
 import { InfoIcon } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AccessGrantsSection, type AccessSide } from "./access-grants-section";
+import { AccessGrantsSection, type AccessSide, type GrantPermission } from "./access-grants-section";
 
-export type { AccessSide, AccessSubject } from "./access-grants-section";
+export type { AccessSide, AccessSubject, GrantPermission } from "./access-grants-section";
 
 type SubjectType = "group" | "user";
 
@@ -16,6 +16,8 @@ type AccessGrantsPanelProps = {
   onRevoke: (type: SubjectType, id: string) => void;
   /** Shown when neither a group nor a user has access yet. */
   emptyMessage?: string;
+  /** When given, each grant can be «خواندن» or «خواندن‌ونوشتن». */
+  onPermissionChange?: (type: SubjectType, id: string, permission: GrantPermission) => void;
 };
 
 /**
@@ -29,6 +31,7 @@ export function AccessGrantsPanel({
   onGrant,
   onRevoke,
   emptyMessage,
+  onPermissionChange,
 }: AccessGrantsPanelProps) {
   const nobody = groups.granted.length === 0 && users.granted.length === 0;
   return (
@@ -50,6 +53,7 @@ export function AccessGrantsPanel({
         side={groups}
         onGrant={(id) => onGrant("group", id)}
         onRevoke={(id) => onRevoke("group", id)}
+        onPermissionChange={onPermissionChange ? (id, p) => onPermissionChange("group", id, p) : undefined}
       />
       <AccessGrantsSection
         idPrefix={`${idPrefix}-users`}
@@ -62,6 +66,7 @@ export function AccessGrantsPanel({
         side={users}
         onGrant={(id) => onGrant("user", id)}
         onRevoke={(id) => onRevoke("user", id)}
+        onPermissionChange={onPermissionChange ? (id, p) => onPermissionChange("user", id, p) : undefined}
       />
     </div>
   );

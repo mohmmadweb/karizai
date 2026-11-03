@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { connectionAuthLabels, connectionTypeLabels, type ConnectionAuth, type ConnectionType, type DefinedConnection } from "@/lib/connections";
-import { isHttpAddress } from "../lib/validation";
+import { endpointError, isValidEndpoint } from "../lib/validation";
 import { useConnections } from "./connections-provider";
 
 const typeItems = (Object.keys(connectionTypeLabels) as ConnectionType[]).map((value) => ({ value, label: connectionTypeLabels[value] }));
@@ -32,7 +32,7 @@ export function ConnectionInfoForm({ connection }: { connection: DefinedConnecti
     const found: typeof errors = {};
     if (!values.name.trim()) found.name = "نام اتصال را بنویسید.";
     else if (connections.some((item) => item.id !== connection.id && item.name.trim() === values.name.trim())) found.name = "اتصالی با این نام وجود دارد.";
-    if (!isHttpAddress(values.endpoint)) found.endpoint = "نشانی باید با http یا https شروع شود.";
+    if (!isValidEndpoint(connection.type, values.endpoint)) found.endpoint = endpointError(connection.type);
     setErrors(found);
     if (Object.keys(found).length > 0) return;
     updateConnection(connection.id, { name: values.name.trim(), domain: values.domain.trim(), description: values.description.trim(), endpoint: values.endpoint.trim() });

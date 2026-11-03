@@ -5,7 +5,7 @@ import { useAgents } from "@/features/agents/components/agents-provider";
 import { useModels } from "@/features/model-catalog/components/models-provider";
 import { useRunEngine } from "../hooks/use-run-engine";
 import { needsApproval } from "../lib/describe-trigger";
-import type { Run, Workflow, WorkflowStatus, WorkflowTemplate } from "../types";
+import type { Run, Workflow, WorkflowNode, WorkflowStatus, WorkflowTemplate } from "../types";
 
 type WorkflowsContextValue = {
   workflows: Workflow[];
@@ -19,6 +19,8 @@ type WorkflowsContextValue = {
   remove: (id: string) => void;
   run: (id: string, startedBy: string) => string | null;
   decide: (runId: string, approved: boolean) => void;
+  /** Runs a finished run again from one step (the step and everything after it). */
+  rerunFrom: (runId: string, nodeId: string) => void;
   /** Admin approval queue: a workflow waiting for the admin becomes active, or goes back to draft. */
   decideActivation: (id: string, approved: boolean) => void;
 };
@@ -39,10 +41,13 @@ export function WorkflowsProvider({
   const counter = useRef(0);
   const { agents } = useAgents();
   const { modelById } = useModels();
-  // Steps made by an Agent show the Agent's default model.
-  const modelNameOf = (node: { config: { agentId?: string; childAgentIds?: string[] } }) =>
-    modelById(agents.find((item) => item.id === (node.config.agentId ?? node.config.childAgentIds?.[0]))?.defaultModelId ?? "")?.name;
-  const engine = useRunEngine(setRuns, modelNameOf);
+  // Steps made by an Agent show the Agent's default model; router, optimizer and supervisor run on the internal model.
+  const modelNameOf = (node: WorkflowNode) =>
+    node.kind === "router" || node.kind === "prompt-optimizer" || node.kind === "supervisor"
+      ? (modelById("model-8")?.name ?? "Qwen")
+      : modelById(agents.find((item) => item.id === (node.config.agentId ?? node.config.childAgentIds?.[0]))?.defaultModelId ?? "")?.name;
+  const agentNameOf = (id: string) => agents.find((item) => item.id === id)?.name;
+  const engine = useRunEngine(setRuns, modelNameOf, agentNameOf);
 
   const value = useMemo<WorkflowsContextValue>(() => {
     const patch = (id: string, change: Partial<Workflow>) =>
@@ -75,6 +80,11 @@ export function WorkflowsProvider({
         return runId;
       },
       decide: engine.decide,
+      rerunFrom: (runId, nodeId) => {
+        const target = runs.find((item) => item.id === runId);
+        const workflow = workflows.find((item) => item.id === target?.workflowId);
+        if (target && workflow) engine.rerunFrom(target, workflow, nodeId);
+      },
       decideActivation: (id, approved) => patch(id, { status: approved ? "active" : "draft" }),
     };
   }, [workflows, runs, engine]);

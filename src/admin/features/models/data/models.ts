@@ -14,6 +14,7 @@ const models: AiModel[] = [
   {
     ...base,
     id: "model-001",
+    releasedAt: "2024-05-13T00:00:00.000Z",
     providerId: "provider-001",
     remoteId: "openai/gpt-4o",
     displayName: "GPT-4o",
@@ -28,6 +29,7 @@ const models: AiModel[] = [
   {
     ...base,
     id: "model-002",
+    releasedAt: "2025-09-29T00:00:00.000Z",
     providerId: "provider-001",
     remoteId: "anthropic/claude-sonnet",
     displayName: "Claude Sonnet",
@@ -42,6 +44,7 @@ const models: AiModel[] = [
   {
     ...base,
     id: "model-003",
+    releasedAt: "2024-04-18T00:00:00.000Z",
     providerId: "provider-001",
     remoteId: "meta/llama-3-70b",
     displayName: "meta/llama-3-70b",
@@ -50,6 +53,7 @@ const models: AiModel[] = [
   {
     ...base,
     id: "model-004",
+    releasedAt: "2024-09-19T00:00:00.000Z",
     providerId: "provider-002",
     remoteId: "qwen2.5-72b-instruct",
     displayName: "Qwen ۲٫۵",
@@ -62,6 +66,7 @@ const models: AiModel[] = [
   {
     ...base,
     id: "model-005",
+    releasedAt: "2024-07-23T00:00:00.000Z",
     providerId: "provider-002",
     remoteId: "llama3.1-8b",
     displayName: "Llama سبک",
@@ -72,6 +77,7 @@ const models: AiModel[] = [
   {
     ...base,
     id: "model-006",
+    releasedAt: "2024-11-18T00:00:00.000Z",
     providerId: "provider-003",
     remoteId: "mistral-large",
     displayName: "Mistral بزرگ",
@@ -80,10 +86,38 @@ const models: AiModel[] = [
   {
     ...base,
     id: "model-007",
+    releasedAt: "2025-03-17T00:00:00.000Z",
     providerId: "provider-003",
     remoteId: "mistral-small",
     displayName: "mistral-small",
     enabled: false,
+  },
+  {
+    ...base,
+    id: "model-008",
+    releasedAt: "2026-10-28T00:00:00.000Z",
+    providerId: "provider-002",
+    remoteId: "qwen3-32b",
+    displayName: "Qwen ۳ ۳۲B",
+    description: "نسخه‌ی تازه‌ی Qwen؛ در همگام‌سازی خودکار شبانه پیدا شد و هنوز فعال نشده است.",
+    enabled: false,
+    selfHosted: true,
+    supportsTools: true,
+    contextWindow: 128000,
+  },
+  {
+    ...base,
+    id: "model-009",
+    releasedAt: "2026-10-21T00:00:00.000Z",
+    providerId: "provider-001",
+    remoteId: "openai/gpt-4.1",
+    displayName: "openai/gpt-4.1",
+    enabled: false,
+    costInputPerMillion: 120000,
+    costOutputPerMillion: 480000,
+    supportsImages: true,
+    supportsTools: true,
+    contextWindow: 1000000,
   },
 ];
 

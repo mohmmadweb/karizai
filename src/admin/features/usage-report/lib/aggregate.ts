@@ -1,6 +1,7 @@
 import type { AiModel, ModelProvider } from "@/admin/features/models/types";
 import type { Group, Membership, User } from "@/admin/features/user-management/types";
 import type { Bucket, ReportView, ResolvedPeriod, Totals, UsageRecord, UsageRow } from "../types";
+import { agentOfRecord } from "../data/agents";
 import { addCost, recordCost } from "./cost";
 import { bucketStarts } from "./periods";
 
@@ -125,6 +126,11 @@ export function rowsByGroup(records: UsageRecord[], ctx: ReportContext): UsageRo
   );
 }
 
+/** One row per agent; requests without an agent form the «گفتگوی مستقیم» row. */
+export function rowsByAgent(records: UsageRecord[], ctx: ReportContext): UsageRow[] {
+  return group(records, (r) => [agentOfRecord(r.id)], ctx.models);
+}
+
 export function rowsByModel(records: UsageRecord[], ctx: ReportContext): UsageRow[] {
   const models = new Map(ctx.models.map((m) => [m.id, m]));
   const providers = new Map(ctx.providers.map((p) => [p.id, p]));
@@ -164,6 +170,7 @@ export function recordsForRow(
   range: ResolvedPeriod,
 ): UsageRecord[] {
   if (view === "user") return records.filter((r) => r.userId === rowId);
+  if (view === "agent") return records.filter((r) => agentOfRecord(r.id).id === rowId);
   if (view === "group") {
     const inGroup = (userId: string) => {
       const groupIds = ctx.memberships.filter((m) => m.userId === userId).map((m) => m.groupId);

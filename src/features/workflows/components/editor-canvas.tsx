@@ -23,7 +23,9 @@ const toFlowNodes = (nodes: WorkflowNode[], edges: WorkflowEdge[], run: Run | un
     data: { label: node.label, kind: node.kind, subtitle: subtitle(node), hasOutput: edges.some((edge) => edge.source === node.id), onAdd: (block) => addAfter(node.id, block), status: run?.steps.find((step) => step.nodeId === node.id)?.status },
   }));
 
-const toFlowEdges = (edges: WorkflowEdge[]): Edge[] => edges.map((edge) => ({ id: edge.id, source: edge.source, target: edge.target, label: edge.label, animated: false }));
+// The «خطا» path is a dashed red line; it is only taken when its step fails.
+const toFlowEdges = (edges: WorkflowEdge[]): Edge[] =>
+  edges.map((edge) => ({ id: edge.id, source: edge.source, target: edge.target, label: edge.label, animated: false, ...(edge.label === "خطا" ? { style: { stroke: "var(--destructive)", strokeDasharray: "6 4" } } : {}) }));
 
 type EditorCanvasProps = {
   draft: WorkflowDraft;
@@ -63,7 +65,7 @@ export function EditorCanvas({ draft, run, subtitle }: EditorCanvasProps) {
     if (!source || !target || source === target || edges.some((e) => e.source === source && e.target === target)) return;
     const from = nodes.find((node) => node.id === source);
     const outgoing = edges.filter((edge) => edge.source === source).length;
-    const label = from?.kind === "condition" ? (outgoing === 0 ? "بله" : "خیر") : undefined;
+    const label = from?.kind === "condition" ? (outgoing === 0 ? "بله" : "خیر") : from?.kind === "fork" ? `شاخه ${(outgoing + 1).toLocaleString("fa-IR")}` : undefined;
     draft.setGraph(nodes, [...edges, { id: `e-${source}-${target}`, source, target, label }]);
   };
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronDownIcon } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,8 +12,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ProviderLogo } from "@/components/shared/provider-logo";
+import { useDemoFlags } from "@/lib/demo-flags";
+import { formatDate } from "@/lib/format";
+import { isNewModel } from "../lib/model-access";
 import { useModels } from "./models-provider";
-import type { ModelChoice } from "../types";
+import type { CatalogModel, ModelChoice } from "../types";
 
 type ModelPickerProps = {
   value: ModelChoice;
@@ -21,9 +25,18 @@ type ModelPickerProps = {
   lockedLabel?: string;
 };
 
-/** Model choice as a drop-down: names only. Details live on the models list of the admin and in answers. */
+/** Why a model cannot be chosen right now, or `null`. */
+function blockedReason(model: CatalogModel, allowed: boolean, offline: boolean): string | null {
+  if (!allowed) return "این مدل برای گروه شما مجاز نیست";
+  if (offline && !model.isInternal) return "اینترنت قطع است؛ فقط مدل‌های داخلی";
+  if (!model.isAvailable) return "موقتاً در دسترس نیست";
+  return null;
+}
+
+/** Model choice as a drop-down: name, internal or masked, new versions, and models the user's groups may not use. */
 export function ModelPicker({ value, onChange, lockedLabel }: ModelPickerProps) {
-  const { models, routers } = useModels();
+  const { models, routers, isAllowed } = useModels();
+  const { offline } = useDemoFlags();
   const current = models.find((model) => model.id === value);
   const routerName = (id: string) => routers.find((router) => router.id === id)?.name;
   const autoLabel = value.startsWith("auto:") ? (routerName(value.slice(5)) ?? "خودکار") : "خودکار";
@@ -40,20 +53,28 @@ export function ModelPicker({ value, onChange, lockedLabel }: ModelPickerProps) 
         <span className="max-w-40 truncate">{label}</span>
         <ChevronDownIcon aria-hidden />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="min-w-56">
+      <DropdownMenuContent className="min-w-72">
         <DropdownMenuRadioGroup value={value} onValueChange={(next) => onChange(next as ModelChoice)}>
           {autoEntries.map((entry) => (
             <DropdownMenuRadioItem key={entry.value} value={entry.value}>{entry.label}</DropdownMenuRadioItem>
           ))}
           <DropdownMenuSeparator />
-          {models.map((model) => (
-            <DropdownMenuRadioItem key={model.id} value={model.id} disabled={!model.isAvailable}>
-              <ProviderLogo name={`${model.provider} ${model.name}`} />
-              {model.name}
-              {model.isInternal ? " (داخلی)" : ""}
-              {!model.isAvailable ? " — موقتاً در دسترس نیست" : ""}
-            </DropdownMenuRadioItem>
-          ))}
+          {models.map((model) => {
+            const reason = blockedReason(model, isAllowed(model), offline);
+            return (
+              <DropdownMenuRadioItem key={model.id} value={model.id} disabled={reason !== null} className="items-start">
+                <ProviderLogo name={`${model.provider} ${model.name}`} />
+                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <span className="flex flex-wrap items-center gap-1.5">
+                    {model.name}
+                    {model.isInternal ? <Badge variant="success">🔒 داخلی</Badge> : <Badge variant="outline" data-ai>پوشاندن</Badge>}
+                    {isNewModel(model) ? <Badge variant="info">جدید · {formatDate(model.releasedAt!, { dateStyle: "medium" })}</Badge> : null}
+                  </span>
+                  {reason ? <span className="text-caption text-muted-foreground">{reason}</span> : null}
+                </span>
+              </DropdownMenuRadioItem>
+            );
+          })}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>

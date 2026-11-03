@@ -26,10 +26,22 @@ const extraTable: SourceTable = {
   columns: [col("id", "id", "integer"), col("order_id", "order_id", "integer"), col("reason", "reason", "varchar(200)")],
 };
 
+const productionTables: SourceTable[] = [
+  { id: "tbl-batches", name: "batches", columns: [col("id", "id", "int"), col("grade", "grade", "nvarchar(40)"), col("line_id", "line_id", "int"), col("status", "status", "nvarchar(20)"), col("produced_at", "produced_at", "datetime2")] },
+  { id: "tbl-production-lines", name: "production_lines", columns: [col("id", "id", "int"), col("name", "name", "nvarchar(60)"), col("capacity_kg_h", "capacity_kg_h", "int")] },
+  { id: "tbl-scrap", name: "scrap_records", columns: [col("id", "id", "int"), col("batch_id", "batch_id", "int"), col("weight_kg", "weight_kg", "decimal(10,2)"), col("reason", "reason", "nvarchar(200)")] },
+  { id: "tbl-lims-results", name: "lims_results", columns: [col("id", "id", "int"), col("batch_id", "batch_id", "int"), col("test", "test", "nvarchar(60)"), col("value", "value", "decimal(12,4)"), col("passed", "passed", "bit")] },
+  { id: "tbl-sales-orders", name: "sales_orders", columns: [col("id", "id", "int"), col("customer_id", "customer_id", "int"), col("grade", "grade", "nvarchar(40)"), col("quantity_kg", "quantity_kg", "int"), col("ordered_at", "ordered_at", "datetime2")] },
+  { id: "tbl-dw-customers", name: "customers", columns: [col("id", "id", "int"), col("name", "name", "nvarchar(120)"), col("province", "province", "nvarchar(60)")] },
+  { id: "tbl-gl-entries", name: "gl_entries", columns: [col("id", "id", "int"), col("account", "account", "nvarchar(40)"), col("amount", "amount", "decimal(16,0)"), col("posted_at", "posted_at", "datetime2")] },
+  { id: "tbl-invoices", name: "invoices", columns: [col("id", "id", "int"), col("order_id", "order_id", "int"), col("total", "total", "decimal(16,0)"), col("paid", "paid", "bit")] },
+];
+
 /**
  * Stand-in for reading the tables of a database; nothing is read. From the
  * second round on, one extra table appears so fetching again can be tried.
  */
-export function getSourceSchema(round: number): SourceTable[] {
+export function getSourceSchema(round: number, sourceId?: string): SourceTable[] {
+  if (sourceId === "source-004") return productionTables;
   return round >= 1 ? [...baseTables, extraTable] : baseTables;
 }

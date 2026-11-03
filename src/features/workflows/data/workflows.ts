@@ -1,7 +1,7 @@
 import type { Run, Workflow } from "../types";
 import { getTemplates } from "./templates";
 
-const [weekly, customer, , indicators, pricing, reorder] = getTemplates();
+const [weekly, customer, , indicators, pricing, reorder, planning, supervised] = getTemplates();
 
 const workflows: Workflow[] = [
   { id: "wf-1", name: weekly.name, description: weekly.description, status: "active", triggers: weekly.triggers, nodes: weekly.nodes, edges: weekly.edges, updatedAt: "2026-10-20T09:00:00.000Z", lastRunAt: "2026-10-24T05:00:00.000Z" },
@@ -15,6 +15,8 @@ const workflows: Workflow[] = [
   { id: "wf-4", name: indicators.name, description: indicators.description, status: "active", triggers: indicators.triggers, nodes: indicators.nodes, edges: indicators.edges, updatedAt: "2026-10-27T08:00:00.000Z", lastRunAt: "2026-10-30T14:10:00.000Z" },
   { id: "wf-5", name: pricing.name, description: pricing.description, status: "active", triggers: pricing.triggers, nodes: pricing.nodes, edges: pricing.edges, updatedAt: "2026-10-28T10:00:00.000Z", lastRunAt: "2026-10-29T08:35:00.000Z" },
   { id: "wf-6", name: reorder.name, description: reorder.description, status: "active", triggers: reorder.triggers, nodes: reorder.nodes, edges: reorder.edges, updatedAt: "2026-10-30T09:00:00.000Z", lastRunAt: "2026-10-31T05:00:00.000Z" },
+  { id: "wf-7", name: planning.name, description: planning.description, status: "active", triggers: planning.triggers, nodes: planning.nodes, edges: planning.edges, updatedAt: "2026-11-01T07:00:00.000Z", lastRunAt: "2026-11-02T02:30:00.000Z" },
+  { id: "wf-8", name: supervised.name, description: supervised.description, status: "draft", triggers: supervised.triggers, nodes: supervised.nodes, edges: supervised.edges, updatedAt: "2026-11-02T10:00:00.000Z" },
 ];
 
 const runs: Run[] = [
@@ -72,15 +74,32 @@ const runs: Run[] = [
   {
     id: "run-6", workflowId: "wf-6", startedAt: "2026-10-31T05:00:00.000Z", endedAt: "2026-10-31T05:06:40.000Z", status: "succeeded", startedBy: "زمان‌بندی: هر روز ۰۸:۰۰",
     steps: [
-      { nodeId: "n1", label: "مواد کم‌موجودی", status: "succeeded", durationMs: 1600, output: "۳ ماده از ۶ ماده زیر نقطه‌ی سفارش است؛ HD5502 فقط ۳ روز پوشش دارد." },
-      { nodeId: "n2", label: "محموله‌های در راه", status: "succeeded", durationMs: 1500, output: "محموله‌ی HD5502 تا ۱۸ آبان در گمرک است." },
-      { nodeId: "n3", label: "کمبود پیش‌بینی می‌شود؟", status: "succeeded", durationMs: 250, output: "بله: حدود ۸ روز بدون موجودی HD5502." },
-      { nodeId: "n4", label: "تأیید مدیر تدارک", status: "succeeded", durationMs: 214000, output: "تأیید شد." },
-      { nodeId: "n5", label: "استعلام قیمت", status: "succeeded", durationMs: 2400, output: "از سه تامین‌کننده قیمت گرفته شد." },
-      { nodeId: "n6", label: "مقایسه‌ی قیمت‌ها", status: "succeeded", durationMs: 5200, output: "پلیمر خزر: قیمت مناسب و تحویل ۷ روزه؛ گزینه‌ی برتر.", modelName: "Claude Sonnet", inputTokens: 1480, outputTokens: 520 },
-      { nodeId: "n7", label: "پیش‌نویس سفارش خرید", status: "succeeded", durationMs: 1100, output: "پیش‌نویس ۸۰ تن HD5502 ساخته شد." },
-      { nodeId: "n8", label: "اعلام به تدارک", status: "succeeded", durationMs: 800, output: "پیام در کانال تدارک گذاشته شد." },
+      { nodeId: "n1", label: "راهکاران: موجودی", status: "succeeded", durationMs: 1600, output: "۳ ماده از ۶ ماده زیر نقطه‌ی سفارش است؛ HD5502 با ۱۸ تن (نقطه‌ی سفارش ۴۰ تن) فقط ۳ روز پوشش دارد." },
+      { nodeId: "n2", label: "SQL: محموله‌های در راه", status: "succeeded", durationMs: 1500, output: "محموله‌ی HD5502 تا ۱۸ آبان در گمرک است." },
+      { nodeId: "n10", label: "✦ پیش‌بینی کمبود مواد", status: "succeeded", durationMs: 700, modelName: "XGBoost · نسخه ۳", output: "روز تا کمبود = ۳٫۲ روز · احتمال کمبود = ۸۷٪" },
+      { nodeId: "n3", label: "کمتر از ۷ روز تا کمبود؟", status: "succeeded", durationMs: 250, output: "بله: ۳٫۲ روز تا کمبود HD5502." },
+      { nodeId: "n4", label: "تأیید مدیر تدارکات", status: "succeeded", durationMs: 214000, output: "تأیید شد." },
+      { nodeId: "n5", label: "استعلام از تامین‌کنندگان", status: "succeeded", durationMs: 2400, output: "از سه تامین‌کننده قیمت گرفته شد." },
+      { nodeId: "n6", label: "✦ جدول مقایسه", status: "succeeded", durationMs: 5200, output: "پلیمر خزر: قیمت مناسب و تحویل ۷ روزه؛ گزینه‌ی برتر.", modelName: "Claude Sonnet", inputTokens: 1480, outputTokens: 520 },
+      { nodeId: "n7", label: "راهکاران: پیش‌نویس سفارش خرید", status: "succeeded", durationMs: 1100, output: "پیش‌نویس سفارش خرید PO-1405-0862 در راهکاران ثبت شد: ۸۰ تن HD5502 از پلیمر خزر." },
+      { nodeId: "n8", label: "🔔 اعلان در کاریز", status: "succeeded", durationMs: 800, output: "پیام در کانال تدارک گذاشته شد." },
       { nodeId: "n9", label: "ثبت وظیفه‌ی بازبینی", status: "succeeded", durationMs: 700, output: "وظیفه‌ی «بازبینی و تأیید نهایی پیش‌نویس سفارش ۸۰ تن HD5502» در وظایف من ثبت شد." },
+    ],
+  },
+  {
+    id: "run-7", workflowId: "wf-7", startedAt: "2026-11-02T02:30:00.000Z", endedAt: "2026-11-02T02:34:40.000Z", status: "succeeded", startedBy: "زمان‌بندی: هر روز ۰۶:۰۰", savedMs: 3400,
+    steps: [
+      { nodeId: "p1", label: "راهکاران: سفارش‌های باز", status: "succeeded", durationMs: 1400, output: "۱۴ سفارش باز فروش برای ۱۰ روز آینده، جمعاً ۳۱۲ تن در ۶ گرید." },
+      { nodeId: "p2", label: "شاخه‌ی موازی", status: "succeeded", durationMs: 200, output: "۳ شاخه هم‌زمان شروع شد." },
+      { nodeId: "p3", label: "MES: ظرفیت خطوط", status: "succeeded", durationMs: 1800, parallel: true, output: "خط ۱ و ۲ آماده، خط ۳ از ساعت ۱۴ تا ۱۸ توقف دارد." },
+      { nodeId: "p4", label: "انبار: موجودی مواد", status: "succeeded", durationMs: 1600, parallel: true, output: "مواد ۱۲ سفارش موجود است؛ ۲ سفارش منتظر HD5502." },
+      { nodeId: "p5", label: "CMMS: توقف‌های برنامه‌ریزی‌شده", status: "succeeded", durationMs: 1700, parallel: true, output: "تعویض اسکرو خط ۳، ۴ ساعت." },
+      { nodeId: "p6", label: "پیوستن شاخه‌ها", status: "succeeded", durationMs: 200, output: "۳ شاخه تمام شد و نتیجه‌ها یکی شد." },
+      { nodeId: "p7", label: "✦ بهینه‌ساز زمان‌بندی خطوط", status: "succeeded", durationMs: 2600, modelName: "برنامه‌ریزی محدودیت (CP-SAT)", output: "تعداد تعویض فرمول = ۴ · بهره‌وری خطوط = ۹۱ ٪ · سفارش‌های دیرکرد = ۱" },
+      { nodeId: "p8", label: "پیشنهاد برنامه و تعویض فرمول", status: "succeeded", durationMs: 5100, modelName: "Qwen", inputTokens: 1720, outputTokens: 860, output: "خط ۱: PP-T20 طبیعی ← PP-T20 مشکی؛ خط ۲: کامپاند PE سفید ← طوسی؛ تعویض‌های هم‌رنگ پشت هم چیده شد." },
+      { nodeId: "p9", label: "بیش از ۳ تعویض فرمول؟", status: "succeeded", durationMs: 200, output: "بله: ۴ تعویض فرمول." },
+      { nodeId: "p10", label: "تأیید مدیر تولید", status: "succeeded", durationMs: 141000, output: "تأیید شد." },
+      { nodeId: "p11", label: "اعلام برنامه به کانال تولید", status: "succeeded", durationMs: 800, output: "برنامه در کانال تولید اعلام شد." },
     ],
   },
 ];

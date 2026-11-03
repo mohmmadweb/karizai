@@ -14,10 +14,11 @@ export function MessageList({ conversationId, messages }: MessageListProps) {
   return (
     <ChatContainerRoot className="relative min-h-0 flex-1">
       <ChatContainerContent className="mx-auto max-w-3xl gap-8 page-gutter py-6" aria-live="polite">
-        {messages.map((message) => (
+        {messages.map((message, index) => (
           <MessageBubble
             key={message.id}
             message={message}
+            question={messages[index - 1]?.role === "user" ? (messages[index - 1].sentText ?? messages[index - 1].text) : ""}
             onApprove={() => approveTool(conversationId, message.id)}
             onReject={() => rejectTool(conversationId, message.id)}
             onRetry={() => retry(conversationId, message.id)}

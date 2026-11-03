@@ -10,6 +10,7 @@ import type { ModelProvider } from "../types";
 import { RoutersSection } from "@/admin/features/smart-router/components/routers-section";
 import { ProviderDialog } from "./providers/provider-dialog";
 import { ProvidersList } from "./providers/providers-list";
+import { NewVersionsNotice } from "./new-versions-notice";
 
 /** First screen of «مدل‌ها»: the providers. Each one opens its own models table. */
 export function ModelsPageContent() {
@@ -31,6 +32,7 @@ export function ModelsPageContent() {
         description="ارائه‌دهنده‌های هوش مصنوعی سازمان. برای دیدن مدل‌های هر ارائه‌دهنده، آن را باز کنید."
         action={registerButton}
       />
+      <NewVersionsNotice />
       <RoutersSection />
       <h2 className="text-h3">ارائه‌دهنده‌ها</h2>
       {providers.length === 0 ? (

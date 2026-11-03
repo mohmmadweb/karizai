@@ -6,12 +6,14 @@ export const viewLabels: Record<ReportView, string> = {
   system: "کل سیستم",
   user: "کاربر",
   group: "گروه",
+  agent: "عامل",
 };
 
 export const nameHeader: Record<ReportView, string> = {
   system: "دوره",
   user: "کاربر",
   group: "گروه",
+  agent: "عامل",
 };
 
 /** System-view rows: one per hour or day. */

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { BotIcon, BrainIcon, CheckCircle2Icon, ChevronDownIcon, CircleDashedIcon, CircleXIcon, HandIcon, PlugIcon, ShieldCheckIcon, type LucideIcon } from "lucide-react";
+import { BotIcon, BrainIcon, CheckCircle2Icon, ChevronDownIcon, CircleDashedIcon, CircleXIcon, HandIcon, PlugIcon, ShieldCheckIcon, WandSparklesIcon, type LucideIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/spinner";
 import { formatNumber } from "@/lib/format";
@@ -16,7 +16,7 @@ const statusText: Record<TimelineStatus, string> = {
   failed: "ناموفق",
 };
 
-const kindIcon: Record<TimelineStep["kind"], LucideIcon> = { thinking: BrainIcon, agent: BotIcon, tool: PlugIcon, approval: HandIcon, supervisor: ShieldCheckIcon };
+const kindIcon: Record<TimelineStep["kind"], LucideIcon> = { thinking: BrainIcon, agent: BotIcon, tool: PlugIcon, approval: HandIcon, supervisor: ShieldCheckIcon, optimizer: WandSparklesIcon };
 
 function StatusIcon({ status }: { status: TimelineStatus }) {
   if (status === "running") return <Spinner aria-hidden />;

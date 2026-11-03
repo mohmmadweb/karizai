@@ -5,7 +5,8 @@ import { EntityNotFound } from "@/components/shared/entity-not-found";
 import { PageHeader } from "@/components/shared/page-header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useModels } from "../../hooks/use-models";
-import { isSetAside, providerOf } from "../../lib/selectors";
+import { isNewModel, isSetAside, providerOf } from "../../lib/selectors";
+import { formatDate } from "@/admin/lib/format";
 import { ModelFlags } from "../models/model-badges";
 import { ModelEnabledSwitch } from "../models/model-enabled-switch";
 import { ModelAccessTab } from "./model-access-tab";
@@ -35,10 +36,10 @@ export function ModelDetail({ modelId }: { modelId: string }) {
         title={
           <span className="flex flex-wrap items-center gap-3">
             {model.displayName}
-            <ModelFlags selfHosted={model.selfHosted} setAside={isSetAside(model, providers)} />
+            <ModelFlags selfHosted={model.selfHosted} setAside={isSetAside(model, providers)} isNew={isNewModel(model)} />
           </span>
         }
-        description={`ارائه‌دهنده: ${provider?.name ?? "—"}`}
+        description={`ارائه‌دهنده: ${provider?.name ?? "—"}${model.releasedAt ? ` · انتشار: ${formatDate(model.releasedAt, { dateStyle: "medium" })}` : ""}`}
         action={<ModelEnabledSwitch model={model} />}
       />
       <Tabs defaultValue="info">

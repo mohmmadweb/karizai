@@ -16,7 +16,7 @@ export function AgentsPageContent() {
   const mine = agents.filter((agent) => agent.kind === "personal");
   const shared = agents.filter((agent) => agent.kind === "shared" && `${agent.name} ${agent.purpose}`.includes(query.trim()));
   const filtered = mine.filter((agent) => `${agent.name} ${agent.purpose}`.includes(query.trim()));
-  const createLink = <Link href="/agents/new" className={buttonVariants()}><PlusIcon aria-hidden />ساخت Agent</Link>;
+  const createLink = <Link href="/agents/new" className={buttonVariants()}><PlusIcon aria-hidden />✦ ساخت Agent</Link>;
 
   return (
     <div className="mx-auto flex w-full max-w-page flex-col gap-8 page-gutter py-8">

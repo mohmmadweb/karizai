@@ -12,6 +12,10 @@ export type CatalogModel = {
   isAvailable: boolean;
   /** True for models of a registered provider; they really answer. The others are sample entries. */
   isReal?: boolean;
+  /** ISO date the maker released this version; recent ones get the «جدید» badge. */
+  releasedAt?: string;
+  /** Groups the admin allowed to use the model; absent means every group. */
+  allowedGroupIds?: string[];
 };
 
 /** "auto" lets the system choose a model for each message. */

@@ -10,6 +10,7 @@ import type { Agent } from "@/features/agents/types";
 import { useConnections } from "@/features/connections/components/connections-provider";
 import type { Connection } from "@/features/connections/types";
 import { getQuota } from "@/features/user-session/data/session";
+import { useDemoFlags } from "@/lib/demo-flags";
 import { useAttachments } from "../hooks/use-attachments";
 import { useSendFlow } from "../hooks/use-send-flow";
 import { emptySettings } from "../lib/chat-reducer";
@@ -19,6 +20,8 @@ import { ComposerDialogs } from "./composer-dialogs";
 import { ComposerPills } from "./composer-pills";
 import { ComposerStatus } from "./composer-status";
 import { ComposerToolbar } from "./composer-toolbar";
+import { KnowledgeFileDialog } from "./knowledge-file-dialog";
+import { MaskHint } from "./mask-hint";
 import { UsageRing } from "./usage-ring";
 
 /** Connections an Agent may use: only its own tools, and only those the user can also use. */
@@ -45,6 +48,8 @@ export function Composer({ conversationId }: { conversationId: string | null }) 
   const [menuOpen, setMenuOpen] = useState(false);
   const [agentOpen, setAgentOpen] = useState(false);
   const [agentChoice, setAgentChoice] = useState<Agent | null>(null);
+  const [filesOpen, setFilesOpen] = useState(false);
+  const { offline } = useDemoFlags();
 
   // A page can hand over text for a new conversation (home starters, knowledge).
   const [consumed, setConsumed] = useState("");
@@ -75,7 +80,7 @@ export function Composer({ conversationId }: { conversationId: string | null }) 
     connections: enabledConnections,
     onSend: (ready) => {
       const id = conversationId ?? createConversation((ready.sentText || ready.attachments[0]?.name || "").slice(0, 40));
-      send({ conversationId: id, ...ready, agent, connections: enabledConnections, webSearch: settings.webSearch, knowledge: settings.knowledge, supervisor: settings.supervisor });
+      send({ conversationId: id, ...ready, agent, connections: enabledConnections, webSearch: settings.webSearch, knowledge: settings.knowledge, supervisor: settings.supervisor, optimizer: Boolean(settings.optimizer) });
       setText("");
       attachments.clear();
       if (!conversationId) router.replace(`/chat/${id}`);
@@ -118,7 +123,9 @@ export function Composer({ conversationId }: { conversationId: string | null }) 
         quotaExhausted={exhausted}
         quota={quota}
         attachmentProblem={attachments.problem}
+        offline={offline}
       />
+      <MaskHint text={text} />
       <PromptInput value={text} onValueChange={onTextChange} onSubmit={submit} isLoading={Boolean(streaming)} disabled={exhausted}>
         {attachments.items.length > 0 ? (
           <div className="flex flex-col gap-1 p-2">
@@ -147,6 +154,9 @@ export function Composer({ conversationId }: { conversationId: string | null }) 
               supervisor={settings.supervisor}
               onSupervisorChange={(on) => update({ supervisor: on })}
               onFiles={attachments.add}
+              onKnowledgeFile={() => setFilesOpen(true)}
+              optimizer={Boolean(settings.optimizer)}
+              onOptimizerChange={(on) => update({ optimizer: on })}
               disabled={exhausted}
             />
             <ComposerPills
@@ -160,6 +170,8 @@ export function Composer({ conversationId }: { conversationId: string | null }) 
               onWebSearchOff={() => update({ webSearch: false })}
               supervisor={settings.supervisor}
               onSupervisorOff={() => update({ supervisor: false })}
+              optimizer={Boolean(settings.optimizer)}
+              onOptimizerOff={() => update({ optimizer: false })}
             />
           </div>
           <div className="flex items-center gap-1" onClick={(event) => event.stopPropagation()}>
@@ -178,6 +190,7 @@ export function Composer({ conversationId }: { conversationId: string | null }) 
       </PromptInput>
       <ComposerDialogs
         sensitiveReason={flow.sensitiveReason}
+        maskedPreview={flow.maskedPreview}
         onMaskAndSend={flow.maskAndSend}
         onSendInternal={flow.sendInternal}
         onCancelSensitive={flow.cancelSensitive}
@@ -190,6 +203,7 @@ export function Composer({ conversationId }: { conversationId: string | null }) 
         onAgentContinue={() => { if (agentChoice) update({ agentId: agentChoice.id }); setAgentChoice(null); }}
         onAgentCancel={() => setAgentChoice(null)}
       />
+      <KnowledgeFileDialog open={filesOpen} onOpenChange={setFilesOpen} onPick={attachments.addKnown} />
     </div>
   );
 }

@@ -9,7 +9,8 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { QuotaBar } from "@/features/chat/components/quota-bar";
 import { useChat } from "@/features/chat/components/chat-provider";
 import { formatDate, formatNumber } from "@/lib/format";
-import { getQuota } from "@/features/user-session/data/session";
+import { getCurrentUser, getQuota } from "@/features/user-session/data/session";
+import { tomanPer1kTokens, usePolicies, type GroupBudget } from "@/lib/policy-store";
 import { getUsageReport } from "../data/usage";
 import type { UsagePeriod } from "../types";
 import { UsageTable } from "./usage-table";
@@ -20,8 +21,14 @@ const periods: { value: UsagePeriod; label: string }[] = [
   { value: "monthly", label: "ماهانه" },
 ];
 
+const afterLimit: Record<GroupBudget["onExhausted"], string> = { "internal-light": "تغییر به مدل سبک داخلی", lock: "توقف تا بازنشانی", notify: "ادامه با اعلان به مدیر" };
+
 export function UsagePageContent() {
   const { state } = useChat();
+  const { budgets } = usePolicies();
+  const budget = budgets.find((item) => getCurrentUser().groupIds.includes(item.groupId));
+  // The remaining tokens priced at the external rate, in rial, rounded to ten thousand.
+  const rial = (tokens: number) => Math.round(((tokens / 1000) * tomanPer1kTokens.external * 10) / 10000) * 10000;
   const quota = getQuota();
   const [period, setPeriod] = useState<UsagePeriod>("daily");
   const report = getUsageReport(period);
@@ -48,7 +55,9 @@ export function UsagePageContent() {
           </p>
         </div>
         <QuotaBar quota={quota} used={state.used} />
-        <p className="text-caption text-muted-foreground">بازنشانی سهمیه: {formatDate(quota.resetsAt)}</p>
+        <p data-ai className="text-caption text-muted-foreground">
+          معادل حدود {formatNumber(rial(Math.max(quota.limit - state.used, 0)))} ریال · بازنشانی: {formatDate(quota.resetsAt)} · پس از اتمام: {afterLimit[budget?.onExhausted ?? "internal-light"]}
+        </p>
       </section>
       <Tabs value={period} onValueChange={(value) => setPeriod(value as UsagePeriod)}>
         <TabsList>{periods.map((item) => <TabsTrigger key={item.value} value={item.value}>{item.label}</TabsTrigger>)}</TabsList>
@@ -74,7 +83,7 @@ export function UsagePageContent() {
           </section>
           <div className="grid gap-8 lg:grid-cols-2">
             <UsageTable title="به تفکیک مدل" rows={report.byModel} />
-            <UsageTable title="به تفکیک Agent" rows={report.byAgent} />
+            <UsageTable title="به تفکیک عامل" rows={report.byAgent} />
           </div>
         </>
       )}

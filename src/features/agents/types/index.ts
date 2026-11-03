@@ -23,6 +23,15 @@ export type ShareRequest = {
   requestedAt: string;
 };
 
+/** Where an Agent can be called: the assistant (chat), a Kariz group, and workflows. */
+export type AgentSurface = "assistant" | "group" | "workflows";
+
+/** internal-only: only models on the organization's servers; auto: the router picks. */
+export type ModelPolicy = "internal-only" | "auto";
+
+/** One sample question of an evaluation set and the answer the Agent should give. */
+export type EvalCase = { id: string; question: string; expected: string };
+
 export type Agent = {
   id: string;
   name: string;
@@ -44,10 +53,18 @@ export type Agent = {
   updatedAt: string;
   /** How many times the user called this Agent. */
   useCount: number;
+  /** Knowledge collections or folders the Agent answers from (ids from `getKnowledgeOptions`). */
+  knowledgeIds?: string[];
+  modelPolicy?: ModelPolicy;
+  runIn?: AgentSurface[];
+  /** «major.minor», raised by one minor step on every save. */
+  version?: string;
+  /** Share of the evaluation set answered correctly in the last run, 0..1. */
+  evalScore?: number;
 };
 
 export type AgentDraft = Pick<
   Agent,
-  "name" | "purpose" | "instructions" | "defaultModelId" | "tools" | "skillIds"
+  "name" | "purpose" | "instructions" | "defaultModelId" | "tools" | "skillIds" | "knowledgeIds" | "modelPolicy" | "runIn" | "evalScore"
 >;
 

@@ -1,42 +1,46 @@
+import { applyMasks, type MaskField } from "@/lib/policy-store";
+
 export type SensitiveMatch = { label: string; value: string };
 
 export type SensitiveCheck =
   | { kind: "none" }
-  | { kind: "warning"; reason: string; matches: SensitiveMatch[] }
+  | { kind: "warning"; reason: string; matches: SensitiveMatch[]; preview: string }
+  | { kind: "internal-only"; reason: string }
   | { kind: "forbidden"; reason: string };
 
-const digit = "[0-9۰-۹]";
-const patterns: { label: string; regex: RegExp }[] = [
-  { label: "شماره‌ی کارت بانکی", regex: new RegExp(`(?<!${digit})(?:${digit}[ -]?){15}${digit}(?!${digit})`, "g") },
-  { label: "شماره‌ی تلفن همراه", regex: new RegExp(`(?<!${digit})(?:09|۰۹)${digit}{9}(?!${digit})`, "g") },
-  { label: "کد ملی", regex: new RegExp(`(?<!${digit})${digit}{10}(?!${digit})`, "g") },
-];
+/** Persian and Arabic digits become Latin ones, so the admin's patterns (written with \d) find them. */
+export function normalizeDigits(text: string) {
+  return text.replace(/[۰-۹]/g, (d) => String("۰۱۲۳۴۵۶۷۸۹".indexOf(d))).replace(/[٠-٩]/g, (d) => String("٠١٢٣٤٥٦٧٨٩".indexOf(d)));
+}
 
-/** Simple pattern checks that stand in for the organization's real rules. */
-export function checkSensitive(text: string): SensitiveCheck {
+/**
+ * Checks a message against the fields the admin defined in «مرکز قواعد و سیاست‌ها» (`usePolicies().maskFields`).
+ * «replace» fields are masked before an external model; an «internal-only» field keeps the message inside the organization.
+ */
+export function checkSensitive(text: string, fields: MaskField[]): SensitiveCheck {
   if (/(کلید خصوصی|private key)/i.test(text)) {
     return { kind: "forbidden", reason: "این پیام شامل کلید خصوصی است و طبق قوانین سازمان نباید فرستاده شود. آن را از پیام حذف کنید." };
   }
-  const matches: SensitiveMatch[] = [];
-  let rest = text;
-  for (const { label, regex } of patterns) {
-    for (const found of rest.match(regex) ?? []) matches.push({ label, value: found });
-    rest = rest.replace(regex, " ");
-  }
-  if (matches.length === 0) return { kind: "none" };
-  const names = [...new Set(matches.map((item) => item.label))].join("، ");
-  return { kind: "warning", reason: `در پیام شما این موارد حساس دیده می‌شود: ${names}.`, matches };
+  const { masked, found, internalOnly } = applyMasks(normalizeDigits(text), fields);
+  if (found.length === 0) return { kind: "none" };
+  const names = (action: string) => [...new Set(found.filter((item) => item.action === action).map((item) => `«${item.label}»`))].join("، ");
+  if (internalOnly) return { kind: "internal-only", reason: `پیام شما ${names("internal-only")} دارد و طبق قواعد سازمان فقط مدل داخلی آن را می‌خواند؛` };
+  return { kind: "warning", reason: `در پیام شما این موارد حساس دیده می‌شود: ${names("replace")}.`, matches: found.map(({ label, value }) => ({ label, value })), preview: masked };
 }
 
-/** Replaces each sensitive value with a token before the text goes to a model. */
+/** Replaces each sensitive value with a token like «[کد ملی ۱]» before the text goes to a model. */
 export function maskText(text: string, matches: SensitiveMatch[]) {
   const map: { token: string; value: string }[] = [];
-  let masked = text;
-  matches.forEach((match, index) => {
-    const token = `[مورد-حساس-${index + 1}]`;
+  const perLabel = new Map<string, number>();
+  let masked = normalizeDigits(text);
+  for (const match of matches) {
+    if (map.some((item) => item.value === match.value)) continue;
+    const n = (perLabel.get(match.label) ?? 0) + 1;
+    perLabel.set(match.label, n);
+    const token = `[${match.label} ${n.toLocaleString("fa-IR")}]`;
     map.push({ token, value: match.value });
     masked = masked.split(match.value).join(token);
-  });
+  }
   return { masked, map };
 }
 

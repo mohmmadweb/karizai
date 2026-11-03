@@ -9,6 +9,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
+import { seedAccessSchemas } from "../data/access-schemas";
 import { getSourceSchema } from "../data/source-schemas";
 import {
   createDataSourcesState,
@@ -18,7 +19,9 @@ import {
 import { simulateConnectionTest } from "../lib/simulate-test";
 import { simulateRequest } from "@/lib/simulate-request";
 import type {
+  AccessSchema,
   ActionResult,
+  SchemaGrant,
   AddSourceResult,
   DataSource,
   SchemaDescriptions,
@@ -41,6 +44,20 @@ export type DataSourcesContextValue = {
   deleteSource: (id: string) => void;
   saveDescriptions: (id: string, map: Record<string, string>) => void;
   refetchSchema: (id: string) => Promise<void>;
+  /** Defined schemas by source id. */
+  accessSchemas: Record<string, AccessSchema[]>;
+  saveAccessSchema: (
+    sourceId: string,
+    schema: Omit<AccessSchema, "id" | "grants"> & { id?: string },
+  ) => ActionResult;
+  deleteAccessSchema: (sourceId: string, schemaId: string) => void;
+  setSchemaGrant: (sourceId: string, schemaId: string, grant: SchemaGrant) => void;
+  removeSchemaGrant: (
+    sourceId: string,
+    schemaId: string,
+    subjectType: SchemaGrant["subjectType"],
+    subjectId: string,
+  ) => void;
 };
 
 export const DataSourcesContext = createContext<DataSourcesContextValue | null>(null);
@@ -61,8 +78,9 @@ export function DataSourcesProvider({ initialSources, initialDescriptions, child
       initialSources,
       initialDescriptions,
       Object.fromEntries(
-        initialSources.filter((s) => s.testResult === "success").map((s) => [s.id, getSourceSchema(0)]),
+        initialSources.filter((s) => s.testResult === "success").map((s) => [s.id, getSourceSchema(0, s.id)]),
       ),
+      seedAccessSchemas,
     ),
   );
   const latest = useRef(state);
@@ -99,7 +117,7 @@ export function DataSourcesProvider({ initialSources, initialDescriptions, child
         const result = await simulateConnectionTest(source);
         dispatch({ type: "setTest", id, result });
         if (result === "success" && !latest.current.schemas[id]) {
-          dispatch({ type: "setSchema", id, tables: getSourceSchema(rounds.current[id] ?? 0) });
+          dispatch({ type: "setSchema", id, tables: getSourceSchema(rounds.current[id] ?? 0, id) });
         }
         setTesting((t) => ({ ...t, [id]: undefined }));
         return result;
@@ -112,12 +130,28 @@ export function DataSourcesProvider({ initialSources, initialDescriptions, child
       },
       deleteSource: (id) => dispatch({ type: "delete", id }),
       saveDescriptions: (id, map) => dispatch({ type: "setDescriptions", id, map }),
+      accessSchemas: state.accessSchemas,
+      saveAccessSchema: (sourceId, schema) => {
+        const name = schema.name.trim();
+        if (!name) return fail("نام اسکیما را وارد کنید.");
+        if ((state.accessSchemas[sourceId] ?? []).some((x) => x.id !== schema.id && same(x.name, name))) {
+          return fail("اسکیمایی با این نام وجود دارد.");
+        }
+        if (schema.tableIds.length === 0) return fail("دست‌کم یک جدول انتخاب کنید.");
+        dispatch({ type: "saveSchema", sourceId, schema: { ...schema, name } });
+        return { ok: true };
+      },
+      deleteAccessSchema: (sourceId, schemaId) => dispatch({ type: "deleteSchema", sourceId, schemaId }),
+      setSchemaGrant: (sourceId, schemaId, grant) =>
+        dispatch({ type: "setSchemaGrant", sourceId, schemaId, grant }),
+      removeSchemaGrant: (sourceId, schemaId, subjectType, subjectId) =>
+        dispatch({ type: "removeSchemaGrant", sourceId, schemaId, subjectType, subjectId }),
       refetchSchema: async (id) => {
         setFetchingSchema((f) => ({ ...f, [id]: true }));
         await simulateRequest(900);
         const round = (rounds.current[id] ?? 0) + 1;
         rounds.current[id] = round;
-        dispatch({ type: "setSchema", id, tables: getSourceSchema(round) });
+        dispatch({ type: "setSchema", id, tables: getSourceSchema(round, id) });
         setFetchingSchema((f) => ({ ...f, [id]: undefined }));
       },
     };

@@ -13,20 +13,27 @@ export type AlertContent = {
   title: string;
   tone: "warning" | "info";
   fields: AlertField[];
-  workflowId: string;
+  /** Absent when the alert did not come from a workflow. */
+  workflowId?: string;
 };
 
 export type MessengerMessage = {
   id: string;
   /** "alerts" and "flows" for the two bots, otherwise a colleague id. */
   threadId: string;
-  from: "me" | "other" | "system";
+  /** "agent" is an Agent answering inside a colleague chat after «@دستیار». */
+  from: "me" | "other" | "system" | "agent";
   text: string;
   /** ISO date. */
   createdAt: string;
   read: boolean;
   alert?: AlertContent;
+  /** Only for Agent answers: who answered and the sources it used. */
+  agent?: { name: string; sources: string[] };
 };
+
+/** What a workflow run (or any page) can post to the alert bot. */
+export type PostAlertInput = { title: string; text: string; workflowId?: string; runId?: string; tone?: "warning" | "info"; fields?: AlertField[] };
 
 export const alertsThreadId = "alerts";
 export const flowsThreadId = "flows";

@@ -1,5 +1,8 @@
 export type ProviderStatus = "available" | "unavailable";
 
+/** How often the models list is fetched again on its own. */
+export type SyncInterval = "off" | "6h" | "24h" | "7d";
+
 /** The API key is never part of a provider record; only whether one exists. */
 export type ModelProvider = {
   id: string;
@@ -11,6 +14,8 @@ export type ModelProvider = {
   lastFetchedAt: string | null;
   /** ISO date string. */
   createdAt: string;
+  /** Scheduled fetch of the models list; missing means off. */
+  syncEvery?: SyncInterval;
 };
 
 export type AiModel = {
@@ -29,6 +34,8 @@ export type AiModel = {
   supportsTools: boolean;
   /** Number of tokens; null when not recorded. */
   contextWindow: number | null;
+  /** ISO date the provider published the model, or when it first appeared in a fetch. */
+  releasedAt?: string;
 };
 
 /** The key is passed to the action and discarded; it is never stored. */

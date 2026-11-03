@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { BookOpenIcon, BotIcon, GlobeIcon, ShieldCheckIcon, XIcon } from "lucide-react";
+import { BookOpenIcon, BotIcon, GlobeIcon, ShieldCheckIcon, WandSparklesIcon, XIcon } from "lucide-react";
 import type { Agent } from "@/features/agents/types";
 import { ConnectionIcon } from "@/features/connections/components/connection-icon";
 import { useConnections } from "@/features/connections/components/connections-provider";
@@ -17,6 +17,8 @@ type ComposerPillsProps = {
   onWebSearchOff: () => void;
   supervisor: boolean;
   onSupervisorOff: () => void;
+  optimizer: boolean;
+  onOptimizerOff: () => void;
 };
 
 /** One chosen option inside the message box; pressing it turns the option off. */
@@ -46,6 +48,7 @@ export function ComposerPills(props: ComposerPillsProps) {
       {props.knowledge ? <Pill icon={<BookOpenIcon />} label="دانش سازمانی" offLabel="خاموش کردن دانش سازمانی" onOff={props.onKnowledgeOff} /> : null}
       {props.webSearch ? <Pill icon={<GlobeIcon />} label="جست‌وجوی وب" offLabel="خاموش کردن جست‌وجوی وب" onOff={props.onWebSearchOff} /> : null}
       {props.supervisor ? <Pill icon={<ShieldCheckIcon />} label="ناظر هوشمند" offLabel="خاموش کردن ناظر هوشمند" onOff={props.onSupervisorOff} /> : null}
+      {props.optimizer ? <Pill icon={<WandSparklesIcon />} label="✦ بهینه‌ساز پرامپت" offLabel="خاموش کردن بهینه‌ساز پرامپت" onOff={props.onOptimizerOff} /> : null}
       {connections.map((item) => (
         <Pill key={item.id} icon={<ConnectionIcon name={item.name} domain={item.domain} className="size-5 rounded-md" />} label={item.name} offLabel={`خاموش کردن ${item.name}`} onOff={() => props.onToggleConnection(item.id, false)} />
       ))}

@@ -17,7 +17,11 @@ function guessTrigger(text: string): Trigger {
 export function generateFromText(text: string): WorkflowTemplate {
   const templates = getTemplates();
   const trigger = guessTrigger(text);
-  const base = /(جلسه|چند\s*agent|چندایجنت)/i.test(text)
+  const base = /(برنامه.?ریزی|زمان.?بندی\s*خط|تعویض\s*فرمول)/.test(text)
+    ? templates[6]
+    : /(کمبود|سفارش\s*مواد|مواد\s*اولیه)/.test(text)
+    ? templates[5]
+    : /(جلسه|چند\s*agent|چندایجنت)/i.test(text)
     ? templates[2]
     : /(مشتری)/.test(text)
       ? templates[1]

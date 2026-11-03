@@ -29,6 +29,9 @@ const documents: DocumentRecord[] = [
   { ...base, id: "doc-006", name: "Quality Manual v3", fileName: "quality-manual-v3.pptx", extension: "pptx", sizeBytes: 12 * MB, language: "en", status: "error", steps: failed, chunkCount: null, createdAt: "2026-10-16T10:20:00.000Z", updatedAt: "2026-10-16T10:21:00.000Z" },
   { ...base, id: "doc-007", name: "دستورالعمل ایمنی کارخانه (Safety)", fileName: "safety-guide.pdf", extension: "pdf", sizeBytes: 8 * MB, language: "mixed", chunkCount: 77, createdAt: "2026-10-17T13:00:00.000Z", updatedAt: "2026-10-17T13:06:00.000Z" },
   { ...base, id: "doc-008", name: "یادداشت جلسه‌ی برنامه‌ریزی تولید", fileName: "meeting-notes.txt", extension: "txt", sizeBytes: 12 * KB, language: "fa", chunkCount: 2, createdAt: "2026-10-18T09:15:00.000Z", updatedAt: "2026-10-18T09:15:00.000Z" },
+  { ...base, id: "doc-009", name: "دستورالعمل کنترل کیفیت QC-SOP-07", fileName: "QC-SOP-07.pdf", extension: "pdf", sizeBytes: 1.8 * MB, language: "fa", sourceId: "fsrc-003", chunkCount: 36, createdAt: "2026-10-20T07:00:00.000Z", updatedAt: "2026-10-20T07:04:00.000Z" },
+  { ...base, id: "doc-010", name: "برگه‌ی فنی کامپاند PP-H30", fileName: "PP-H30-TDS.pdf", extension: "pdf", sizeBytes: 0.9 * MB, language: "fa", sourceId: "fsrc-003", chunkCount: 14, createdAt: "2026-10-21T08:00:00.000Z", updatedAt: "2026-10-21T08:02:00.000Z" },
+  { ...base, id: "doc-011", name: "روش اجرایی خشک‌کردن مستربچ", fileName: "masterbatch-drying.docx", extension: "docx", sizeBytes: 0.6 * MB, language: "fa", sourceId: "fsrc-003", chunkCount: 11, createdAt: "2026-10-22T09:30:00.000Z", updatedAt: "2026-10-22T09:31:00.000Z" },
 ];
 
 export function getDocuments(): DocumentRecord[] {

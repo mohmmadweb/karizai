@@ -13,6 +13,8 @@ import {
 
 type ComposerDialogsProps = {
   sensitiveReason: string | null;
+  /** The message as an external model would see it. */
+  maskedPreview?: string | null;
   onMaskAndSend: () => void;
   onSendInternal: () => void;
   onCancelSensitive: () => void;
@@ -32,6 +34,7 @@ export function ComposerDialogs(props: ComposerDialogsProps) {
             <AlertDialogTitle>این پیام شاید اطلاعات حساس دارد</AlertDialogTitle>
             <AlertDialogDescription>{props.sensitiveReason} یکی از راه‌ها را انتخاب کنید: مقدارهای حساس با نشانه‌ی بی‌معنی جایگزین می‌شوند و مقدار اصلی هرگز به مدل بیرونی نمی‌رسد؛ یا پیام فقط به مدل داخلی سازمان فرستاده می‌شود.</AlertDialogDescription>
           </AlertDialogHeader>
+          {props.maskedPreview ? <p className="rounded-lg bg-muted p-3 text-body-sm"><span className="text-muted-foreground">پس از پوشاندن: </span>{props.maskedPreview}</p> : null}
           <AlertDialogFooter>
             <AlertDialogCancel>ویرایش پیام</AlertDialogCancel>
             <AlertDialogAction variant="outline" onClick={props.onSendInternal}>ارسال به مدل داخلی</AlertDialogAction>

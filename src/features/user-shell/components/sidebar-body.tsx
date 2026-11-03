@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { HistoryIcon, ActivityIcon, FolderIcon, PanelRightCloseIcon, PanelRightOpenIcon, SquarePenIcon } from "lucide-react";
+import { HistoryIcon, ActivityIcon, FolderIcon, MessagesSquareIcon, PanelRightCloseIcon, PanelRightOpenIcon, SquarePenIcon } from "lucide-react";
 import { BrandLockup } from "@/components/brand/brand-lockup";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { SearchField } from "@/components/shared/search-field";
 import { buttonVariants, Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { MessengerNav } from "@/features/messenger/components/messenger-nav";
+import { MessengerChats } from "@/features/messenger/components/messenger-nav";
 import { ActiveWorkflowsList } from "@/features/workflows/components/active-workflows-list";
 import { ConversationList } from "@/features/chat/components/conversation-list";
 import { ProjectList } from "@/features/chat/components/project-list";
@@ -15,7 +15,6 @@ import { getCurrentUser } from "@/features/user-session/data/session";
 import { useLayoutStyle } from "@/lib/use-layout-style";
 import { cn } from "@/lib/utils";
 import { getNewChatSection, getUserSectionGroups } from "../data/user-sections";
-import { ModeSwitch } from "./mode-switch";
 import { SidebarNav } from "./sidebar-nav";
 import { SidebarProfile } from "./sidebar-profile";
 import { SidebarSystem } from "./sidebar-system";
@@ -33,14 +32,13 @@ type SidebarBodyProps = {
 };
 
 /**
- * The sidebar: logo, navigation, and recent conversations. The messenger look has grouped
- * navigation on the navy surface; the classic look has a flat list, its own search box,
- * and the profile at the bottom.
+ * The one shared sidebar: logo, all pages of the AI platform and the messenger in groups,
+ * the messenger chats, chat projects, recent conversations and active workflows. The classic
+ * look has a flat list, its own search box, and the profile at the bottom.
  */
 export function SidebarBody({ pathname, query = "", onQueryChange, collapsed = false, onToggleCollapse, onNavigate }: SidebarBodyProps) {
   const { classic } = useLayoutStyle();
   const activeId = pathname.startsWith("/chat/") ? pathname.split("/")[2] : null;
-  const inMessenger = pathname.startsWith("/messenger");
   const activeFlowId = pathname.startsWith("/workflows/") ? pathname.split("/")[2] : null;
   const tone = classic ? "auto" : "white";
 
@@ -60,7 +58,7 @@ export function SidebarBody({ pathname, query = "", onQueryChange, collapsed = f
           </Tooltip>
         ) : (
           <Link href="/chat" onClick={onNavigate} className="flex items-center rounded-lg px-1 outline-none focus-visible:ring-3 focus-visible:ring-sidebar-ring/50">
-            <BrandLockup alt="موشکاف" tone={tone} markClassName="w-9" textClassName={classic ? "w-20" : "w-24"} />
+            <BrandLockup alt="کاریز" tone={tone} markClassName="w-9" textClassName={classic ? "w-20" : "w-24"} />
           </Link>
         )}
         {onToggleCollapse && !collapsed ? (
@@ -72,15 +70,15 @@ export function SidebarBody({ pathname, query = "", onQueryChange, collapsed = f
       </div>
       {/* In a short window the content scrolls; without shrink-0 the rows would be squeezed flat instead. */}
       <div className={cn("flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto [&>*]:shrink-0", !classic && "p-3")}>
-        <ModeSwitch inMessenger={inMessenger} collapsed={collapsed} onNavigate={onNavigate} />
-        {inMessenger ? (
-          <MessengerNav pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} />
-        ) : (
-          <>
             <NewChatButton collapsed={collapsed} classic={classic} onNavigate={onNavigate} />
             <SidebarNav groups={getUserSectionGroups()} flat={classic} pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} />
             {collapsed ? null : (
-              <SidebarSection title="پروژه‌ها" icon={FolderIcon} classic={classic} openClassName="max-h-64 shrink-0">
+              <SidebarSection title="پیام‌رسان" icon={MessagesSquareIcon} classic={classic} openClassName="max-h-72 shrink-0">
+                <div className="min-h-0 flex-1 overflow-y-auto"><MessengerChats pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} /></div>
+              </SidebarSection>
+            )}
+            {collapsed ? null : (
+              <SidebarSection title="پروژه‌های گفتگو" icon={FolderIcon} classic={classic} openClassName="max-h-64 shrink-0">
                 <div className="min-h-0 flex-1 overflow-y-auto"><ProjectList activeId={activeId} onNavigate={onNavigate} /></div>
               </SidebarSection>
             )}
@@ -95,8 +93,6 @@ export function SidebarBody({ pathname, query = "", onQueryChange, collapsed = f
                 <div className="min-h-0 flex-1 overflow-y-auto"><ActiveWorkflowsList activeId={activeFlowId} onNavigate={onNavigate} /></div>
               </SidebarSection>
             )}
-          </>
-        )}
       </div>
       <div className={cn("shrink-0", !classic && "px-3 pb-3")}><SidebarSystem pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} /></div>
       {classic ? <SidebarProfile user={getCurrentUser()} collapsed={collapsed} onNavigate={onNavigate} /> : null}

@@ -23,6 +23,7 @@ import type {
   ModelProvider,
   NewProviderInput,
   ProviderEditInput,
+  SyncInterval,
 } from "../types";
 
 export type ModelsContextValue = {
@@ -38,6 +39,8 @@ export type ModelsContextValue = {
   setModelEnabled: (id: string, enabled: boolean) => void;
   updateModelInfo: (id: string, input: ModelInfoInput) => ActionResult;
   updateModelFeatures: (id: string, input: ModelFeaturesInput) => void;
+  /** Scheduled fetch of the provider's models list. */
+  setProviderSync: (id: string, every: SyncInterval) => void;
 };
 
 export const ModelsContext = createContext<ModelsContextValue | null>(null);
@@ -132,6 +135,7 @@ export function ModelsProvider({ initialProviders, initialModels, children }: Mo
         return { ok: true };
       },
       updateModelFeatures: (id, input) => dispatch({ type: "updateFeatures", id, input }),
+      setProviderSync: (id, every) => dispatch({ type: "setSync", id, every }),
     };
   }, [state, fetchStatus, fetchModels]);
 

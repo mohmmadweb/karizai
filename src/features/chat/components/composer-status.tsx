@@ -1,6 +1,6 @@
 "use client";
 
-import { TriangleAlertIcon } from "lucide-react";
+import { TriangleAlertIcon, WifiOffIcon } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import type { Agent } from "@/features/agents/types";
@@ -16,6 +16,8 @@ type ComposerStatusProps = {
   quotaExhausted: boolean;
   quota: Quota;
   attachmentProblem: string | null;
+  /** Internet is cut (admin «شبیه‌سازی قطع اینترنت»). */
+  offline: boolean;
 };
 
 /** Warnings that must be visible before sending: quota, Agent state, notices, attachment problems. */
@@ -23,6 +25,13 @@ export function ComposerStatus(props: ComposerStatusProps) {
   const { agent, notice } = props;
   return (
     <div className="flex flex-col gap-2">
+      {props.offline ? (
+        <Alert variant="warning">
+          <WifiOffIcon aria-hidden />
+          <AlertTitle>اتصال اینترنت قطع است؛ فقط مدل‌های داخلی پاسخ می‌دهند</AlertTitle>
+          <AlertDescription>درخواست‌هایی که به مدل بیرونی می‌رفتند، به مدل داخلی سازمان سپرده می‌شوند و زیر پاسخ نوشته می‌شود.</AlertDescription>
+        </Alert>
+      ) : null}
       {props.quotaExhausted ? (
         <Alert variant="destructive">
           <TriangleAlertIcon aria-hidden />

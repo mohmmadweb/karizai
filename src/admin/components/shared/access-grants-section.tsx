@@ -5,7 +5,16 @@ import { PlusIcon, XIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { SearchableSelect } from "./searchable-select";
+
+/** Read only, or read and write. */
+export type GrantPermission = "read" | "readwrite";
+
+const permissionItems: { value: GrantPermission; label: string }[] = [
+  { value: "read", label: "خواندن" },
+  { value: "readwrite", label: "خواندن‌ونوشتن" },
+];
 
 export type AccessSubject = {
   id: string;
@@ -16,6 +25,8 @@ export type AccessSubject = {
   inactive?: boolean;
   /** Short sentence under the name. */
   note?: string;
+  /** Kind of permission of a granted subject; shown only when the panel lets it change. */
+  permission?: GrantPermission;
 };
 
 export type AccessSide = { granted: AccessSubject[]; available: AccessSubject[] };
@@ -31,6 +42,8 @@ type AccessGrantsSectionProps = {
   side: AccessSide;
   onGrant: (id: string) => void;
   onRevoke: (id: string) => void;
+  /** When given, each granted row gets a «خواندن / خواندن‌ونوشتن» choice. */
+  onPermissionChange?: (id: string, permission: GrantPermission) => void;
 };
 
 /** One half of the access panel: an add control and the list of granted items. */
@@ -45,6 +58,7 @@ export function AccessGrantsSection({
   side,
   onGrant,
   onRevoke,
+  onPermissionChange,
 }: AccessGrantsSectionProps) {
   const [value, setValue] = useState<string | null>(null);
   const items = side.available.map((s) => ({
@@ -94,7 +108,7 @@ export function AccessGrantsSection({
       ) : (
         <ul className="flex flex-col divide-y divide-border rounded-xl border border-border">
           {side.granted.map((subject) => (
-            <li key={subject.id} className="flex items-center justify-between gap-3 p-3">
+            <li key={subject.id} className="flex flex-wrap items-center justify-between gap-3 p-3">
               <div className="flex min-w-0 flex-col gap-0.5">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="font-medium">{subject.label}</span>
@@ -109,11 +123,33 @@ export function AccessGrantsSection({
                   <span className="text-caption text-muted-foreground">{subject.note}</span>
                 ) : null}
               </div>
-              <Button variant="ghost" size="sm" onClick={() => onRevoke(subject.id)}>
-                <XIcon aria-hidden />
-                برداشتن
-                <span className="sr-only"> {subject.label}</span>
-              </Button>
+              <div className="flex shrink-0 items-center gap-2">
+                {onPermissionChange ? (
+                  <Select
+                    items={permissionItems}
+                    value={subject.permission ?? "read"}
+                    onValueChange={(v) => v && onPermissionChange(subject.id, v as GrantPermission)}
+                  >
+                    <SelectTrigger size="sm" className="w-36" aria-label={`نوع مجوز ${subject.label}`}>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {permissionItems.map((item) => (
+                          <SelectItem key={item.value} value={item.value}>
+                            {item.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                ) : null}
+                <Button variant="ghost" size="sm" onClick={() => onRevoke(subject.id)}>
+                  <XIcon aria-hidden />
+                  برداشتن
+                  <span className="sr-only"> {subject.label}</span>
+                </Button>
+              </div>
             </li>
           ))}
         </ul>

@@ -124,7 +124,7 @@ export type StoredConnection = {
   name: string;
   domain: string;
   description: string;
-  type: "mcp" | "api" | "n8n" | "dify";
+  type: "mcp" | "api" | "n8n" | "dify" | "erp" | "opcua";
   endpoint: string;
   auth: "none" | "shared-key" | "user-login";
   tools: { id: string; name: string; description: string; requiresApproval: boolean }[];

@@ -29,7 +29,7 @@ export type DocumentRecord = {
   updatedAt: string;
 };
 
-export type Protocol = "smb" | "ftp" | "sftp";
+export type Protocol = "smb" | "ftp" | "sftp" | "seafile";
 
 export type SyncInterval = 15 | 60 | 360 | 1440;
 

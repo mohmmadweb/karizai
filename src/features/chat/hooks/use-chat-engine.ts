@@ -11,7 +11,8 @@ import { planOrchestration, supervisorStep, type PlannedStep } from "../lib/orch
 import { useOrchestration } from "./use-orchestration";
 import { restoreText } from "../lib/sensitive-check";
 import { findCannedReply } from "../data/scripted-replies";
-import type { Attachment, Message, ScriptedReply } from "../types";
+import { optimizePrompt, optimizerStep } from "../lib/prompt-optimizer";
+import type { Attachment, Message, PromptOptimization, ScriptedReply, TimelineStep } from "../types";
 
 export type MaskEntry = { token: string; value: string };
 
@@ -34,15 +35,22 @@ export type SendInput = {
   knowledge: boolean;
   /** The smart supervisor checks this answer. */
   supervisor: boolean;
+  /** Only an internal model may answer this message. */
+  internalOnly: boolean;
+  /** «✦ بهینه‌ساز پرامپت» is on for this conversation. */
+  optimizer: boolean;
 };
 
-type Context = Pick<SendInput, "sentText" | "masks" | "agent" | "connections" | "webSearch" | "modelId" | "modelName" | "isReal" | "supervisor"> & {
+type Context = Pick<SendInput, "sentText" | "masks" | "agent" | "connections" | "webSearch" | "modelId" | "modelName" | "isReal" | "supervisor" | "internalOnly"> & {
   role: Role;
   routerReason?: string;
   /** A prepared answer for the chosen Agent, connection or knowledge; it wins over any model. */
   canned?: ScriptedReply;
   /** The final text of a multi-agent answer, built from the steps. */
   finalReply?: Reply;
+  optimization?: PromptOptimization;
+  /** The optimizer step was already shown running. */
+  optimizerShown?: boolean;
 };
 
 const workflowToolId = "tool-16";
@@ -57,6 +65,8 @@ export function useChatEngine(
   lookups: {
     agentModelName: (agentId?: string) => string;
     supervisorModels: (options: { sensitive: boolean; answeringModel: string }) => { independent: string | null; stronger: string | null };
+    /** True for a model hosted on the organization's servers. */
+    isInternalModel: (name: string) => boolean;
   },
 ) {
   const timers = useRef(new Map<string, ReturnType<typeof setInterval | typeof setTimeout>>());
@@ -100,6 +110,7 @@ export function useChatEngine(
             text: full, status: "done", sources: reply.sources, structured: reply.structured, files: reply.files,
             toolNames: [...(extra.toolNames ?? []), ...reply.toolNames], ...extra,
             maskedCount: ctx.masks.length || undefined, routerReason: ctx.routerReason,
+            actions: reply.actions, finishedAt: new Date().toISOString(),
           });
           dispatch({ type: "usage", amount: estimateUsage(ctx.sentText, full) });
           return;
@@ -151,6 +162,8 @@ export function useChatEngine(
       if (!(history.at(-1)?.role === "user" && history.at(-1)?.content === ctx.sentText)) {
         history.push({ role: "user", content: ctx.sentText });
       }
+      // With the optimizer on, the compressed question is what goes out.
+      if (ctx.optimization && history.at(-1)?.role === "user") history[history.length - 1] = { role: "user", content: ctx.optimization.compressed.replace(/^\[.*\]\n/, "") };
       const messages = ctx.agent ? [{ role: "system", content: ctx.agent.instructions }, ...history] : history;
       try {
         const response = await fetch("/api/chat", {
@@ -174,7 +187,7 @@ export function useChatEngine(
         }
         if (!received.trim()) throw new Error("مدل پاسخی نفرستاد. دوباره تلاش کنید.");
         const full = restoreText(received, ctx.masks);
-        patch(id, messageId, { text: full, status: "done", maskedCount: ctx.masks.length || undefined, routerReason: ctx.routerReason });
+        patch(id, messageId, { text: full, status: "done", maskedCount: ctx.masks.length || undefined, routerReason: ctx.routerReason, finishedAt: new Date().toISOString() });
         dispatch({ type: "usage", amount: estimateUsage(ctx.sentText, full) });
       } catch (error) {
         if (controller.signal.aborted) return;
@@ -188,15 +201,31 @@ export function useChatEngine(
   );
 
   const begin = useCallback(
-    (id: string, messageId: string, ctx: Context) => {
+    (id: string, messageId: string, first: Context) => {
+      contexts.current.set(messageId, first);
+      // «✦ بهینه‌ساز پرامپت» runs first and stays as the first step of the timeline.
+      const optimization = first.optimization;
+      if (optimization && !first.optimizerShown) {
+        patch(id, messageId, { optimization, timeline: [optimizerStep(optimization, "running")] });
+        const timer = setTimeout(() => {
+          patch(id, messageId, { timeline: [optimizerStep(optimization, "done")] });
+          proceed({ ...first, optimizerShown: true });
+        }, 900);
+        timers.current.set(messageId, timer);
+        return;
+      }
+      proceed(first);
+
+      function proceed(ctx: Context) {
       contexts.current.set(messageId, ctx);
+      const prefix: TimelineStep[] = ctx.optimization ? [optimizerStep(ctx.optimization, "done")] : [];
       // A prepared answer wins over any model; the steps are only shown running, nothing is requested.
       if (ctx.canned) {
         const canned = ctx.canned;
         const steps: PlannedStep[] = canned.steps.map((step) => ({ ...step }));
         const plan = ctx.supervisor ? [...steps, supervisorStep] : steps;
-        contexts.current.set(messageId, { ...ctx, finalReply: { text: canned.text, sources: canned.sources ?? [], structured: canned.structured, files: canned.files, toolNames: canned.steps.filter((step) => step.kind === "tool").map((step) => step.title) } });
-        void orchestration.run({ id, messageId, plan, question: ctx.sentText, modelName: ctx.modelName, sensitive: Boolean(ctx.agent?.isSensitive) }).then((outcome) => {
+        contexts.current.set(messageId, { ...ctx, finalReply: { text: canned.text, sources: canned.sources ?? [], structured: canned.structured, files: canned.files, actions: canned.actions, toolNames: canned.steps.filter((step) => step.kind === "tool").map((step) => step.title) } });
+        void orchestration.run({ id, messageId, plan, question: ctx.sentText, modelName: ctx.modelName, sensitive: Boolean(ctx.agent?.isSensitive) || ctx.internalOnly, prefix }).then((outcome) => {
           if (!outcome) return;
           const used = outcome.steps.filter((step) => step.kind === "supervisor").reduce((sum, step) => sum + (step.inputTokens ?? 0) + (step.outputTokens ?? 0), 0);
           if (used > 0) dispatch({ type: "usage", amount: used });
@@ -221,7 +250,7 @@ export function useChatEngine(
       if (plan) {
         if (agentPlan) ctx = { ...ctx, routerReason: "مسیریاب هوشمند پرسش را بین چند عامل تقسیم کرد." };
         contexts.current.set(messageId, ctx);
-        void orchestration.run({ id, messageId, plan, question: ctx.sentText, modelName: ctx.modelName, sensitive: Boolean(ctx.agent?.isSensitive) }).then((outcome) => {
+        void orchestration.run({ id, messageId, plan, question: ctx.sentText, modelName: ctx.modelName, sensitive: Boolean(ctx.agent?.isSensitive) || ctx.internalOnly, prefix }).then((outcome) => {
           if (!outcome) return;
           const used = outcome.steps.filter((step) => step.kind === "supervisor").reduce((sum, step) => sum + (step.inputTokens ?? 0) + (step.outputTokens ?? 0), 0);
           if (used > 0) dispatch({ type: "usage", amount: used });
@@ -253,6 +282,7 @@ export function useChatEngine(
       };
       patch(id, messageId, { toolRun: run });
       if (!tool.requiresApproval) runTool(id, messageId, run);
+      }
     },
     [dispatch, orchestration, patch, realStream, runTool, stream],
   );
@@ -261,17 +291,21 @@ export function useChatEngine(
     (input: SendInput) => {
       const now = new Date().toISOString();
       const assistantId = nextId("msg");
-      const canned = findCannedReply({ agent: input.agent, connections: input.connections, knowledge: input.knowledge, text: input.sentText });
+      const canned = findCannedReply({ agent: input.agent, connections: input.connections, knowledge: input.knowledge, text: input.sentText, attachments: input.attachments });
       const { role, auto } = input.isReal || canned ? { role: null, auto: false } : resolveRole(input.sentText, input.agent, getCapabilities());
       // The Agent's own model may be missing from the registered models; then a plain name is shown.
       const agentModel = (agentId: string) => { const name = lookups.agentModelName(agentId); return name === "خودکار" ? "Claude Sonnet" : name; };
       // A prepared answer shows the Agent's own model; a fixed one (no model answers) shows none.
-      const modelName = !canned ? input.modelName : canned.fixed ? "" : input.agent ? agentModel(input.agent.id) : input.isReal || !input.modelName ? "Claude Sonnet" : input.modelName;
+      const preferred = !canned ? input.modelName : canned.fixed ? "" : input.agent ? agentModel(input.agent.id) : input.isReal || !input.modelName ? "Claude Sonnet" : input.modelName;
+      // Internet cut, a field or a file the admin marked: the internal model chosen by the send flow answers, also for prepared answers.
+      const modelName = input.internalOnly && preferred && !lookups.isInternalModel(preferred) ? input.modelName : preferred;
+      const history = (stateRef.current.messages[input.conversationId] ?? []).map((item) => item.text).filter(Boolean);
+      const optimization = input.optimizer ? optimizePrompt(input.sentText, history) : undefined;
       const notes = (input.agent?.tools ?? [])
         .map((ref) => getConnectionById(ref.connectionId)?.tools.find((tool) => tool.id === ref.toolId))
         .filter((tool) => tool && !tool.userCanUse)
         .map((tool) => `ابزار «${tool?.name}» اجرا نشد، چون شما خودتان به آن دسترسی ندارید.`);
-      const routerReason = canned ? undefined : auto && role
+      const routerReason = canned ? (input.internalOnly ? input.routerReason : undefined) : auto && role
         ? `مسیریاب هوشمند ${role === "bi" ? "دستیار هوش تجاری" : "دستیار سند"} را برای این پرسش انتخاب کرد.`
         : input.routerReason;
       dispatch({
@@ -282,9 +316,9 @@ export function useChatEngine(
           { id: assistantId, role: "assistant", text: "", createdAt: now, status: "streaming", modelName, agentName: input.agent?.name, sources: [], attachments: [], notes },
         ],
       });
-      begin(input.conversationId, assistantId, { ...input, modelName, isReal: canned ? false : input.isReal, role, routerReason, canned });
+      begin(input.conversationId, assistantId, { ...input, modelName, isReal: canned ? false : input.isReal, role, routerReason, canned, optimization });
     },
-    [begin, dispatch, lookups],
+    [begin, dispatch, lookups, stateRef],
   );
 
   const stop = useCallback(
@@ -332,7 +366,7 @@ export function useChatEngine(
       const ctx = contexts.current.get(messageId);
       if (!ctx) return;
       patch(id, messageId, { status: "streaming", error: undefined, text: "", toolRun: undefined, timeline: undefined });
-      begin(id, messageId, { ...ctx, sentText: ctx.isReal ? ctx.sentText : ctx.sentText.replace("خطا", "") });
+      begin(id, messageId, { ...ctx, optimizerShown: false, sentText: ctx.isReal ? ctx.sentText : ctx.sentText.replace("خطا", "") });
     },
     [begin, patch],
   );

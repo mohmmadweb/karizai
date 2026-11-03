@@ -40,6 +40,19 @@ const sources: DataSource[] = [
     active: false,
     createdAt: "2026-10-08T14:00:00.000Z",
   },
+  {
+    id: "source-004",
+    name: "انبار داده تولید",
+    type: "sqlserver",
+    host: "mes-dw.parsapolymer.local",
+    port: 1433,
+    database: "PP_Production_DW",
+    username: "readonly_ai",
+    hasPassword: true,
+    testResult: "success",
+    active: true,
+    createdAt: "2026-10-20T08:00:00.000Z",
+  },
 ];
 
 export function getDataSources(): DataSource[] {

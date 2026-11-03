@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAgents } from "@/features/agents/components/agents-provider";
 import { useUnsavedGuard } from "@/features/agents/hooks/use-unsaved-guard";
 import { useConnections } from "@/features/connections/components/connections-provider";
+import { getMlModel } from "../data/ml-models";
 import { useWorkflowDraft } from "../hooks/use-workflow-draft";
 import { validateWorkflow } from "../lib/validate-workflow";
 import type { WorkflowNode } from "../types";
@@ -19,7 +20,10 @@ import { ApprovalPrompt } from "./approval-prompt";
 import { EditorCanvas } from "./editor-canvas";
 import { EditorHeader } from "./editor-header";
 import { NodeProperties } from "./node-properties";
+import { formatNumber } from "@/lib/format";
+import { RunSteps } from "./run-steps";
 import { RunsTab } from "./runs-tab";
+import { RunStatusBadge } from "./workflow-status-badge";
 import { TriggersPanel } from "./triggers-panel";
 import { useWorkflows } from "./workflows-provider";
 
@@ -35,7 +39,7 @@ export function WorkflowEditor({ workflowId, initialTab = "design" }: WorkflowEd
 
 function EditorBody({ workflowId, initialTab }: Required<WorkflowEditorProps>) {
   const router = useRouter();
-  const { workflows, runs, save, activate, run } = useWorkflows();
+  const { workflows, runs, save, activate, run, rerunFrom } = useWorkflows();
   const { agents, skills } = useAgents();
   const { connections } = useConnections();
   const workflow = workflows.find((item) => item.id === workflowId)!;
@@ -53,7 +57,11 @@ function EditorBody({ workflowId, initialTab }: Required<WorkflowEditorProps>) {
       if (node.kind === "agent") return agents.find((a) => a.id === c.agentId)?.name;
       if (node.kind === "skill") return skills.find((s) => s.id === c.skillId)?.name;
       if (node.kind === "tool") return connections.find((x) => x.id === c.connectionId)?.tools.find((t) => t.id === c.toolId)?.name;
-      if (node.kind === "orchestrator") return `${(c.childAgentIds?.length ?? 0).toLocaleString("fa-IR")} Agent`;
+      if (node.kind === "orchestrator" || node.kind === "router") return `${(c.childAgentIds?.length ?? 0).toLocaleString("fa-IR")} Agent`;
+      if (node.kind === "ml-model") return getMlModel(c.mlModelId)?.framework;
+      if (node.kind === "code") return c.language === "javascript" ? "JavaScript" : "Python";
+      if (node.kind === "supervisor") return `${(c.checks?.length ?? 0).toLocaleString("fa-IR")} معیار`;
+      if (c.retries) return `تلاش دوباره: ${c.retries.toLocaleString("fa-IR")} بار`;
       return undefined;
     },
     [agents, skills, connections],
@@ -105,6 +113,13 @@ function EditorBody({ workflowId, initialTab }: Required<WorkflowEditorProps>) {
             <EditorCanvas draft={draft} run={liveRun} subtitle={subtitle} />
             <NodeProperties draft={draft} />
           </div>
+          {liveRun ? (
+            <section className="flex flex-col gap-3 rounded-xl border p-4" aria-label="اجرای فعلی" aria-live="polite">
+              <h3 className="flex flex-wrap items-center gap-2 text-h4">اجرای فعلی <RunStatusBadge status={liveRun.status} /></h3>
+              {liveRun.savedMs ? <p className="rounded-lg bg-info/10 p-3 text-body-sm">⚡ شاخه‌های موازی هم‌زمان اجرا شدند · زمان صرفه‌جویی‌شده: <strong>{formatNumber(Math.max(1, Math.round(liveRun.savedMs / 1000)))} ثانیه</strong></p> : null}
+              <RunSteps steps={liveRun.steps} onRerun={liveRun.status === "failed" ? (nodeId) => rerunFrom(liveRun.id, nodeId) : undefined} />
+            </section>
+          ) : null}
           <TriggersPanel triggers={draft.draft.triggers} onChange={draft.setTriggers} />
         </TabsContent>
         <TabsContent value="runs" className="pt-4"><RunsTab workflowId={workflowId} /></TabsContent>

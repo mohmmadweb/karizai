@@ -9,6 +9,7 @@ const providers: ModelProvider[] = [
     status: "available",
     lastFetchedAt: "2026-10-10T09:00:00.000Z",
     createdAt: "2026-09-20T08:00:00.000Z",
+    syncEvery: "24h",
   },
   {
     id: "provider-002",
@@ -16,8 +17,9 @@ const providers: ModelProvider[] = [
     baseUrl: "http://10.0.0.15:8000/v1",
     hasApiKey: true,
     status: "available",
-    lastFetchedAt: "2026-10-11T10:30:00.000Z",
+    lastFetchedAt: "2026-11-02T22:00:00.000Z",
     createdAt: "2026-09-25T11:00:00.000Z",
+    syncEvery: "24h",
   },
   {
     id: "provider-003",

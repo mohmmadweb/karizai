@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BookOpenIcon, BotIcon, EllipsisIcon, GlobeIcon, PlugIcon, ShieldCheckIcon } from "lucide-react";
+import { BookOpenIcon, BotIcon, EllipsisIcon, GlobeIcon, PlugIcon, ShieldCheckIcon, WandSparklesIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -50,6 +50,8 @@ type ComposerMoreMenuProps = {
   onKnowledgeChange: (on: boolean) => void;
   supervisor: boolean;
   onSupervisorChange: (on: boolean) => void;
+  optimizer: boolean;
+  onOptimizerChange: (on: boolean) => void;
 };
 
 /**
@@ -107,6 +109,7 @@ export function ComposerMoreMenu(props: ComposerMoreMenuProps) {
         ) : null}
         <HintedCheckbox hint="پاسخ را با جست‌وجو در وب کامل می‌کند و منبع‌ها را با لینک می‌آورد." checked={props.webSearch} onCheckedChange={props.onWebSearchChange}><GlobeIcon aria-hidden />جست‌وجوی وب</HintedCheckbox>
         <HintedCheckbox hint="یک عامل مستقل درستی و کیفیت پاسخ را بررسی و در صورت نیاز اصلاح می‌کند؛ توکن و زمان بیشتری مصرف می‌کند." checked={props.supervisor} onCheckedChange={props.onSupervisorChange}><ShieldCheckIcon aria-hidden />ناظر هوشمند</HintedCheckbox>
+        <HintedCheckbox hint="پیش از ارسال، عبارت‌های اضافه حذف و پیام‌های قبلی خلاصه می‌شود تا توکن و هزینه کمتر شود؛ پرامپت اصلی و فشرده زیر پاسخ دیده می‌شود." checked={props.optimizer} onCheckedChange={props.onOptimizerChange}><WandSparklesIcon aria-hidden />✦ بهینه‌ساز پرامپت</HintedCheckbox>
       </DropdownMenuContent>
     </DropdownMenu>
   );

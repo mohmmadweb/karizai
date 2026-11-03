@@ -1,7 +1,7 @@
 "use client";
 
 import { Handle, Position, type Node, type NodeProps } from "@xyflow/react";
-import { BotIcon, GitBranchIcon, PlusIcon, HandIcon, NetworkIcon, SparklesIcon, WrenchIcon, type LucideIcon } from "lucide-react";
+import { BotIcon, BrainCircuitIcon, CodeXmlIcon, GitBranchIcon, GitForkIcon, GitMergeIcon, PlusIcon, HandIcon, NetworkIcon, ShieldCheckIcon, SignpostIcon, SparklesIcon, WandSparklesIcon, WrenchIcon, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { NewBlock } from "../hooks/use-workflow-draft";
 import { BlockMenu } from "./block-picker";
@@ -17,7 +17,17 @@ const icons: Record<NodeKind, LucideIcon> = {
   condition: GitBranchIcon,
   approval: HandIcon,
   orchestrator: NetworkIcon,
+  code: CodeXmlIcon,
+  "ml-model": BrainCircuitIcon,
+  "prompt-optimizer": WandSparklesIcon,
+  router: SignpostIcon,
+  supervisor: ShieldCheckIcon,
+  fork: GitForkIcon,
+  join: GitMergeIcon,
 };
+
+/** Steps made by AI carry the «✦» colour, as in the rest of the product. */
+const aiKinds: NodeKind[] = ["agent", "skill", "orchestrator", "ml-model", "prompt-optimizer", "router", "supervisor"];
 
 const ring: Partial<Record<StepStatus, string>> = {
   running: "border-info ring-2 ring-info/40",
@@ -33,7 +43,7 @@ export function FlowStepNode({ data, selected }: NodeProps<FlowNode>) {
   return (
     <div dir="rtl" className={cn("group relative flex w-52 items-center gap-3 rounded-xl border bg-card px-3 py-2 shadow-sm", selected && "border-primary ring-2 ring-primary/30", data.status && ring[data.status])}>
       <Handle type="target" position={Position.Top} />
-      <Icon className="size-5 shrink-0 text-muted-foreground" aria-hidden />
+      <Icon className={cn("size-5 shrink-0", aiKinds.includes(data.kind) ? "text-violet-600 dark:text-violet-400" : "text-muted-foreground")} aria-hidden />
       <span className="flex min-w-0 flex-col">
         <span className="truncate text-label">{data.label}</span>
         {data.subtitle ? <span className="truncate text-caption text-muted-foreground">{data.subtitle}</span> : null}

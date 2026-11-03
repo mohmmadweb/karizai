@@ -5,6 +5,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { getCurrentUser } from "@/features/user-session/data/session";
 import type { SmartRouter } from "@/lib/smart-routing";
 import { getAvailableModels } from "../data/models";
+import { isAllowedForGroups } from "../lib/model-access";
 import type { CatalogModel } from "../types";
 
 type ModelsContextValue = {
@@ -14,6 +15,9 @@ type ModelsContextValue = {
   /** Smart routers that apply to this user: the default one and those of the user's groups. */
   routers: SmartRouter[];
   modelById: (id: string) => CatalogModel | undefined;
+  /** Models the current user's groups may use; the router and the chat only pick from these. */
+  allowedModels: CatalogModel[];
+  isAllowed: (model: CatalogModel) => boolean;
 };
 
 const ModelsContext = createContext<ModelsContextValue | null>(null);
@@ -43,7 +47,8 @@ export function ModelsProvider({ children }: { children: ReactNode }) {
     const groupIds = getCurrentUser().groupIds;
     // Routers only make sense for real models; the sample list has no router.
     const routers = real.length > 0 ? allRouters.filter((router) => router.isDefault || router.groupIds.some((id) => groupIds.includes(id))) : [];
-    return { models, isReal: real.length > 0, routers, modelById: (id) => models.find((model) => model.id === id) };
+    const isAllowed = (model: CatalogModel) => isAllowedForGroups(model, groupIds);
+    return { models, isReal: real.length > 0, routers, modelById: (id) => models.find((model) => model.id === id), allowedModels: models.filter(isAllowed), isAllowed };
   }, [real, allRouters]);
 
   return <ModelsContext.Provider value={value}>{children}</ModelsContext.Provider>;

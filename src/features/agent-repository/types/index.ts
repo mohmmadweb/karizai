@@ -16,4 +16,8 @@ export type RepositoryAgent = {
   usage: number;
   /** ISO date. */
   publishedAt: string;
+  /** Average of users' stars, 1..5. */
+  rating: number;
+  /** A ready-made package of Kariz, not a colleague's Agent. */
+  official: boolean;
 };

@@ -14,6 +14,7 @@ import { nodeKindLabels } from "../hooks/use-workflow-draft";
 import { agentParams } from "../lib/agent-params";
 import { ConditionRuleField } from "./condition-rule-field";
 import { ParamField } from "./param-field";
+import { StepErrorSettings, StepKindFields } from "./step-advanced-fields";
 import { ToolSettings } from "./tool-settings";
 
 /** Settings of the selected step. */
@@ -94,12 +95,14 @@ export function NodeProperties({ draft }: { draft: WorkflowDraft }) {
           ))}
         </section>
       ) : null}
-      {node.kind !== "condition" ? (
+      <StepKindFields node={node} draft={draft} />
+      {node.kind !== "condition" && node.kind !== "fork" && node.kind !== "join" && node.kind !== "code" ? (
         <Field>
           <FieldLabel htmlFor="node-instruction">{node.kind === "approval" ? "پیامی که برای تأیید می‌بینید" : "این گام چه کار کند؟"}</FieldLabel>
           <Textarea id="node-instruction" rows={3} value={c.instruction ?? ""} onChange={(event) => set({ instruction: event.target.value })} />
         </Field>
       ) : null}
+      <StepErrorSettings node={node} draft={draft} />
     </div>
   );
 }

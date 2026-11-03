@@ -6,6 +6,8 @@ export type UserSection = {
   href: string;
   icon: LucideIcon;
   exact?: boolean;
+  /** Custom active check, for sections whose pages share a prefix with others. */
+  match?: (pathname: string) => boolean;
 };
 
 /** A titled group of sidebar items, collapsible like the groups of the messenger. */

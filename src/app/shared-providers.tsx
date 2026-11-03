@@ -6,8 +6,12 @@ import { getUserConnections } from "@/features/connections/data/connections";
 import { ModelsProvider } from "@/features/model-catalog/components/models-provider";
 import { MessengerProvider } from "@/features/messenger/components/messenger-provider";
 import { WorkspaceProvider } from "@/features/workspace/components/workspace-provider";
+import { RunNotifier } from "@/features/workflows/components/run-notifier";
 import { WorkflowsProvider } from "@/features/workflows/components/workflows-provider";
 import { getRuns, getWorkflows } from "@/features/workflows/data/workflows";
+import { DemoFlagsProvider } from "@/lib/demo-flags";
+import { PolicyProvider } from "@/lib/policy-store";
+import { OrgSkillsProvider } from "@/lib/org-skills";
 import { ChatProvider } from "@/features/chat/components/chat-provider";
 import { getConversations, getInitialMessages } from "@/features/chat/data/conversations";
 
@@ -18,18 +22,27 @@ import { getConversations, getInitialMessages } from "@/features/chat/data/conve
  */
 export function SharedProviders({ children }: { children: ReactNode }) {
   return (
+    <DemoFlagsProvider>
+    <PolicyProvider>
+    <OrgSkillsProvider>
     <ModelsProvider>
       <AgentsProvider initialAgents={[...getMyAgents(), ...getSharedAgents()]} initialSkills={getSkills()}>
         <ConnectionsProvider initialConnections={getUserConnections()}>
           <ChatProvider initialConversations={getConversations()} initialMessages={getInitialMessages()}>
             <WorkflowsProvider initialWorkflows={getWorkflows()} initialRuns={getRuns()}>
               <MessengerProvider>
-                <WorkspaceProvider>{children}</WorkspaceProvider>
+                <WorkspaceProvider>
+                  <RunNotifier />
+                  {children}
+                </WorkspaceProvider>
               </MessengerProvider>
             </WorkflowsProvider>
           </ChatProvider>
         </ConnectionsProvider>
       </AgentsProvider>
     </ModelsProvider>
+    </OrgSkillsProvider>
+    </PolicyProvider>
+    </DemoFlagsProvider>
   );
 }

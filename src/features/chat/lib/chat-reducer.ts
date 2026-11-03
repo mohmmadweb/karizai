@@ -31,6 +31,7 @@ export const emptySettings: ConversationSettings = {
   webSearch: true,
   knowledge: false,
   supervisor: false,
+  optimizer: false,
 };
 
 export function chatReducer(state: ChatState, action: ChatAction): ChatState {

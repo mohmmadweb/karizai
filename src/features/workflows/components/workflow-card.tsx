@@ -11,14 +11,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { formatDateTime } from "@/lib/format";
 import { describeTrigger } from "../lib/describe-trigger";
 import type { Workflow } from "../types";
+import { StepStrip } from "./step-strip";
 import { WorkflowStatusBadge } from "./workflow-status-badge";
 import { useWorkflows } from "./workflows-provider";
 
 export function WorkflowCard({ workflow }: { workflow: Workflow }) {
   const router = useRouter();
-  const { run, setPaused, remove } = useWorkflows();
+  const { run, runs, setPaused, remove } = useWorkflows();
   const [deleting, setDeleting] = useState(false);
   const canRun = workflow.nodes.length > 0 && workflow.status !== "pending-approval";
+  const waiting = runs.filter((item) => item.workflowId === workflow.id && item.status === "waiting-approval").length;
 
   function runNow() {
     run(workflow.id, "دستی");
@@ -32,10 +34,11 @@ export function WorkflowCard({ workflow }: { workflow: Workflow }) {
         <CardDescription>{workflow.description || "بدون توضیح"}</CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-3 text-body-sm">
+        <StepStrip workflow={workflow} />
         <ul className="flex flex-col gap-0.5 text-muted-foreground">
           {workflow.triggers.map((trigger, index) => <li key={index}>{describeTrigger(trigger)}</li>)}
         </ul>
-        <p className="text-muted-foreground">{workflow.nodes.length.toLocaleString("fa-IR")} گام{workflow.lastRunAt ? ` · آخرین اجرا: ${formatDateTime(workflow.lastRunAt)}` : ""}</p>
+        <p className="text-muted-foreground">{workflow.nodes.length.toLocaleString("fa-IR")} گام{workflow.lastRunAt ? ` · آخرین اجرا: ${formatDateTime(workflow.lastRunAt)}` : ""}{waiting ? ` · منتظر تأیید: ${waiting.toLocaleString("fa-IR")}` : ""}</p>
         {workflow.status === "pending-approval" ? <p className="text-muted-foreground">تا تأیید ادمین، راه‌اندازهای زمان‌بندی و رویداد کار نمی‌کنند.</p> : null}
         <div className="flex flex-wrap gap-2">
           <Link href={`/workflows/${workflow.id}`} className={buttonVariants({ variant: "outline", size: "sm" })}><PencilIcon aria-hidden />ویرایش</Link>

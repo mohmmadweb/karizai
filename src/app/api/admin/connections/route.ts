@@ -4,7 +4,7 @@ export async function GET() {
   return Response.json({ connections: await readConnections() });
 }
 
-const types = ["mcp", "api", "n8n", "dify"];
+const types = ["mcp", "api", "n8n", "dify", "erp", "opcua"];
 const auths = ["none", "shared-key", "user-login"];
 
 export async function PUT(request: Request) {

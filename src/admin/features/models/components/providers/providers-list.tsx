@@ -10,7 +10,8 @@ import type {
 } from "@/admin/components/shared/data-table/types";
 import { useModels } from "../../hooks/use-models";
 import { useDeleteProvider } from "../../hooks/use-delete-provider";
-import { modelsOfProvider } from "../../lib/selectors";
+import { modelsOfProvider, nextSyncAt, syncLabels } from "../../lib/selectors";
+import { formatDateTime } from "@/admin/lib/format";
 import type { ModelProvider } from "../../types";
 import { ProviderStatusBadge } from "../models/model-badges";
 import { ProviderModelsCell } from "./provider-models-cell";
@@ -45,6 +46,20 @@ export function ProvidersList({ onEdit }: ProvidersListProps) {
     },
     { id: "status", header: "وضعیت", cell: (p) => <ProviderStatusBadge status={p.status} /> },
     { id: "models", header: "مدل‌ها", cell: (p) => <ProviderModelsCell provider={p} count={countOf(p)} /> },
+    {
+      id: "sync",
+      header: "همگام‌سازی زمان‌بندی‌شده",
+      hideBelow: "lg",
+      cell: (p) => {
+        const next = nextSyncAt(p);
+        return (
+          <span className="flex flex-col text-body-sm">
+            <span>{syncLabels[p.syncEvery ?? "off"]}</span>
+            {next ? <span className="text-caption text-muted-foreground">بعدی: {formatDateTime(next)}</span> : null}
+          </span>
+        );
+      },
+    },
   ];
 
   function actionsOf(p: ModelProvider): DataTableActionGroup[] {

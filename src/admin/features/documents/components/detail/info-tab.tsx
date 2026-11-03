@@ -1,5 +1,6 @@
 "use client";
 
+import { usePolicies } from "@/lib/policy-store";
 import { useState, type FormEvent } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -21,10 +22,12 @@ export function InfoTab({ doc }: { doc: DocumentRecord }) {
   const { updateDocument, sources } = useDocuments();
   const [name, setName] = useState(doc.name);
   const [language, setLanguage] = useState<DocLanguage>(doc.language);
-  const [confidential, setConfidential] = useState(doc.confidential);
+  const policies = usePolicies();
+  const wasConfidential = doc.confidential || policies.confidentialDocIds.includes(doc.id);
+  const [confidential, setConfidential] = useState(wasConfidential);
   const [error, setError] = useState<string>();
   const [saving, setSaving] = useState(false);
-  const unchanged = name === doc.name && language === doc.language && confidential === doc.confidential;
+  const unchanged = name === doc.name && language === doc.language && confidential === wasConfidential;
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
@@ -35,6 +38,7 @@ export function InfoTab({ doc }: { doc: DocumentRecord }) {
     setSaving(true);
     await simulateRequest();
     updateDocument(doc.id, { name, language, confidential });
+    policies.setConfidential(doc.id, confidential);
     setSaving(false);
     toast.success("اطلاعات سند به‌روز شد.");
   }
@@ -85,7 +89,7 @@ export function InfoTab({ doc }: { doc: DocumentRecord }) {
           />
           <div className="flex flex-col gap-0.5">
             <FieldLabel htmlFor="doc-confidential">محرمانه</FieldLabel>
-            <FieldDescription>سند محرمانه فقط برای گروه‌ها و کاربرانی دیده می‌شود که صریحاً در تب «دسترسی» اضافه شده‌اند.</FieldDescription>
+            <FieldDescription>سند محرمانه فقط برای گروه‌ها و کاربرانی دیده می‌شود که صریحاً در تب «دسترسی» اضافه شده‌اند و مدل‌های بیرونی هرگز آن را نمی‌خوانند؛ فقط مدل داخلی.</FieldDescription>
           </div>
         </Field>
       </FieldGroup>

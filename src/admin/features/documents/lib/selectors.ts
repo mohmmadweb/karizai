@@ -41,9 +41,9 @@ export function hasNoAccess(doc: DocumentRecord, grants: AccessGrant[]) {
   );
 }
 
-export const protocolLabel = { smb: "SMB", ftp: "FTP", sftp: "SFTP" } as const;
+export const protocolLabel = { smb: "SMB", ftp: "FTP", sftp: "SFTP", seafile: "Seafile" } as const;
 
-export const defaultPort = { smb: 445, ftp: 21, sftp: 22 } as const;
+export const defaultPort = { smb: 445, ftp: 21, sftp: 22, seafile: 443 } as const;
 
 export const intervalLabel: Record<number, string> = {
   15: "هر ۱۵ دقیقه",

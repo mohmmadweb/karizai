@@ -7,8 +7,8 @@ import { SharedProviders } from "./shared-providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "موشکاف",
-  description: "موشکاف، هوش مصنوعی سازمانی",
+  title: "کاریز",
+  description: "کاریز، پنجره‌ی یکپارچه‌ی هوش مصنوعی سازمان",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

@@ -59,7 +59,7 @@ export function ChatProvider({
     stateRef.current = state;
   }, [state]);
   const { agents } = useAgents();
-  const { models, modelById } = useModels();
+  const { allowedModels: models, modelById } = useModels();
   const agentModelName = (agentId?: string) => modelById(agents.find((item) => item.id === agentId)?.defaultModelId ?? "")?.name ?? "خودکار";
   // The supervisor is independent: it prefers a model other than the one that answered, and a
   // sensitive Agent only ever gets an internal model.
@@ -69,7 +69,9 @@ export function ChatProvider({
     const at = pool.findIndex((model) => model.name === answeringModel);
     return { independent: (pool.find((model) => model.name !== answeringModel) ?? pool[0])?.name ?? null, stronger: at > 0 ? pool[0].name : null };
   };
-  const engine = useChatEngine(stateRef, dispatch, { agentModelName, supervisorModels });
+  // A name not in the list (for example a model of a real provider that is gone) counts as external.
+  const isInternalModel = (name: string) => Boolean(models.find((model) => model.name === name)?.isInternal);
+  const engine = useChatEngine(stateRef, dispatch, { agentModelName, supervisorModels, isInternalModel });
   const counter = useRef(0);
   const [prefill, setPrefill] = useState("");
   const [draftProjectId, setDraftProjectId] = useState<string | null>(null);

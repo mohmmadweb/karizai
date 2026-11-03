@@ -9,6 +9,7 @@ import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMe
 import { getCurrentUser } from "@/features/user-session/data/session";
 import { useLayoutStyle } from "@/lib/use-layout-style";
 import { useTheme } from "@/lib/use-theme";
+import { AiLayerSwitch } from "@/features/ai-panel/components/ai-layer-switch";
 import { MobileMenu } from "./mobile-menu";
 import { TopBarSearch } from "./top-bar-search";
 
@@ -36,7 +37,7 @@ function ThemeSwitch() {
   );
 }
 
-/** Top bar: user, search, organization, notifications, theme, and sign-out. Below `lg` it also holds the menu button. */
+/** Top bar: user, search (with «✦ پرسش از AI»), the AI layer switch, organization, notifications, theme, and sign-out. Below `lg` it also holds the menu button. */
 export function TopBar({ query, onQueryChange }: TopBarProps) {
   const user = getCurrentUser();
   const { classic } = useLayoutStyle();
@@ -65,6 +66,7 @@ export function TopBar({ query, onQueryChange }: TopBarProps) {
       </DropdownMenu>
       <div className="flex min-w-0 flex-1 justify-center"><TopBarSearch query={query} onQueryChange={onQueryChange} /></div>
       <div className="ms-auto flex items-center gap-2 md:ms-0">
+        <AiLayerSwitch />
         <DropdownMenu>
           <DropdownMenuTrigger render={<Button type="button" variant="outline" className="hidden h-10 gap-2 xl:flex" aria-label="سازمان" />}>
             <Building2Icon aria-hidden />{organization}<ChevronDownIcon aria-hidden />

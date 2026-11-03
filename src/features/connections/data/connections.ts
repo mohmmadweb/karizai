@@ -1,5 +1,6 @@
 import type { Connection } from "../types";
 import { officeConnections } from "./office-connections";
+import { gatewayConnections } from "./gateway-connections";
 import { plantConnections } from "./plant-connections";
 
 const connections: Connection[] = [
@@ -35,6 +36,8 @@ const connections: Connection[] = [
     tools: [
       { id: "tool-6", name: "موجودی انبار", description: "موجودی یک کالا را در انبارها می‌خواند.", requiresApproval: false, userCanUse: true, sampleInputs: [{ label: "کالا", value: "کابل شبکه" }] },
       { id: "tool-7", name: "ثبت سفارش فروش", description: "یک سفارش فروش تازه ثبت می‌کند.", requiresApproval: true, userCanUse: true, sampleInputs: [{ label: "مشتری", value: "شرکت آسمان" }, { label: "کالا", value: "کابل شبکه" }, { label: "تعداد", value: "۵۰" }] },
+      { id: "tool-60", name: "پیش‌نویس سفارش خرید", description: "یک سفارش خرید با وضعیت «پیش‌نویس» در راهکاران می‌سازد تا مدیر تدارک تأیید و نهایی کند.", requiresApproval: true, userCanUse: true, sampleInputs: [{ label: "ماده", value: "PE سنگین HD5502" }, { label: "مقدار (تن)", value: "80" }], params: [{ key: "material", label: "کالا", kind: "text", required: true, placeholder: "PE سنگین HD5502" }, { key: "quantityTon", label: "مقدار (تن)", kind: "number", required: true, min: 1, max: 500, defaultValue: "20" }, { key: "vendor", label: "تامین‌کننده", kind: "text", required: false }] },
+      { id: "tool-61", name: "سفارش‌های باز فروش", description: "سفارش‌های باز مشتریان را با گرید، مقدار و موعد تحویل می‌خواند.", requiresApproval: false, userCanUse: true, sampleInputs: [{ label: "بازه (روز)", value: "10" }], params: [{ key: "days", label: "بازه‌ی پیش رو (روز)", kind: "number", required: true, min: 1, max: 60, defaultValue: "10" }] },
     ],
   },
   {
@@ -112,11 +115,11 @@ const connections: Connection[] = [
 ];
 
 /** Plant systems (warehouse, procurement, MES, lab, maintenance, prices, social network). They stay available next to the connections the admin defines. */
-export const plantConnectionIds = [...plantConnections, ...officeConnections].map((item) => item.id);
+export const plantConnectionIds = [...plantConnections, ...officeConnections, ...gatewayConnections].map((item) => item.id);
 
 /** Connections of the current user, with their status. */
 export function getUserConnections(): Connection[] {
-  return [...connections, ...plantConnections, ...officeConnections];
+  return [...connections, ...plantConnections, ...officeConnections, ...gatewayConnections];
 }
 
 export function getConnectionById(id: string): Connection | undefined {
