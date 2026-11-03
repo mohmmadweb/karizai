@@ -162,8 +162,8 @@ Do not use letter spacing or all-caps styling on Persian text.
   lift, and a stronger shadow only for popovers, dialogs, and sheets.
 - Never use shadow as the only boundary.
 - Keep one consistent focus ring across interactive components.
-- Layer order, from bottom to top: content, sticky headers, dropdowns and
-  popovers, sheets and dialogs, toasts. Do not add ad-hoc z-index values.
+- Layer order, from bottom to top: content, sticky headers, sheets and
+  dialogs, dropdowns and popovers (so a menu opened inside a sheet or dialog is visible), toasts. Do not add ad-hoc z-index values.
 
 ## Iconography and Images
 

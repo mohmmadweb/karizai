@@ -99,7 +99,7 @@
 
 /* Layer order, bottom to top: content, sticky, popovers, modals, toasts. */
 @utility z-sticky { z-index: 10; }
-@utility z-popover { z-index: 50; }
+@utility z-popover { z-index: 65; }
 @utility z-modal { z-index: 60; }
 @utility z-toast { z-index: 70; }
 

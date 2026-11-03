@@ -1,9 +1,7 @@
-import type { Metadata } from "next";
-import { ThreadView } from "@/features/messenger/components/thread-view";
-import { alertsThreadId } from "@/features/messenger/types";
+import { redirect } from "next/navigation";
+import { getColleagues } from "@/features/messenger/data/colleagues";
 
-export const metadata: Metadata = { title: "پیام‌رسان | موشکاف" };
-
+/** The messenger opens on the first colleague's chat, not on a bot. */
 export default function MessengerPage() {
-  return <ThreadView threadId={alertsThreadId} />;
+  redirect(`/messenger/${getColleagues()[0].id}`);
 }

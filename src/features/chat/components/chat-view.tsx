@@ -2,7 +2,6 @@
 
 import { notFound } from "next/navigation";
 import { ChatHeader } from "./chat-header";
-import { ChatStarters } from "./chat-starters";
 import { useChat } from "./chat-provider";
 import { Composer } from "./composer";
 import { MessageList } from "./message-list";
@@ -22,7 +21,6 @@ export function ChatView({ conversationId }: { conversationId: string | null }) 
         <div className="flex flex-1 flex-col items-center justify-center gap-6 pb-16">
           <h1 className="px-4 text-center text-h2">چطور می‌توانم کمکتان کنم؟</h1>
           <div className="w-full"><Composer key={conversationId ?? "new"} conversationId={conversationId} /></div>
-          {conversationId === null ? <ChatStarters /> : null}
         </div>
       ) : (
         <>

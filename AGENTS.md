@@ -155,7 +155,7 @@ visually identical to the admin panel (same tokens, fonts, ui components).
 
 - `src/app`: routes and layouts. `/login` (mock sign-in); inside the `(app)`
   route group (frame, providers, `error.tsx`, `not-found.tsx`): `/` redirects to `/chat`,
-  `/connections`, `/workflows` and `/workflows/[workflowId]`, `/skills`, `/messenger` and `/messenger/[threadId]` (پیام‌رسان: workflow alerts and chats with colleagues; the sidebar switches to the messenger look on these routes), `/agent-repository` (مخزن عامل‌ها: nine ready Agents from `features/agent-repository/data`, with search, a category filter and «add to my Agents», which makes a temporary personal copy through `saveAgent`; making one's own Agent public and the admin approval step are `Planned` and need an OpenSpec change), `/knowledge`, `/usage`, `/settings`, `/chat`, `/chat/[conversationId]`, `/agents`, `/agents/new`,
+  `/connections`, `/workflows` and `/workflows/[workflowId]`, `/skills`, `/messenger` and `/messenger/[threadId]` (پیام‌رسان: two bots, «ربات هشدار» and «ربات جریان‌ها», and chats with colleagues; the sidebar switches to the messenger look on these routes), `/messenger/projects`, `/messenger/projects/[projectId]` and `/messenger/tasks` (workspace: projects and tasks), `/agent-repository` (مخزن عامل‌ها: nine ready Agents from `features/agent-repository/data`, with search, a category filter and «add to my Agents», which makes a temporary personal copy through `saveAgent`; making one's own Agent public and the admin approval step are `Planned` and need an OpenSpec change), `/knowledge`, `/usage`, `/settings`, `/chat`, `/chat/[conversationId]`, `/agents`, `/agents/new`,
   `/agents/[agentId]` (with `loading.tsx`).
 - `src/features/<feature>`: all code of one product area (`components`, `data`,
   `hooks`, `types`). Existing: `auth`, `user-shell`, `user-session` (user and
@@ -242,7 +242,7 @@ Every step of a workflow belongs to an Agent (its run, or one of its skills) or 
 
 ## Chat starters and design references
 
-A new conversation shows six ready starts under the message box (`chat/data/starters.ts`, `ChatStarters`): choosing one sets the Agent, connections or organizational knowledge and fills an example question; the user still sends it. Design references such as `VoltAgent/awesome-design-md` are inspiration only: they describe other companies' brands, so their colors, fonts and logos are never copied; only structural patterns that fit `design.md` may be borrowed (tonal depth instead of heavy shadows, one solid primary action per group, light type weights, one-click starts).
+A new conversation shows only the greeting and the message box (the ready-start cards were removed on request). Chat projects: the sidebar section «پروژه‌ها» (`ProjectList`, `ProjectRow`, state in `ChatProvider`) lets the user make named projects, start a conversation inside one, and move a conversation in or out from its menu; they live in memory and reset on reload (Presentation-only). Design references such as `VoltAgent/awesome-design-md` are inspiration only: they describe other companies' brands, so their colors, fonts and logos are never copied; only structural patterns that fit `design.md` may be borrowed (tonal depth instead of heavy shadows, one solid primary action per group, light type weights, one-click starts).
 
 ## Marks and icons
 
@@ -259,3 +259,9 @@ A prepared answer can carry `files` (`GeneratedFile` in `features/chat/types`): 
 ## Messenger (پیام‌رسان)
 
 `features/messenger`: one `MessengerProvider` (inside `WorkflowsProvider`) holds messages in memory. The first thread, «هشدارهای جریان‌ها», shows alerts from workflows; a run that succeeds and uses the notify connection (`conn-15`) adds an alert card (title, figures, link to the workflow). Colleague threads accept the user's own text; nothing is sent or kept after a reload. Colleagues and seed messages are fixed sample records. Status: `Presentation-only` for delivery (no real social network), `Implemented` for the alert cards, unread counts and the sidebar switch. The foot of the sidebar («نقش و دسترسی من», «تنظیمات سامانه») links only «تنظیمات عمومی»; the other rows are shown without a page. Both are `Planned`; an OpenSpec change has not been written for the messenger.
+
+The top of the sidebar has a two-part switch, «موشکاف» and «پیام‌رسان» (`mode-switch.tsx`); the messenger sidebar lists the bots and colleagues like chats (picture, name, start of the last message, unread count) and a «فضای کاری» block. Bots only write to the user. «ربات هشدار» gets alert cards from runs that notify someone; «ربات جریان‌ها» gets a report for every finished run, success or failure. Profile pictures (`components/shared/person-avatar.tsx`) are illustrations drawn from the person's id until real photos exist.
+
+`features/workspace`: one `WorkspaceProvider` holds four sample projects and their tasks in memory (status changes and added tasks are temporary and reset on reload). Status: `Presentation-only`; real project and task management is `Planned`.
+
+Workflow → task: the tool «ثبت وظیفه برای من» (`tool-28`, connection «شبکه اجتماعی سازمانی») is the last step of «سفارش‌دهی خودکار مواد اولیه». While a run is live, `WorkspaceProvider` watches the runs and, when that step succeeds, adds the task to «فعالیت و وظایف من» and shows a toast (`workflows/lib/task-step.ts`). Presentation-only: the task lives in memory and resets on reload.

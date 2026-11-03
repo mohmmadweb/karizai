@@ -18,6 +18,7 @@ export function alertForRun(workflow: Workflow, run: Run): AlertContent {
         { label: "مقدار پیشنهادی سفارش", value: "۸۰ تن" },
         { label: "هزینه‌ی برآوردی", value: "حدود ۶٬۵۶۰ میلیون تومان" },
         { label: "وضعیت", value: "پیش‌نویس سفارش خرید ساخته شد" },
+        { label: "وظیفه‌ی شما", value: "بازبینی و تأیید پیش‌نویس در «وظایف من» ثبت شد" },
       ],
     };
   }

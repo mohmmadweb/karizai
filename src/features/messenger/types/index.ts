@@ -18,7 +18,7 @@ export type AlertContent = {
 
 export type MessengerMessage = {
   id: string;
-  /** "alerts" for workflow alerts, otherwise a colleague id. */
+  /** "alerts" and "flows" for the two bots, otherwise a colleague id. */
   threadId: string;
   from: "me" | "other" | "system";
   text: string;
@@ -29,3 +29,7 @@ export type MessengerMessage = {
 };
 
 export const alertsThreadId = "alerts";
+export const flowsThreadId = "flows";
+
+/** A bot is a sender that only writes to the user: the alert bot and the workflow bot. */
+export type Bot = { id: string; name: string; description: string };

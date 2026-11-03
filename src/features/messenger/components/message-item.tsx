@@ -4,6 +4,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { formatDateTime } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import type { MessengerMessage } from "../types";
+import { ThreadAvatar } from "./thread-avatar";
 
 function AlertCard({ message }: { message: MessengerMessage }) {
   const alert = message.alert!;
@@ -28,15 +29,23 @@ function AlertCard({ message }: { message: MessengerMessage }) {
   );
 }
 
-/** One message: an alert card from a workflow, or a bubble from the user or a colleague. */
+/** One message: an alert card from a bot, or a bubble from the user or a colleague. Messages from the other side carry their picture. */
 export function MessageItem({ message }: { message: MessengerMessage }) {
   const mine = message.from === "me";
   return (
-    <li className={cn("flex flex-col gap-1", mine ? "items-start" : "items-end")}>
-      {message.alert ? <AlertCard message={message} /> : (
-        <p className={cn("max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-2 text-body", mine ? "bg-primary text-primary-foreground" : "bg-muted")}>{message.text}</p>
-      )}
-      <time dateTime={message.createdAt} className="px-1 text-caption text-muted-foreground">{formatDateTime(message.createdAt)}</time>
+    <li className={cn("flex items-end gap-2", mine ? "justify-start" : "justify-end")}>
+      {mine ? null : <ThreadAvatar threadId={message.threadId} className="size-8" />}
+      <div className={cn("flex min-w-0 max-w-[85%] flex-col gap-1", mine ? "items-start" : "items-end")}>
+        {message.alert ? (
+          <>
+            <p className="rounded-2xl rounded-ee-sm bg-muted px-4 py-2 text-body">{message.text}</p>
+            <AlertCard message={message} />
+          </>
+        ) : (
+          <p className={cn("whitespace-pre-wrap rounded-2xl px-4 py-2 text-body", mine ? "rounded-es-sm bg-primary text-primary-foreground" : "rounded-ee-sm bg-muted")}>{message.text}</p>
+        )}
+        <time dateTime={message.createdAt} className="px-1 text-caption text-muted-foreground">{formatDateTime(message.createdAt)}</time>
+      </div>
     </li>
   );
 }

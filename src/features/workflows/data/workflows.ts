@@ -80,6 +80,7 @@ const runs: Run[] = [
       { nodeId: "n6", label: "مقایسه‌ی قیمت‌ها", status: "succeeded", durationMs: 5200, output: "پلیمر خزر: قیمت مناسب و تحویل ۷ روزه؛ گزینه‌ی برتر.", modelName: "Claude Sonnet", inputTokens: 1480, outputTokens: 520 },
       { nodeId: "n7", label: "پیش‌نویس سفارش خرید", status: "succeeded", durationMs: 1100, output: "پیش‌نویس ۸۰ تن HD5502 ساخته شد." },
       { nodeId: "n8", label: "اعلام به تدارک", status: "succeeded", durationMs: 800, output: "پیام در کانال تدارک گذاشته شد." },
+      { nodeId: "n9", label: "ثبت وظیفه‌ی بازبینی", status: "succeeded", durationMs: 700, output: "وظیفه‌ی «بازبینی و تأیید نهایی پیش‌نویس سفارش ۸۰ تن HD5502» در وظایف من ثبت شد." },
     ],
   },
 ];

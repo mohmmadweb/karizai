@@ -5,6 +5,7 @@ import { ConnectionsProvider } from "@/features/connections/components/connectio
 import { getUserConnections } from "@/features/connections/data/connections";
 import { ModelsProvider } from "@/features/model-catalog/components/models-provider";
 import { MessengerProvider } from "@/features/messenger/components/messenger-provider";
+import { WorkspaceProvider } from "@/features/workspace/components/workspace-provider";
 import { WorkflowsProvider } from "@/features/workflows/components/workflows-provider";
 import { getRuns, getWorkflows } from "@/features/workflows/data/workflows";
 import { IdleTimeout } from "@/features/auth/components/idle-timeout";
@@ -20,7 +21,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       <ChatProvider initialConversations={getConversations()} initialMessages={getInitialMessages()}>
         <WorkflowsProvider initialWorkflows={getWorkflows()} initialRuns={getRuns()}>
           <MessengerProvider>
-            <UserShell>{children}</UserShell>
+            <WorkspaceProvider><UserShell>{children}</UserShell></WorkspaceProvider>
           </MessengerProvider>
         </WorkflowsProvider>
         <IdleTimeout />

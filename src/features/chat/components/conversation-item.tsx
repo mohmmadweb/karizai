@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { MoreVerticalIcon, PencilIcon, Trash2Icon } from "lucide-react";
+import { CheckIcon, FolderIcon, FolderInputIcon, MoreVerticalIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,24 +22,27 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
-import type { Conversation } from "../types";
+import type { ChatProject, Conversation } from "../types";
 
 type ConversationItemProps = {
   conversation: Conversation;
   active: boolean;
   onRename: (title: string) => void;
   onDelete: () => void;
+  /** With projects given, the menu offers to move the conversation into one. */
+  projects?: ChatProject[];
+  onMove?: (projectId: string | null) => void;
   onNavigate?: () => void;
   /** Title only, as in the sidebar. */
   compact?: boolean;
 };
 
-export function ConversationItem({ conversation, active, onRename, onDelete, onNavigate, compact }: ConversationItemProps) {
+export function ConversationItem({ conversation, active, onRename, onDelete, onNavigate, compact, projects = [], onMove }: ConversationItemProps) {
   const [renaming, setRenaming] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [title, setTitle] = useState(conversation.title);
@@ -66,6 +69,19 @@ export function ConversationItem({ conversation, active, onRename, onDelete, onN
         </DropdownMenuTrigger>
         <DropdownMenuContent>
           <DropdownMenuItem onClick={() => { setTitle(conversation.title); setError(null); setRenaming(true); }}><PencilIcon aria-hidden />تغییر نام</DropdownMenuItem>
+          {onMove && projects.length > 0 ? (
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger><FolderInputIcon aria-hidden />انتقال به پروژه</DropdownMenuSubTrigger>
+              <DropdownMenuSubContent>
+                {projects.map((project) => (
+                  <DropdownMenuItem key={project.id} onClick={() => onMove(project.id)}>
+                    <FolderIcon aria-hidden />{project.name}{conversation.projectId === project.id ? <CheckIcon aria-hidden className="ms-auto" /> : null}
+                  </DropdownMenuItem>
+                ))}
+                {conversation.projectId ? <DropdownMenuItem onClick={() => onMove(null)}>خارج کردن از پروژه</DropdownMenuItem> : null}
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          ) : null}
           <DropdownMenuItem variant="destructive" onClick={() => setDeleting(true)}><Trash2Icon aria-hidden />حذف</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

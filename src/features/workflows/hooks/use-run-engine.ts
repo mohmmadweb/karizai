@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, type Dispatch, type SetStateAction } from "react";
 import { toast } from "sonner";
 import { runOrder } from "../lib/graph";
+import { taskFromStep } from "../lib/task-step";
 import type { Run, RunStep, Workflow, WorkflowNode } from "../types";
 
 const outputs: Record<WorkflowNode["kind"], string> = {
@@ -96,7 +97,7 @@ export function useRunEngine(setRuns: Dispatch<SetStateAction<Run[]>>, modelName
             toast.error(`کار «${workflow.name}» ناموفق بود.`, { description: `گام «${node.label}» خطا داد.` });
             return;
           }
-          patchStep(runId, node.id, { status: "succeeded", output: outputs[node.kind], durationMs: Date.now() - stepStart, modelName: nameRef.current(node), ...tokensOf(node) });
+          patchStep(runId, node.id, { status: "succeeded", output: taskFromStep(node) ? `وظیفه‌ی «${taskFromStep(node)?.title}» در وظایف من ثبت شد.` : outputs[node.kind], durationMs: Date.now() - stepStart, modelName: nameRef.current(node), ...tokensOf(node) });
         }
         update(runId, (run) => ({ ...run, status: "succeeded", endedAt: new Date().toISOString() }));
         toast.success(`کار «${workflow.name}» تمام شد.`, { description: `${Math.max(1, Math.round((Date.now() - began) / 1000)).toLocaleString("fa-IR")} ثانیه طول کشید.` });

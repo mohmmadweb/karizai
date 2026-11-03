@@ -128,7 +128,12 @@ export type Conversation = {
   /** ISO date. */
   updatedAt: string;
   settings: ConversationSettings;
+  /** The project the conversation was put in; none means it is only in the recent list. */
+  projectId?: string;
 };
+
+/** A named group of conversations the user made. */
+export type ChatProject = { id: string; name: string };
 
 /** One prepared step of a canned answer; the chat shows it running and then done. */
 export type ScriptedStep = { id: string; kind: "thinking" | "tool"; title: string; /** Connection or source the step used. */ via?: string; lines: string[]; result: string };

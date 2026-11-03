@@ -1,7 +1,8 @@
-import type { Conversation, ConversationSettings, Message } from "../types";
+import type { ChatProject, Conversation, ConversationSettings, Message } from "../types";
 
 export type ChatState = {
   conversations: Conversation[];
+  projects: ChatProject[];
   messages: Record<string, Message[]>;
   /** Settings of the conversation that is not created yet. */
   draft: ConversationSettings;
@@ -13,6 +14,10 @@ export type ChatAction =
   | { type: "create"; conversation: Conversation }
   | { type: "rename"; id: string; title: string }
   | { type: "remove"; id: string }
+  | { type: "create-project"; project: ChatProject }
+  | { type: "rename-project"; id: string; name: string }
+  | { type: "remove-project"; id: string }
+  | { type: "move"; id: string; projectId: string | null }
   | { type: "settings"; id: string | null; patch: Partial<ConversationSettings> }
   | { type: "append"; id: string; messages: Message[] }
   | { type: "patch-message"; id: string; messageId: string; patch: Partial<Message> }
@@ -52,6 +57,22 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
         messages: rest,
       };
     }
+    case "create-project":
+      return { ...state, projects: [...state.projects, action.project] };
+    case "rename-project":
+      return { ...state, projects: state.projects.map((item) => (item.id === action.id ? { ...item, name: action.name } : item)) };
+    case "remove-project":
+      // The conversations stay; they go back to the recent list.
+      return {
+        ...state,
+        projects: state.projects.filter((item) => item.id !== action.id),
+        conversations: state.conversations.map((item) => (item.projectId === action.id ? { ...item, projectId: undefined } : item)),
+      };
+    case "move":
+      return {
+        ...state,
+        conversations: state.conversations.map((item) => (item.id === action.id ? { ...item, projectId: action.projectId ?? undefined } : item)),
+      };
     case "settings":
       if (action.id === null) {
         return { ...state, draft: { ...state.draft, ...action.patch } };

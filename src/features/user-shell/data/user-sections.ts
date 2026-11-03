@@ -17,7 +17,7 @@ const byId = (ids: string[]) => ids.map((id) => sections.find((section) => secti
 const groups: UserSectionGroup[] = [
   { id: "assistants", title: "دستیارها", icon: BotMessageSquareIcon, sections: byId(["agents", "agent-repository", "skills"]) },
   { id: "automation", title: "اتوماسیون", icon: ZapIcon, sections: byId(["workflows", "connections"]) },
-  { id: "knowledge", title: "دانش سازمانی", icon: LibraryIcon, sections: byId(["knowledge"]) },
+  { id: "knowledge", title: "دانش", icon: LibraryIcon, sections: byId(["knowledge"]) },
   { id: "account", title: "حساب", icon: UserRoundIcon, sections: byId(["usage"]) },
 ];
 

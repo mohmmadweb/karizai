@@ -16,6 +16,14 @@ type ChatContextValue = {
   /** Creates a conversation from the draft settings and returns its id. */
   createConversation: (title: string) => string;
   rename: (id: string, title: string) => void;
+  /** The project the next new conversation will be put in; `null` for none. */
+  draftProjectId: string | null;
+  setDraftProjectId: (id: string | null) => void;
+  createProject: (name: string) => string;
+  renameProject: (id: string, name: string) => void;
+  /** Deleting a project keeps its conversations. */
+  removeProject: (id: string) => void;
+  moveConversation: (id: string, projectId: string | null) => void;
   remove: (id: string) => void;
   /** `null` edits the settings of the conversation that does not exist yet. */
   updateSettings: (id: string | null, patch: Partial<ConversationSettings>) => void;
@@ -41,6 +49,7 @@ export function ChatProvider({
 }) {
   const [state, dispatch] = useReducer(chatReducer, {
     conversations: initialConversations,
+    projects: [],
     messages: initialMessages,
     draft: emptySettings,
     used: getQuota().used,
@@ -63,6 +72,7 @@ export function ChatProvider({
   const engine = useChatEngine(stateRef, dispatch, { agentModelName, supervisorModels });
   const counter = useRef(0);
   const [prefill, setPrefill] = useState("");
+  const [draftProjectId, setDraftProjectId] = useState<string | null>(null);
 
   const value = useMemo<ChatContextValue>(
     () => ({
@@ -73,17 +83,28 @@ export function ChatProvider({
         const id = `conv-new-${++counter.current}`;
         dispatch({
           type: "create",
-          conversation: { id, title, updatedAt: new Date().toISOString(), settings: stateRef.current.draft },
+          conversation: { id, title, updatedAt: new Date().toISOString(), settings: stateRef.current.draft, projectId: draftProjectId ?? undefined },
         });
+        setDraftProjectId(null);
         dispatch({ type: "reset-draft" });
         return id;
       },
       rename: (id, title) => dispatch({ type: "rename", id, title }),
+      draftProjectId,
+      setDraftProjectId,
+      createProject: (name) => {
+        const id = `proj-new-${++counter.current}`;
+        dispatch({ type: "create-project", project: { id, name } });
+        return id;
+      },
+      renameProject: (id, name) => dispatch({ type: "rename-project", id, name }),
+      removeProject: (id) => dispatch({ type: "remove-project", id }),
+      moveConversation: (id, projectId) => dispatch({ type: "move", id, projectId }),
       remove: (id) => dispatch({ type: "remove", id }),
       updateSettings: (id, patch) => dispatch({ type: "settings", id, patch }),
       ...engine,
     }),
-    [state, prefill, engine],
+    [state, prefill, draftProjectId, engine],
   );
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { BellIcon, Building2Icon, ChevronDownIcon, LogOutIcon, MoonIcon, SettingsIcon, SunIcon } from "lucide-react";
 import { BrandLockup } from "@/components/brand/brand-lockup";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { PersonAvatar } from "@/components/shared/person-avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { getCurrentUser } from "@/features/user-session/data/session";
@@ -56,7 +56,7 @@ export function TopBar({ query, onQueryChange }: TopBarProps) {
       <DropdownMenu>
         <DropdownMenuTrigger render={<button type="button" aria-label="پروفایل" className="flex h-11 items-center gap-3 rounded-lg px-1 text-start outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50" />}>
           <span className="hidden text-body-lg font-semibold lg:block">{user.name}</span>
-          <Avatar><AvatarFallback className="bg-info text-info-foreground">{user.name.slice(0, 1)}</AvatarFallback></Avatar>
+          <PersonAvatar seed={user.id} name={user.name} className="size-10" />
         </DropdownMenuTrigger>
         <DropdownMenuContent align="start" className="min-w-52">
           <DropdownMenuLabel>{user.name}</DropdownMenuLabel>
