@@ -12,3 +12,9 @@ rm -rf .next out
 STATIC_EXPORT=1 npx next build
 echo "${PAGES_DOMAIN:-karizai.shub.ir}" > out/CNAME
 touch out/.nojekyll
+# The home page only sends visitors to /chat/; a tiny page does that before any script loads.
+cat > out/index.html <<'HTML'
+<!DOCTYPE html><html lang="fa" dir="rtl"><head><meta charset="utf-8"><title>کاریز</title>
+<meta http-equiv="refresh" content="0;url=/chat/"><script>location.replace("/chat/")</script>
+<link rel="prefetch" href="/chat/"></head><body></body></html>
+HTML

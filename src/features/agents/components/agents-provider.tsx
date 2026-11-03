@@ -15,6 +15,10 @@ type AgentsContextValue = {
   editSkill: (id: string, content: SkillContent) => void;
   /** Sets exactly which of the user's Agents use this skill. */
   setSkillAgents: (skillId: string, agentIds: string[]) => void;
+  /** Admin approval queue: decide a share request of an Agent. */
+  decideShare: (agentId: string, shareId: string, approved: boolean, reason?: string) => void;
+  /** Admin approval queue: approve or reject a pending skill (or its pending edit). */
+  decideSkill: (skillId: string, approved: boolean, reason?: string) => void;
 };
 
 const AgentsContext = createContext<AgentsContextValue | null>(null);
@@ -85,6 +89,22 @@ export function AgentsProvider({
             if (item.kind !== "personal") return item;
             const without = item.skillIds.filter((id) => id !== skillId);
             return { ...item, skillIds: agentIds.includes(item.id) ? [...without, skillId] : without };
+          }),
+        ),
+      decideShare: (agentId, shareId, approved, reason) =>
+        setAgents((list) =>
+          list.map((item) =>
+            item.id !== agentId
+              ? item
+              : { ...item, shareRequests: item.shareRequests.map((share) => (share.id === shareId ? { ...share, status: approved ? "approved" : "rejected", rejectionReason: approved ? undefined : (reason ?? "ادمین این درخواست را تأیید نکرد.") } : share)) },
+          ),
+        ),
+      decideSkill: (skillId, approved, reason) =>
+        setSkills((list) =>
+          list.map((item) => {
+            if (item.id !== skillId) return item;
+            if (item.pendingEdit) return approved ? { ...item, ...item.pendingEdit, pendingEdit: undefined } : { ...item, pendingEdit: undefined };
+            return approved ? { ...item, approval: "approved", rejectionReason: undefined } : { ...item, approval: "rejected", rejectionReason: reason ?? "ادمین این مهارت را تأیید نکرد." };
           }),
         ),
       addSkill: (content) => {

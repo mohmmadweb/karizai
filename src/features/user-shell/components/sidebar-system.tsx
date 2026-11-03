@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from "react";
 import Link from "next/link";
-import { Building2Icon, BellIcon, ChevronDownIcon, HeadsetIcon, InfoIcon, SettingsIcon, ShieldCheckIcon } from "lucide-react";
+import { Building2Icon, BellIcon, ChevronDownIcon, HeadsetIcon, InfoIcon, SettingsIcon, ShieldCheckIcon, SlidersHorizontalIcon } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { itemClass } from "./sidebar-nav";
@@ -34,6 +34,7 @@ export function SidebarSystem({ pathname, collapsed, onNavigate }: SidebarSystem
   const common = { collapsed, onNavigate };
   return (
     <div className={cn("flex shrink-0 flex-col gap-0.5 border-t border-sidebar-border pt-3")}>
+      <Row {...common} label="مدیریت هوش مصنوعی" href="/admin" icon={icon(SlidersHorizontalIcon)} />
       <Row {...common} label="نقش و دسترسی من" icon={icon(ShieldCheckIcon)} />
       {collapsed ? (
         <Row {...common} label="تنظیمات عمومی" href="/settings" current={pathname === "/settings"} icon={icon(SettingsIcon)} />

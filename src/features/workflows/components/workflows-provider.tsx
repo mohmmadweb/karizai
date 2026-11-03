@@ -19,6 +19,8 @@ type WorkflowsContextValue = {
   remove: (id: string) => void;
   run: (id: string, startedBy: string) => string | null;
   decide: (runId: string, approved: boolean) => void;
+  /** Admin approval queue: a workflow waiting for the admin becomes active, or goes back to draft. */
+  decideActivation: (id: string, approved: boolean) => void;
 };
 
 const WorkflowsContext = createContext<WorkflowsContextValue | null>(null);
@@ -73,6 +75,7 @@ export function WorkflowsProvider({
         return runId;
       },
       decide: engine.decide,
+      decideActivation: (id, approved) => patch(id, { status: approved ? "active" : "draft" }),
     };
   }, [workflows, runs, engine]);
 

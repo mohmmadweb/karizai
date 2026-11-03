@@ -10,3 +10,11 @@ export function runtimeIds(prefix: string, count = 80): string[] {
 export function toParams<K extends string>(key: K, ids: string[]): Record<K, string>[] {
   return [...new Set(ids)].map((id) => ({ [key]: id }) as Record<K, string>);
 }
+
+/** First `${prefix}-${n}` not used yet, so new records get ids the static build already has pages for. */
+export function nextFreeId(prefix: string, usedIds: string[]): string {
+  const used = new Set(usedIds);
+  let n = 1;
+  while (used.has(`${prefix}-${n}`)) n += 1;
+  return `${prefix}-${n}`;
+}

@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { DirectionProvider } from "@/components/ui/direction";
 import { themeInitScript } from "@/lib/use-theme";
 import { fontSans } from "@/styles/fonts";
+import { SharedProviders } from "./shared-providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -23,7 +24,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </head>
       <body className="min-h-full flex flex-col">
         <DirectionProvider direction="rtl">
-          {children}
+          <SharedProviders>{children}</SharedProviders>
           <Toaster dir="rtl" position="bottom-center" />
         </DirectionProvider>
       </body>

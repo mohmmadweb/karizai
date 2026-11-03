@@ -2,7 +2,6 @@
 
 import { cn } from "@/lib/utils"
 import React, { useEffect, useState } from "react"
-import { codeToHtml } from "shiki"
 
 export type CodeBlockProps = {
   children?: React.ReactNode
@@ -47,6 +46,8 @@ function CodeBlockCode({
         return
       }
 
+      // shiki is large, so it is loaded only when a code block is shown.
+      const { codeToHtml } = await import("shiki")
       const html = await codeToHtml(code, { lang: language, theme })
       setHighlightedHtml(html)
     }

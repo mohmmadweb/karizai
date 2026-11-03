@@ -1,4 +1,4 @@
-import { BookOpenIcon, BotMessageSquareIcon, LibraryIcon, UserRoundIcon, ZapIcon, BotIcon, ChartNoAxesColumnIcon, LibraryBigIcon, PlugIcon, SparklesIcon, SquarePenIcon, WorkflowIcon } from "lucide-react";
+import { CodeXmlIcon, DatabaseZapIcon, BookOpenIcon, BotMessageSquareIcon, LibraryIcon, UserRoundIcon, ZapIcon, BotIcon, ChartNoAxesColumnIcon, LibraryBigIcon, PlugIcon, SparklesIcon, SquarePenIcon, WorkflowIcon } from "lucide-react";
 import type { UserSection, UserSectionGroup } from "../types";
 
 const sections: UserSection[] = [
@@ -10,6 +10,8 @@ const sections: UserSection[] = [
   { id: "connections", title: "اتصال‌ها", href: "/connections", icon: PlugIcon },
   { id: "knowledge", title: "دانش سازمانی", href: "/knowledge", icon: BookOpenIcon },
   { id: "usage", title: "مصرف من", href: "/usage", icon: ChartNoAxesColumnIcon },
+  { id: "data", title: "داده و تحلیل", href: "/data", icon: DatabaseZapIcon },
+  { id: "developer", title: "توسعه‌دهندگان و API", href: "/developer", icon: CodeXmlIcon },
 ];
 
 const byId = (ids: string[]) => ids.map((id) => sections.find((section) => section.id === id)!);
@@ -17,8 +19,8 @@ const byId = (ids: string[]) => ids.map((id) => sections.find((section) => secti
 const groups: UserSectionGroup[] = [
   { id: "assistants", title: "دستیارها", icon: BotMessageSquareIcon, sections: byId(["agents", "agent-repository", "skills"]) },
   { id: "automation", title: "اتوماسیون", icon: ZapIcon, sections: byId(["workflows", "connections"]) },
-  { id: "knowledge", title: "دانش", icon: LibraryIcon, sections: byId(["knowledge"]) },
-  { id: "account", title: "حساب", icon: UserRoundIcon, sections: byId(["usage"]) },
+  { id: "knowledge", title: "دانش", icon: LibraryIcon, sections: byId(["knowledge", "data"]) },
+  { id: "account", title: "حساب", icon: UserRoundIcon, sections: byId(["usage", "developer"]) },
 ];
 
 /** The new-chat entry is a prominent button above the groups, not a list item. */
