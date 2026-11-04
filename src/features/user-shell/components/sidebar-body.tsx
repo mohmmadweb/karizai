@@ -58,7 +58,7 @@ export function SidebarBody({ pathname, query = "", onQueryChange, collapsed = f
           </Tooltip>
         ) : (
           <Link href="/chat" onClick={onNavigate} className="flex items-center rounded-lg px-1 outline-none focus-visible:ring-3 focus-visible:ring-sidebar-ring/50">
-            <BrandLockup alt="موشکاف" tone={tone} markClassName="w-9" textClassName={classic ? "w-20" : "w-24"} />
+            <BrandLockup alt="کاریز" tone={tone} markClassName="w-9" textClassName={classic ? "w-20" : "w-24"} />
           </Link>
         )}
         {onToggleCollapse && !collapsed ? (

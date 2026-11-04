@@ -1,4 +1,4 @@
-import { BellRingIcon, BookOpenIcon, CalendarDaysIcon, LayoutDashboardIcon, ScaleIcon, BotMessageSquareIcon, UserRoundIcon, ZapIcon, BotIcon, ChartNoAxesColumnIcon, LibraryBigIcon, PlugIcon, SparklesIcon, SquarePenIcon, WorkflowIcon } from "lucide-react";
+import { BellRingIcon, BookOpenIcon, CalendarDaysIcon, LayoutDashboardIcon, ScaleIcon, BotMessageSquareIcon, LibraryIcon, ZapIcon, BotIcon, ChartNoAxesColumnIcon, LibraryBigIcon, PlugIcon, SparklesIcon, SquarePenIcon, WorkflowIcon } from "lucide-react";
 import type { UserSection, UserSectionGroup } from "../types";
 
 const sections: UserSection[] = [
@@ -12,17 +12,17 @@ const sections: UserSection[] = [
   { id: "workflows", title: "جریان‌ها", href: "/workflows", icon: WorkflowIcon },
   { id: "connections", title: "اتصال‌ها", href: "/connections", icon: PlugIcon },
   { id: "alerts", title: "هشدارها و گزارش‌ها", href: "/alerts", icon: BellRingIcon },
-  { id: "knowledge", title: "مدیریت فایل‌های من", href: "/knowledge", icon: BookOpenIcon },
+  { id: "knowledge", title: "دانش و مدیریت فایل", href: "/knowledge", icon: BookOpenIcon },
   { id: "usage", title: "مصرف من", href: "/usage", icon: ChartNoAxesColumnIcon },
 ];
 
 const byId = (ids: string[]) => ids.map((id) => sections.find((section) => section.id === id)!);
 
 const groups: UserSectionGroup[] = [
-  { id: "start", title: "", icon: LayoutDashboardIcon, bare: true, sections: byId(["desk", "calendar", "knowledge"]) },
+  { id: "start", title: "", icon: LayoutDashboardIcon, bare: true, sections: byId(["desk", "calendar"]) },
   { id: "agents", title: "عامل‌ها", heading: "Kariz AI", icon: BotMessageSquareIcon, sections: byId(["agents", "agent-repository", "skills", "compare"]) },
   { id: "automation", title: "اتوماسیون", icon: ZapIcon, sections: byId(["workflows", "connections", "alerts"]) },
-  { id: "account", title: "حساب", icon: UserRoundIcon, sections: byId(["usage"]) },
+  { id: "knowledge-usage", title: "", icon: LibraryIcon, bare: true, sections: byId(["knowledge", "usage"]) },
 ];
 
 /** The new-chat entry is a prominent button above the groups, not a list item. */

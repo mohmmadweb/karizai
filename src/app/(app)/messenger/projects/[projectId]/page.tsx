@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ProjectDetail } from "@/features/workspace/components/project-detail";
 
-export const metadata: Metadata = { title: "پروژه | موشکاف" };
+export const metadata: Metadata = { title: "پروژه | کاریز" };
 
 export default async function ProjectPage({ params }: { params: Promise<{ projectId: string }> }) {
   const { projectId } = await params;

@@ -6,8 +6,8 @@ import { fontSans } from "@/styles/fonts";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "موشکاف",
-  description: "موشکاف، هوش مصنوعی سازمانی",
+  title: "کاریز",
+  description: "کاریز، هوش مصنوعی سازمانی",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

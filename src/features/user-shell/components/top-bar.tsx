@@ -47,14 +47,14 @@ export function TopBar({ query, onQueryChange }: TopBarProps) {
     return (
       <header className="flex h-12 shrink-0 items-center gap-2 border-b page-gutter lg:hidden">
         <MobileMenu query={query} onQueryChange={onQueryChange} />
-        <BrandLockup alt="موشکاف" markClassName="w-8" textClassName="w-20" />
+        <BrandLockup alt="کاریز" markClassName="w-8" textClassName="w-20" />
       </header>
     );
   }
   return (
     <header className="z-sticky flex h-[4.75rem] shrink-0 items-center gap-3 border-b bg-card page-gutter">
       <MobileMenu query={query} onQueryChange={onQueryChange} />
-      <span className="flex lg:hidden"><BrandLockup alt="موشکاف" markClassName="w-7" textClassName="w-16" /></span>
+      <span className="flex lg:hidden"><BrandLockup alt="کاریز" markClassName="w-7" textClassName="w-16" /></span>
       <DropdownMenu>
         <DropdownMenuTrigger render={<button type="button" aria-label="پروفایل" className="flex h-11 items-center gap-3 rounded-lg px-1 text-start outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50" />}>
           <span className="hidden text-body-lg font-semibold lg:block">{user.name}</span>
