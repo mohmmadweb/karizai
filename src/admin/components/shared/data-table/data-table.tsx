@@ -68,7 +68,7 @@ export function DataTable<T>({
     <div className="overflow-hidden rounded-xl border border-border bg-card">
       <div className={cn(renderCard && "hidden md:block")}>
         <Table aria-label={label}>
-          <TableHeader className="bg-muted/50">
+          <TableHeader>
             <TableRow className="hover:bg-transparent">
               {columns.map((column) => (
                 <TableHead

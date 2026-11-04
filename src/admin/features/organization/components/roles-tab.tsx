@@ -34,7 +34,7 @@ export function RolesTab({ units }: { units: OrgUnit[] }) {
     <div className="flex flex-col gap-6">
       <div className="overflow-x-auto rounded-xl border border-border bg-card">
         <Table aria-label="دامنه‌ی هر نقش">
-          <TableHeader className="bg-muted/50">
+          <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead className="px-4">توانایی</TableHead>
               {roles.map((r) => <TableHead key={r} className="px-4">{roleLabels[r]}</TableHead>)}

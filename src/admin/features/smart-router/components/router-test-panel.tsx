@@ -51,7 +51,7 @@ export function RouterTestPanel({ router }: { router: SmartRouter }) {
       {result && result.options.length > 0 ? (
         <div className="overflow-x-auto rounded-xl border border-border">
           <Table aria-label="هزینه‌ی تخمینی هر گزینه">
-            <TableHeader className="bg-muted/50">
+            <TableHeader>
               <TableRow className="hover:bg-transparent">
                 <TableHead className="px-4">گزینه</TableHead>
                 <TableHead className="px-4">سطح</TableHead>

@@ -68,7 +68,7 @@ export function PolicyMatrix({ models, fallbackName, onToggle, onEnabledChange }
       ) : null}
       <div className="overflow-x-auto rounded-xl border border-border bg-card">
         <Table aria-label="ماتریس سیاست مدل‌ها">
-          <TableHeader className="bg-muted/50">
+          <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead className="h-11 px-4 text-label text-muted-foreground">مدل</TableHead>
               <TableHead className="h-11 px-4 text-label text-muted-foreground">محل اجرا</TableHead>

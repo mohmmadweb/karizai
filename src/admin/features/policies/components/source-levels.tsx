@@ -29,7 +29,7 @@ export function SourceLevels({ sources, models, onLevelChange }: Props) {
       </div>
       <div className="overflow-x-auto rounded-xl border border-border bg-card">
         <Table aria-label="سطح محرمانگی منابع داده">
-          <TableHeader className="bg-muted/50">
+          <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead className="h-11 px-4 text-label text-muted-foreground">منبع داده</TableHead>
               <TableHead className="h-11 px-4 text-label text-muted-foreground">سامانه</TableHead>

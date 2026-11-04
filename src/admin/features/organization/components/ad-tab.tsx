@@ -71,7 +71,7 @@ export function AdTab({ units }: { units: OrgUnit[] }) {
       ) : null}
       <div className="overflow-x-auto rounded-xl border border-border bg-card">
         <Table aria-label="نگاشت گروه‌های AD">
-          <TableHeader className="bg-muted/50">
+          <TableHeader>
             <TableRow className="hover:bg-transparent">
               <TableHead className="px-4">گروه AD</TableHead>
               <TableHead className="px-4">واحد در کاریز</TableHead>

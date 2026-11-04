@@ -26,7 +26,7 @@ export function ResultsTable({ rows, elapsed, estimates, winner }: Props) {
   return (
     <div className="overflow-x-auto rounded-xl border border-border bg-card">
       <Table aria-label="نتیجه‌ی آزمون مقایسه‌ای">
-        <TableHeader className="bg-muted/50">
+        <TableHeader>
           <TableRow className="hover:bg-transparent">
             {["مدل", "برآورد مسیریاب", "TTFT", "E2E", "توکن", "هزینه", "امتیاز ناظر ✦"].map((h, i) => (
               <TableHead key={h} className={cn("h-11 px-4 text-label text-muted-foreground", i > 0 && "text-end")}>{h}</TableHead>
