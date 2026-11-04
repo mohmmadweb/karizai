@@ -21,7 +21,7 @@ export function TaskRow({ task, projectName }: { task: Task; projectName?: strin
         <span className={cn("font-medium", done && "text-muted-foreground line-through")}>{task.title}</span>
         <span className="text-caption text-muted-foreground">{projectName ? `${projectName} · ` : ""}موعد: {formatDate(task.dueDate)}{task.createdAt ? <> · ثبت‌شده: <time dateTime={task.createdAt} className="tabular-nums">{formatDate(task.createdAt, { dateStyle: "medium", timeStyle: "medium" })}</time></> : null}</span>
       </div>
-      <span className="flex items-center gap-1.5 text-caption text-muted-foreground">منبع<Badge variant={(task.source ?? "manual") === "manual" ? "outline" : "info"}>{sourceLabels[task.source ?? "manual"]}</Badge></span>
+      <span className="flex items-center gap-1.5 text-caption text-muted-foreground">منبع<Badge variant={(task.source ?? "manual") === "manual" ? "outline" : "info"}>{task.sourceName ?? sourceLabels[task.source ?? "manual"]}</Badge></span>
       <Badge variant={task.priority === "high" ? "destructive" : "secondary"}>{priorityLabels[task.priority]}</Badge>
       <span className="flex items-center gap-2 text-body-sm text-muted-foreground"><PersonAvatar seed={task.assigneeId} name={personName(task.assigneeId)} className="size-6" />{personName(task.assigneeId)}</span>
       <Select items={statusItems} value={task.status} onValueChange={(next) => next && setStatus(task.id, next as TaskStatus)}>

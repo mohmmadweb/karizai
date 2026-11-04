@@ -7,7 +7,7 @@ import type { NewBlock } from "../hooks/use-workflow-draft";
 import { BlockMenu } from "./block-picker";
 import type { NodeKind, StepStatus } from "../types";
 
-export type FlowNodeData = { label: string; kind: NodeKind; status?: StepStatus; subtitle?: string; /** Another step already follows this one. */ hasOutput?: boolean; onAdd?: (block: NewBlock) => void };
+export type FlowNodeData = { label: string; kind: NodeKind; status?: StepStatus; subtitle?: string; /** What the finished step did in the system, for example «وظیفه ثبت شد». */ effect?: string; /** Another step already follows this one. */ hasOutput?: boolean; onAdd?: (block: NewBlock) => void };
 export type FlowNode = Node<FlowNodeData, "step">;
 
 const icons: Record<NodeKind, LucideIcon> = {
@@ -30,7 +30,7 @@ const icons: Record<NodeKind, LucideIcon> = {
 const aiKinds: NodeKind[] = ["agent", "skill", "orchestrator", "ml-model", "prompt-optimizer", "router", "supervisor"];
 
 const ring: Partial<Record<StepStatus, string>> = {
-  running: "border-info ring-2 ring-info/40",
+  running: "border-info ring-4 ring-info/40 motion-safe:animate-pulse",
   "waiting-approval": "border-warning ring-2 ring-warning/50",
   succeeded: "border-success ring-2 ring-success/40",
   failed: "border-destructive ring-2 ring-destructive/40",
@@ -47,6 +47,7 @@ export function FlowStepNode({ data, selected }: NodeProps<FlowNode>) {
       <span className="flex min-w-0 flex-col">
         <span className="truncate text-label">{data.label}</span>
         {data.subtitle ? <span className="truncate text-caption text-muted-foreground">{data.subtitle}</span> : null}
+        {data.effect ? <span className="truncate text-caption text-success motion-safe:animate-in motion-safe:fade-in-0">→ {data.effect}</span> : null}
       </span>
       {data.onAdd ? (
         // The «+» is the output handle itself: it shows when the pointer is on the block,

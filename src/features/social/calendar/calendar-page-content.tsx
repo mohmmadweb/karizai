@@ -1,13 +1,13 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { ChevronLeftIcon, ChevronRightIcon, PlusIcon } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { daysFromToday, demoToday } from "@/features/workspace/lib/today";
 import { AiButton } from "../components/ai-button";
-import { getEvents } from "../data/calendar";
+import { useCalendar } from "../components/calendar-provider";
 import { dayKey, formatDay, formatMonth, formatTime, monthDays, shiftMonth } from "../lib/jalali";
 import type { CalendarEvent } from "../types";
 import { EventDialog } from "./event-dialog";
@@ -15,20 +15,19 @@ import { MonthGrid } from "./month-grid";
 import { NewEventDialog } from "./new-event-dialog";
 import { SuggestTimeDialog } from "./suggest-time-dialog";
 
-/** «تقویم کاری من»: the Jalali month with events; recorded meetings get minutes and tasks. Changes stay until reload. */
+/** «تقویم کاری من»: the Jalali month with events (shared, so workflows can book meetings); recorded meetings get minutes and tasks. Changes stay until reload. */
 export function CalendarPageContent() {
   const [anchor, setAnchor] = useState(() => new Date(demoToday));
-  const [events, setEvents] = useState(getEvents);
+  const { events, addEvent } = useCalendar();
   const [open, setOpen] = useState<CalendarEvent | null>(null);
   const [adding, setAdding] = useState(false);
   const [suggesting, setSuggesting] = useState(false);
-  const counter = useRef(0);
   const days = monthDays(anchor);
   const todayKey = dayKey(demoToday);
   const keys = new Set(days.map((day) => day.key));
   const inMonth = events.filter((event) => keys.has(dayKey(event.start))).sort((a, b) => a.start.localeCompare(b.start));
   const add = (event: Omit<CalendarEvent, "id">) => {
-    setEvents((list) => [...list, { ...event, id: `ev-new-${++counter.current}` }]);
+    addEvent(event);
     toast.success(`«${event.title}» در ${formatDay(event.start)} ساعت ${formatTime(event.start)} به تقویم اضافه شد`);
   };
 

@@ -14,15 +14,24 @@ import { folderCounts, semanticSearch, sortDocuments, type SortDirection, type S
 import type { DocumentKind, KnowledgeDocument } from "../types";
 import { DocumentTable, type FileAiAction } from "./document-table";
 import { FolderList } from "./folder-list";
+import { useKnowledgeFiles } from "./knowledge-files-provider";
 import { NewFolderDialog } from "./new-folder-dialog";
 
 const uploadKinds: Record<string, DocumentKind> = { pdf: "pdf", doc: "word", docx: "word", xls: "excel", xlsx: "excel" };
 
-/** Folders and files with name or semantic search, smart tags and the AI actions. Added folders, files and tags are temporary. */
+/** Folders and files with name or semantic search, smart tags and the AI actions. Added folders, files and tags (and files made by AI) are temporary. */
 export function FileManager({ initial }: { initial: KnowledgeDocument[] }) {
   const { openPanel } = useAiPanel();
   const policies = usePolicies();
-  const [documents, setDocuments] = useState(initial);
+  // Files Agents and workflows made in this visit join the list, newest on top, also while the page is open.
+  const { generated } = useKnowledgeFiles();
+  const [documents, setDocuments] = useState(() => [...generated, ...initial]);
+  const [seenGenerated, setSeenGenerated] = useState(generated.length);
+  if (generated.length !== seenGenerated) {
+    const fresh = generated.slice(0, generated.length - seenGenerated);
+    setSeenGenerated(generated.length);
+    setDocuments((list) => [...fresh.filter((doc) => !list.some((item) => item.id === doc.id)), ...list]);
+  }
   const [folders, setFolders] = useState<string[]>([]);
   const [folder, setFolder] = useState<string | null>(null);
   const [query, setQuery] = useState("");

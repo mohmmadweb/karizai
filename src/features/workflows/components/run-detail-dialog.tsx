@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { formatDateTime, formatNumber } from "@/lib/format";
 import type { Run } from "../types";
 import { tokensOfRun } from "../lib/run-cost";
+import { useLive } from "@/features/live/components/live-provider";
 import { RunSteps } from "./run-steps";
 import { RunStatusBadge } from "./workflow-status-badge";
 import { useWorkflows } from "./workflows-provider";
@@ -13,6 +14,7 @@ type RunDetailDialogProps = { run: Run | null; onOpenChange: (open: boolean) => 
 
 export function RunDetailDialog({ run, onOpenChange }: RunDetailDialogProps) {
   const { runs, decide, rerunFrom } = useWorkflows();
+  const { effects } = useLive();
   // Read the live copy so steps keep updating while the dialog is open.
   const live = run ? (runs.find((item) => item.id === run.id) ?? run) : null;
   return (
@@ -23,7 +25,7 @@ export function RunDetailDialog({ run, onOpenChange }: RunDetailDialogProps) {
           <DialogDescription>{live ? `${formatDateTime(live.startedAt)} · ${live.startedBy}` : ""}</DialogDescription>
         </DialogHeader>
         {live?.savedMs ? <p className="rounded-lg bg-info/10 p-3 text-body-sm">⚡ شاخه‌های موازی هم‌زمان اجرا شدند · زمان صرفه‌جویی‌شده: <strong>{formatNumber(Math.max(1, Math.round(live.savedMs / 1000)))} ثانیه</strong></p> : null}
-        {live ? <RunSteps steps={live.steps} onRerun={live.status === "failed" ? (nodeId) => rerunFrom(live.id, nodeId) : undefined} /> : null}
+        {live ? <RunSteps steps={live.steps} effects={effects.filter((item) => item.runId === live.id)} onRerun={live.status === "failed" ? (nodeId) => rerunFrom(live.id, nodeId) : undefined} /> : null}
         {live && tokensOfRun(live).total > 0 ? (
           <p className="rounded-lg bg-muted/40 p-3 text-body-sm">جمع توکن این اجرا: <strong>{formatNumber(tokensOfRun(live).total)}</strong> (ورودی {formatNumber(tokensOfRun(live).input)} · خروجی {formatNumber(tokensOfRun(live).output)})</p>
         ) : null}

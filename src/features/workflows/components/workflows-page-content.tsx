@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { PageHeader } from "@/components/shared/page-header";
 import { SearchField } from "@/components/shared/search-field";
 import { Button } from "@/components/ui/button";
+import { LiveSwitch } from "@/features/live/components/live-switch";
 import { NewWorkflowDialog } from "./new-workflow-dialog";
 import { WorkflowCard } from "./workflow-card";
 import { useWorkflows } from "./workflows-provider";
@@ -19,7 +20,7 @@ export function WorkflowsPageContent() {
 
   return (
     <div className="mx-auto flex w-full max-w-page flex-col gap-8 page-gutter py-8">
-      <PageHeader title="جریان‌ها" description="جریان، چند گام پشت‌سرهم است که Agentها و ابزارها انجام می‌دهند؛ دستی، زمان‌بندی‌شده یا با یک رویداد شروع می‌شود." action={workflows.length > 0 ? createButton : undefined} />
+      <PageHeader title="جریان‌ها" description="جریان، چند گام پشت‌سرهم است که Agentها و ابزارها انجام می‌دهند؛ دستی، زمان‌بندی‌شده یا با یک رویداد شروع می‌شود." action={<div className="flex flex-wrap items-center gap-2"><LiveSwitch />{workflows.length > 0 ? createButton : null}</div>} />
       {workflows.length === 0 ? (
         <EmptyState icon={<WorkflowIcon />} title="هنوز جریانی نساخته‌اید" description="از یک قالب آماده یا با یک جمله شروع کنید." action={createButton} />
       ) : (

@@ -45,6 +45,9 @@ export type MessengerMessage = {
 /** What a workflow run (or any page) can post to the alert bot. */
 export type PostAlertInput = { title: string; text: string; workflowId?: string; runId?: string; tone?: "warning" | "info"; fields?: AlertField[] };
 
+/** What any part of the system can post to a chat, group or channel. */
+export type PostInput = { threadId: string; text: string; from?: "system" | "other"; sender?: string; alert?: AlertContent };
+
 export const alertsThreadId = "alerts";
 export const flowsThreadId = "flows";
 

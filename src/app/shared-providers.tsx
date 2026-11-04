@@ -2,6 +2,9 @@ import type { ReactNode } from "react";
 import { AgentsProvider } from "@/features/agents/components/agents-provider";
 import { getMyAgents, getSharedAgents, getSkills } from "@/features/agents/data/agents";
 import { AlertsProvider } from "@/features/alerts/components/alerts-provider";
+import { KnowledgeFilesProvider } from "@/features/knowledge/components/knowledge-files-provider";
+import { LiveProvider } from "@/features/live/components/live-provider";
+import { CalendarProvider } from "@/features/social/components/calendar-provider";
 import { ConnectionsProvider } from "@/features/connections/components/connections-provider";
 import { getUserConnections } from "@/features/connections/data/connections";
 import { ModelsProvider } from "@/features/model-catalog/components/models-provider";
@@ -9,7 +12,6 @@ import { MessengerProvider } from "@/features/messenger/components/messenger-pro
 import { PoliciesProvider } from "@/features/policies/components/policies-provider";
 import { UserSessionBoundary } from "@/features/user-session/components/user-session-boundary";
 import { WorkspaceProvider } from "@/features/workspace/components/workspace-provider";
-import { RunNotifier } from "@/features/workflows/components/run-notifier";
 import { WorkflowsProvider } from "@/features/workflows/components/workflows-provider";
 import { getRuns, getWorkflows } from "@/features/workflows/data/workflows";
 import { DemoFlagsProvider } from "@/lib/demo-flags";
@@ -41,8 +43,11 @@ export function SharedProviders({ children }: { children: ReactNode }) {
               <AlertsProvider>
                 <MessengerProvider>
                   <WorkspaceProvider>
-                    <RunNotifier />
-                    {children}
+                    <CalendarProvider>
+                      <KnowledgeFilesProvider>
+                        <LiveProvider>{children}</LiveProvider>
+                      </KnowledgeFilesProvider>
+                    </CalendarProvider>
                   </WorkspaceProvider>
                 </MessengerProvider>
               </AlertsProvider>

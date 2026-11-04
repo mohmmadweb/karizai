@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { BellIcon, Building2Icon, ChevronDownIcon, LogOutIcon, MoonIcon, SettingsIcon, SunIcon } from "lucide-react";
+import { Building2Icon, ChevronDownIcon, LogOutIcon, MoonIcon, SettingsIcon, SunIcon } from "lucide-react";
 import { BrandLockup } from "@/components/brand/brand-lockup";
 import { PersonAvatar } from "@/components/shared/person-avatar";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,9 @@ import { useUserSwitch } from "@/features/user-session/components/user-session-b
 import { useLayoutStyle } from "@/lib/use-layout-style";
 import { useTheme } from "@/lib/use-theme";
 import { AiLayerSwitch } from "@/features/ai-panel/components/ai-layer-switch";
+import { LiveSwitch } from "@/features/live/components/live-switch";
 import { MobileMenu } from "./mobile-menu";
+import { NotificationsBell } from "./notifications-bell";
 import { TopBarSearch } from "./top-bar-search";
 
 type TopBarProps = { query: string; onQueryChange: (query: string) => void };
@@ -89,15 +91,8 @@ export function TopBar({ query, onQueryChange }: TopBarProps) {
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
-        <DropdownMenu>
-          <DropdownMenuTrigger render={<Button type="button" variant="ghost" size="icon" aria-label="اعلان‌ها" />}><BellIcon aria-hidden /></DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="min-w-60">
-            <DropdownMenuGroup>
-              <DropdownMenuLabel>اعلان‌ها</DropdownMenuLabel>
-              <DropdownMenuItem disabled>اعلان تازه‌ای ندارید.</DropdownMenuItem>
-            </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <LiveSwitch className="hidden lg:flex" />
+        <NotificationsBell />
         <ThemeSwitch />
         <Button nativeButton={false} render={<Link href="/login" />} variant="ghost" className="h-10 gap-2 text-destructive hover:text-destructive"><LogOutIcon aria-hidden className="rtl:rotate-180" /><span className="hidden sm:inline">خروج</span></Button>
       </div>

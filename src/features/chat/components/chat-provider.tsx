@@ -34,7 +34,15 @@ type ChatContextValue = {
   retry: (id: string, messageId: string) => void;
   /** Answers the approval question of a step in a multi-agent timeline. */
   decideStep: (messageId: string, approved: boolean) => void;
+  /**
+   * Adds a finished conversation with an Agent's report, for example what a workflow run wrote; it shows in the
+   * recent chats. Returns the conversation id.
+   */
+  addReport: (report: ChatReport) => string;
 };
+
+/** A report an Agent left without being asked in a chat: the line that started it and the answer. */
+export type ChatReport = { title: string; prompt: string; text: string; agentName?: string; modelName?: string; sources?: Message["sources"] };
 
 const ChatContext = createContext<ChatContextValue | null>(null);
 
@@ -104,6 +112,18 @@ export function ChatProvider({
       moveConversation: (id, projectId) => dispatch({ type: "move", id, projectId }),
       remove: (id) => dispatch({ type: "remove", id }),
       updateSettings: (id, patch) => dispatch({ type: "settings", id, patch }),
+      addReport: ({ title, prompt, text, agentName, modelName, sources = [] }) => {
+        const id = `conv-new-${++counter.current}`;
+        const now = new Date().toISOString();
+        dispatch({ type: "create", conversation: { id, title, updatedAt: now, settings: emptySettings } });
+        dispatch({
+          type: "append", id, messages: [
+            { id: `${id}-q`, role: "user", text: prompt, createdAt: now, status: "done", sources: [], attachments: [] },
+            { id: `${id}-a`, role: "assistant", text, createdAt: now, finishedAt: now, status: "done", agentName, modelName, sources, attachments: [] },
+          ],
+        });
+        return id;
+      },
       ...engine,
     }),
     [state, prefill, draftProjectId, engine],

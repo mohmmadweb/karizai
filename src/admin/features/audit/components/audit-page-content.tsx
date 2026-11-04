@@ -11,6 +11,8 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { PageHeader } from "@/components/shared/page-header";
 import { SearchField } from "@/components/shared/search-field";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { useLive } from "@/features/live/components/live-provider";
 import { auditNow, getAuditEvents } from "../data/audit-events";
 import { channelLabels, resultLabels, type AuditEvent } from "../types";
 import { AuditDetailSheet } from "./audit-detail-sheet";
@@ -18,7 +20,7 @@ import { FilterSelect, optionsOf } from "./filter-select";
 import { ResultBadge } from "./result-badge";
 import { StatCards } from "./stat-cards";
 
-const events = getAuditEvents();
+const seedEvents = getAuditEvents();
 const day = 86_400_000;
 const startOfToday = auditNow - 12 * 3_600_000;
 const periods = [
@@ -36,6 +38,10 @@ export function AuditPageContent() {
   const [f, setF] = useState(initial);
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState<AuditEvent | null>(null);
+  // What workflow runs did in this visit comes first; those rows count as «today» in every period.
+  const { audit } = useLive();
+  const events = useMemo<AuditEvent[]>(() => [...audit, ...seedEvents], [audit]);
+  const isLive = (e: AuditEvent) => e.id.startsWith("live-audit");
   const set = (key: keyof typeof initial) => (value: string) => setF((s) => ({ ...s, [key]: value }));
 
   const rows = useMemo(() => {
@@ -44,7 +50,7 @@ export function AuditPageContent() {
     return events.filter((e) => {
       const t = new Date(e.at).getTime();
       return (
-        t >= p.from && t < p.to &&
+        (isLive(e) ? f.period !== "yesterday" : t >= p.from && t < p.to) &&
         (f.user === "all" || e.user === f.user) &&
         (f.agent === "all" || e.agent === f.agent) &&
         (f.result === "all" || e.result === f.result) &&
@@ -52,7 +58,7 @@ export function AuditPageContent() {
         (!q || [e.user, e.agent, e.source, e.model, e.action, e.reason ?? ""].some((x) => x.includes(q)))
       );
     });
-  }, [f, query]);
+  }, [f, query, events]);
 
   function exportCsv() {
     const csv = buildCsv(rows, [
@@ -72,7 +78,7 @@ export function AuditPageContent() {
 
   const columns: DataTableColumn<AuditEvent>[] = [
     { id: "at", header: "زمان", className: "whitespace-nowrap text-body-sm text-muted-foreground", cell: (e) => formatDateTime(e.at) },
-    { id: "user", header: "کاربر", cell: (e) => <span className="flex flex-col"><span className="font-medium">{e.user}</span><span className="text-caption text-muted-foreground">{channelLabels[e.channel]} · واحد {e.unit}</span></span> },
+    { id: "user", header: "کاربر", cell: (e) => <span className="flex flex-col"><span className="flex flex-wrap items-center gap-1.5 font-medium">{e.user}{isLive(e) ? <Badge variant="info">همین حالا</Badge> : null}</span><span className="text-caption text-muted-foreground">{channelLabels[e.channel]} · واحد {e.unit}</span></span> },
     { id: "agent", header: "عامل", hideBelow: "lg", cell: (e) => e.agent },
     { id: "source", header: "ابزار / منبع", hideBelow: "lg", className: "text-body-sm", cell: (e) => e.source },
     { id: "model", header: "مدل", hideBelow: "xl", className: "text-body-sm", cell: (e) => e.model },

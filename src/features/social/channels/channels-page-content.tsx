@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 import { MegaphoneIcon, PlusIcon } from "lucide-react";
 import { toast } from "sonner";
@@ -12,13 +12,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { useMessenger } from "@/features/messenger/components/messenger-provider";
 import { getCurrentUser } from "@/features/user-session/data/session";
 import { formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { AiAction } from "../components/ai-dialog";
 import { announcementDrafts, getChannelPosts, getChannels } from "../data/channels";
 import { formatDay, formatTime } from "../lib/jalali";
-import type { Channel } from "../types";
+import type { Channel, ChannelPost } from "../types";
 
 /** «کانال‌ها»: one-way channels; «هشدارهای تولید» is written by alert rules and Agents. Posts stay until reload. */
 export function ChannelsPageContent() {
@@ -36,7 +37,14 @@ export function ChannelsPageContent() {
   const [name, setName] = useState("");
   const counter = useRef(0);
   const selected = channels.find((c) => c.id === selectedId) ?? channels[0];
-  const shown = posts.filter((p) => p.channelId === selected.id).sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  // What workflows published in the channel during this visit, for example the production plan in «هشدارهای تولید».
+  const { messagesOf, markRead } = useMessenger();
+  const fromFlows: ChannelPost[] = messagesOf(selected.id).map((item) => ({
+    id: item.id, channelId: selected.id, author: item.sender ?? "جریان‌ها", createdAt: item.createdAt, text: item.text,
+    automatic: { href: item.alert?.workflowId ? `/workflows/${item.alert.workflowId}` : "/workflows", label: item.sender ?? "جریان‌ها" },
+  }));
+  useEffect(() => { markRead(selected.id); }, [selected.id, fromFlows.length, markRead]);
+  const shown = [...posts.filter((p) => p.channelId === selected.id), ...fromFlows].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
   const publish = (text: string) => { setPosts((list) => [...list, { id: `cp-new-${++counter.current}`, channelId: selected.id, author: getCurrentUser().name, createdAt: new Date().toISOString(), text }]); toast.success(`در کانال «${selected.name}» منتشر شد`); };
 
   function create(event: FormEvent) {

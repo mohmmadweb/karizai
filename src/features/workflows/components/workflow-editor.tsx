@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { TriangleAlertIcon } from "lucide-react";
 import { toast } from "sonner";
@@ -12,6 +12,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAgents } from "@/features/agents/components/agents-provider";
 import { useUnsavedGuard } from "@/features/agents/hooks/use-unsaved-guard";
 import { useConnections } from "@/features/connections/components/connections-provider";
+import { useLive } from "@/features/live/components/live-provider";
+import { effectMeta } from "@/features/live/lib/effect-meta";
 import { getMlModel } from "../data/ml-models";
 import { useWorkflowDraft } from "../hooks/use-workflow-draft";
 import { validateWorkflow } from "../lib/validate-workflow";
@@ -50,6 +52,14 @@ function EditorBody({ workflowId, initialTab }: Required<WorkflowEditorProps>) {
   // Steps light up only for a run started in this session; old runs stay in the Runs tab.
   const liveRun = latest?.id.startsWith("run-new-") ? latest : undefined;
   const running = latest?.status === "running" || latest?.status === "waiting-approval";
+  const { effects } = useLive();
+  const runEffects = useMemo(() => effects.filter((item) => item.runId === liveRun?.id), [effects, liveRun?.id]);
+  // The first thing each finished step did, for the caption on its block («→ وظیفه ثبت شد»).
+  const stepEffects = useMemo(() => {
+    const found: Record<string, string> = {};
+    runEffects.forEach((item) => { if (item.nodeId && !found[item.nodeId]) found[item.nodeId] = effectMeta[item.kind].short; });
+    return found;
+  }, [runEffects]);
 
   const subtitle = useCallback(
     (node: WorkflowNode) => {
@@ -110,14 +120,14 @@ function EditorBody({ workflowId, initialTab }: Required<WorkflowEditorProps>) {
         </TabsList>
         <TabsContent value="design" className="flex flex-col gap-6 pt-4">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem]">
-            <EditorCanvas draft={draft} run={liveRun} subtitle={subtitle} />
+            <EditorCanvas draft={draft} run={liveRun} subtitle={subtitle} stepEffects={stepEffects} />
             <NodeProperties draft={draft} />
           </div>
           {liveRun ? (
             <section className="flex flex-col gap-3 rounded-xl border p-4" aria-label="اجرای فعلی" aria-live="polite">
               <h3 className="flex flex-wrap items-center gap-2 text-h4">اجرای فعلی <RunStatusBadge status={liveRun.status} /></h3>
               {liveRun.savedMs ? <p className="rounded-lg bg-info/10 p-3 text-body-sm">⚡ شاخه‌های موازی هم‌زمان اجرا شدند · زمان صرفه‌جویی‌شده: <strong>{formatNumber(Math.max(1, Math.round(liveRun.savedMs / 1000)))} ثانیه</strong></p> : null}
-              <RunSteps steps={liveRun.steps} onRerun={liveRun.status === "failed" ? (nodeId) => rerunFrom(liveRun.id, nodeId) : undefined} />
+              <RunSteps steps={liveRun.steps} effects={runEffects} onRerun={liveRun.status === "failed" ? (nodeId) => rerunFrom(liveRun.id, nodeId) : undefined} />
             </section>
           ) : null}
           <TriggersPanel triggers={draft.draft.triggers} onChange={draft.setTriggers} />

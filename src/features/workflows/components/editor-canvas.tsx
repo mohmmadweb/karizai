@@ -14,33 +14,37 @@ const nodeTypes = { step: FlowStepNode };
 
 type Size = { width: number; height: number };
 
-const toFlowNodes = (nodes: WorkflowNode[], edges: WorkflowEdge[], run: Run | undefined, subtitle: (node: WorkflowNode) => string | undefined, sizes: Record<string, Size>, addAfter: WorkflowDraft["addAfter"]): FlowNode[] =>
+const toFlowNodes = (nodes: WorkflowNode[], edges: WorkflowEdge[], run: Run | undefined, subtitle: (node: WorkflowNode) => string | undefined, sizes: Record<string, Size>, addAfter: WorkflowDraft["addAfter"], stepEffects: Record<string, string>): FlowNode[] =>
   nodes.map((node) => ({
     id: node.id,
     type: "step",
     position: node.position,
     measured: sizes[node.id],
-    data: { label: node.label, kind: node.kind, subtitle: subtitle(node), hasOutput: edges.some((edge) => edge.source === node.id), onAdd: (block) => addAfter(node.id, block), status: run?.steps.find((step) => step.nodeId === node.id)?.status },
+    data: { label: node.label, kind: node.kind, subtitle: subtitle(node), hasOutput: edges.some((edge) => edge.source === node.id), onAdd: (block) => addAfter(node.id, block), status: run?.steps.find((step) => step.nodeId === node.id)?.status, effect: stepEffects[node.id] },
   }));
 
 // The «خطا» path is a dashed red line; it is only taken when its step fails.
-const toFlowEdges = (edges: WorkflowEdge[]): Edge[] =>
-  edges.map((edge) => ({ id: edge.id, source: edge.source, target: edge.target, label: edge.label, animated: false, ...(edge.label === "خطا" ? { style: { stroke: "var(--destructive)", strokeDasharray: "6 4" } } : {}) }));
+const toFlowEdges = (edges: WorkflowEdge[], run: Run | undefined): Edge[] =>
+  edges.map((edge) => ({ id: edge.id, source: edge.source, target: edge.target, label: edge.label, animated: run?.steps.find((step) => step.nodeId === edge.target)?.status === "running", ...(edge.label === "خطا" ? { style: { stroke: "var(--destructive)", strokeDasharray: "6 4" } } : {}) }));
 
 type EditorCanvasProps = {
   draft: WorkflowDraft;
   /** The latest run, so steps light up while it goes. */
   run?: Run;
   subtitle: (node: WorkflowNode) => string | undefined;
+  /** What each finished step did in the system, shown on its block. */
+  stepEffects?: Record<string, string>;
 };
 
-export function EditorCanvas({ draft, run, subtitle }: EditorCanvasProps) {
+const noEffects: Record<string, string> = {};
+
+export function EditorCanvas({ draft, run, subtitle, stepEffects = noEffects }: EditorCanvasProps) {
   const { theme } = useTheme();
   const { nodes, edges } = draft.draft;
   // React Flow reports the size of each step; it must be handed back or the steps stay hidden.
   const [sizes, setSizes] = useState<Record<string, Size>>({});
-  const flowNodes = useMemo(() => toFlowNodes(nodes, edges, run, subtitle, sizes, draft.addAfter), [nodes, edges, run, subtitle, sizes, draft.addAfter]);
-  const flowEdges = useMemo(() => toFlowEdges(edges), [edges]);
+  const flowNodes = useMemo(() => toFlowNodes(nodes, edges, run, subtitle, sizes, draft.addAfter, stepEffects), [nodes, edges, run, subtitle, sizes, draft.addAfter, stepEffects]);
+  const flowEdges = useMemo(() => toFlowEdges(edges, run), [edges, run]);
 
   function onNodesChange(changes: NodeChange<FlowNode>[]) {
     const measuredNow: Record<string, Size> = {};
