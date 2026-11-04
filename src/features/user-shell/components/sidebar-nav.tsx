@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "@/components/shared/app-link";
 import { ChevronDownIcon } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
@@ -41,12 +40,17 @@ export function Item({ section, pathname, collapsed, onNavigate }: { section: Us
   );
 }
 
-/** Motoshub's menu: bold group titles that open like an accordion, one at a time; with a collapsed sidebar only the icons remain. */
+/**
+ * Motoshub's menu: bold group titles that open like an accordion, one at a time; with a collapsed sidebar only the icons remain.
+ * Groups are native <details> elements, so the arrows and links work even while the page's scripts are still downloading.
+ */
 export function SidebarNav({ groups, pathname, collapsed = false, flat = false, onNavigate }: SidebarNavProps) {
   const activeGroup = groups.find((group) => !group.always && group.sections.some((section) => isSectionPath(pathname, section)))?.id ?? null;
-  // null: follow the current page. A click overrides it until the page changes.
-  const [choice, setChoice] = useState<{ pathname: string; group: string | null } | null>(null);
-  const openGroup = choice && choice.pathname === pathname ? choice.group : activeGroup;
+  const list = (group: UserSectionGroup) => (
+    <ul className="flex flex-col gap-1">
+      {group.sections.map((section) => <li key={section.id}><Item section={section} pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} /></li>)}
+    </ul>
+  );
   if (flat) {
     return (
       <nav aria-label="بخش‌های پنل کاربر">
@@ -59,28 +63,16 @@ export function SidebarNav({ groups, pathname, collapsed = false, flat = false, 
   return (
     <nav aria-label="بخش‌های پنل کاربر" className="flex flex-col gap-1">
       {groups.map((group, index) => {
-        const open = collapsed || group.always || openGroup === group.id;
+        if (collapsed) return <section key={group.id} aria-label={group.title} className={cn("flex flex-col gap-1", index > 0 && "border-t border-sidebar-border pt-2")}>{list(group)}</section>;
+        if (group.always) return <section key={group.id} aria-label={group.title} className="flex flex-col gap-1"><h2 className="flex h-10 items-center px-3 text-body font-bold">{group.title}</h2>{list(group)}</section>;
         return (
-          <section key={group.id} aria-label={group.title} className={cn("flex flex-col gap-1", collapsed && index > 0 && "border-t border-sidebar-border pt-2")}>
-            {collapsed ? null : group.always ? (
-              <h2 className="flex h-10 items-center px-3 text-body font-bold">{group.title}</h2>
-            ) : (
-              <button
-                type="button"
-                aria-expanded={open}
-                onClick={() => setChoice({ pathname, group: open ? null : group.id })}
-                className="flex h-11 items-center justify-between rounded-lg px-3 text-start text-body font-bold outline-none hover:bg-sidebar-accent focus-visible:ring-3 focus-visible:ring-sidebar-ring/50"
-              >
-                {group.title}
-                <ChevronDownIcon className={cn("size-4 text-sidebar-foreground/70 transition-transform motion-reduce:transition-none", open && "rotate-180")} aria-hidden />
-              </button>
-            )}
-            {open ? (
-              <ul className="flex flex-col gap-1">
-                {group.sections.map((section) => <li key={section.id}><Item section={section} pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} /></li>)}
-              </ul>
-            ) : null}
-          </section>
+          <details key={group.id} name="sidebar-groups" open={group.id === activeGroup} className="group flex flex-col gap-1">
+            <summary className="flex h-11 cursor-pointer list-none items-center justify-between rounded-lg px-3 text-start text-body font-bold outline-none hover:bg-sidebar-accent focus-visible:ring-3 focus-visible:ring-sidebar-ring/50 [&::-webkit-details-marker]:hidden">
+              {group.title}
+              <ChevronDownIcon className="size-4 text-sidebar-foreground/70 transition-transform group-open:rotate-180 motion-reduce:transition-none" aria-hidden />
+            </summary>
+            {list(group)}
+          </details>
         );
       })}
     </nav>
