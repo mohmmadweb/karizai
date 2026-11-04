@@ -23,7 +23,7 @@ export type AiAnswer = {
 export type AiAnswerKey = "brief" | "summarizeGroup" | "rca" | "doc" | "meta" | "tasks" | "risk" | "status" | "reply" | "moisture" | "generic";
 
 /** Pages that have their own quick questions; the rest use `default`. */
-export type QuickKey = "dash" | "groups" | "conversations" | "files" | "projects" | "default";
+export type QuickKey = "dash" | "groups" | "conversations" | "files" | "projects" | "default" | `page/${string}`;
 
 export type PageContext = { key: QuickKey; title: string };
 

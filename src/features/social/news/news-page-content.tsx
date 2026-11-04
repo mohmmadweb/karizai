@@ -1,15 +1,14 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { PlusIcon } from "lucide-react";
+import { BellIcon, SettingsIcon } from "lucide-react";
 import { toast } from "sonner";
-import { PageHeader } from "@/components/shared/page-header";
+import { CreateButton, DashedEmpty, FilterPill, MotoPage, MotoPageHeader, MotoSearch, RoundIconButton, StatusTabs } from "@/components/shared/moto/moto";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { AiAction } from "../components/ai-dialog";
 import { categoryLabels, draftNews, getNews } from "../data/news";
@@ -23,26 +22,32 @@ export function NewsPageContent() {
   const [items, setItems] = useState(getNews);
   const [tab, setTab] = useState<"all" | NewsCategory>("all");
   const [writing, setWriting] = useState(false);
+  const [query, setQuery] = useState("");
+  const [newest, setNewest] = useState(true);
   const counter = useRef(0);
   const add = (title: string, body: string, category: NewsCategory, draft: boolean) =>
     setItems((list) => [{ id: `news-new-${++counter.current}`, title, body, category, draft, publishedAt: new Date().toISOString(), summary: [body.split(/[.؛]/)[0]], english: { title: "Translation is ready after publishing", body: "The English version is written when the item is published." } }, ...list]);
-  const shown = items.filter((item) => tab === "all" || item.category === tab);
+  const shown = items
+    .filter((item) => (tab === "all" || item.category === tab) && (!query.trim() || `${item.title} ${item.body}`.includes(query.trim())))
+    .sort((a, b) => (newest ? b.publishedAt.localeCompare(a.publishedAt) : a.publishedAt.localeCompare(b.publishedAt)));
   return (
-    <div className="mx-auto flex w-full max-w-page flex-col gap-6 page-gutter py-8">
-      <PageHeader title="اخبار سازمان" description="خبرهای واحدها و رویدادهای پارسا پلیمر شریف" action={
-        <div className="flex flex-wrap gap-2">
-          <Button onClick={() => setWriting(true)}><PlusIcon data-icon="inline-start" aria-hidden />خبر جدید</Button>
+    <MotoPage>
+      <MotoPageHeader
+        title="اخبار سازمان"
+        tools={<><RoundIconButton label="تنظیمات" icon={SettingsIcon} href="/settings" /><RoundIconButton label="اعلان‌ها" icon={BellIcon} href="/alerts" /></>}
+        search={<MotoSearch value={query} onChange={setQuery} placeholder="جستجوی اخبار" />}
+        filters={<FilterPill label="ترتیب" sort value={newest ? "new" : "old"} options={[{ value: "new", label: "جدیدترین" }, { value: "old", label: "قدیمی‌ترین" }]} onChange={(v) => setNewest(v === "new")} />}
+        action={<>
           <AiAction label="نوشتن خبر با AI" size="default" context="اخبار سازمان">{(close) => <AiNewsDraft onSave={(title, body) => { add(title, body, "quality", true); toast.success("پیش‌نویس در بخش اخبار ذخیره شد"); close(); }} />}</AiAction>
-        </div>
-      } />
-      <Tabs value={tab} onValueChange={(v) => setTab(v as "all" | NewsCategory)}>
-        <TabsList aria-label="دسته‌ی خبر"><TabsTrigger value="all">همه</TabsTrigger>{categories.map((c) => <TabsTrigger key={c} value={c}>{categoryLabels[c]}</TabsTrigger>)}</TabsList>
-      </Tabs>
-      {shown.length === 0 ? <p className="py-8 text-center text-muted-foreground">خبری در این دسته نیست.</p> : (
+          <CreateButton onClick={() => setWriting(true)}>ایجاد خبر جدید</CreateButton>
+        </>}
+      />
+      <StatusTabs label="دسته‌ی خبر" value={tab} onChange={setTab} options={[{ value: "all", label: "همه" }, ...categories.map((c) => ({ value: c, label: categoryLabels[c] }))]} />
+      {shown.length === 0 ? <DashedEmpty title="خبری در این دسته نیست." /> : (
         <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{shown.map((item: NewsItem) => <li key={item.id}><NewsCard item={item} /></li>)}</ul>
       )}
       <NewNewsDialog open={writing} onOpenChange={setWriting} onPublish={(title, body, category) => { add(title, body, category, false); toast.success("خبر منتشر شد"); }} />
-    </div>
+    </MotoPage>
   );
 }
 

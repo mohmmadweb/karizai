@@ -1,7 +1,9 @@
-import { redirect } from "next/navigation";
-import { getColleagues } from "@/features/messenger/data/colleagues";
+import type { Metadata } from "next";
+import { MessengerHome } from "@/features/messenger/components/messenger-home";
 
-/** The messenger opens on the first colleague's chat, not on a bot. */
+export const metadata: Metadata = { title: "پیام‌رسان | کاریز" };
+
+/** The messenger shows the chat list; a chat opens from it. */
 export default function MessengerPage() {
-  redirect(`/messenger/${getColleagues()[0].id}`);
+  return <MessengerHome />;
 }

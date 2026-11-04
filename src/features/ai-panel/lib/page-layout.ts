@@ -9,7 +9,7 @@ export function hasMessageBox(pathname: string) {
   return !messengerLists.includes(pathname.split("/")[2]);
 }
 
-/** Pages that fill the window themselves, such as the workflow editor. */
+/** Pages that fill the window themselves: the two-pane pages (messenger, groups, channels) and the workflow editor. */
 export function fillsWindow(pathname: string) {
-  return hasMessageBox(pathname) || /^\/workflows\/[^/]+/.test(pathname);
+  return hasMessageBox(pathname) || pathname === "/messenger/channels" || /^\/workflows\/[^/]+/.test(pathname);
 }

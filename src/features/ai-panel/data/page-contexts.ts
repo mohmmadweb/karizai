@@ -23,16 +23,43 @@ const pages: { prefix: string; key: QuickKey; title: string }[] = [
   { prefix: "/data", key: "default", title: "داده و تحلیل" },
   { prefix: "/usage", key: "default", title: "مصرف من" },
   { prefix: "/developer", key: "default", title: "توسعه‌دهندگان و API" },
+  { prefix: "/friends", key: "page/friends", title: "ارتباطات من" },
+  { prefix: "/blogs", key: "page/blogs", title: "وبلاگ‌ها" },
+  { prefix: "/magazines", key: "page/magazines", title: "مجلات" },
+  { prefix: "/media", key: "page/media", title: "رسانه" },
+  { prefix: "/forums", key: "page/forums", title: "پرسش و پاسخ" },
+  { prefix: "/faqs", key: "page/faqs", title: "سوالات متداول" },
+  { prefix: "/hashtags", key: "page/hashtags", title: "هشتگ‌ها" },
+  { prefix: "/categories", key: "page/categories", title: "دسته‌بندی‌ها" },
+  { prefix: "/events", key: "page/events", title: "رویدادها و جلسات" },
+  { prefix: "/activity-report", key: "page/activity-report", title: "گزارش فعالیت‌های من" },
+  { prefix: "/project-settings", key: "page/project-settings", title: "تنظیمات پروژه" },
+  { prefix: "/access", key: "page/access", title: "نقش و دسترسی من" },
+  { prefix: "/support", key: "page/support", title: "تیکت پشتیبانی" },
   { prefix: "/settings", key: "default", title: "تنظیمات" },
 ];
 
 /** Quick questions of each page, from the target design. */
-const quickQuestions: Record<QuickKey, string[]> = {
+/** Content pages use their own keys («page/route»), outside the closed QuickKey list, so each has its two questions. */
+const quickQuestions: Record<string, string[]> = {
   dash: ["خلاصه امروز من", "چه کارهایی معوق دارم؟", "دستور جلسه ساعت ۱۰:۳۰"],
   groups: ["خلاصه پیام‌های خوانده‌نشده", "تصمیم‌های باز گروه", "پیش‌نویس پیام برای گروه"],
   conversations: ["خلاصه این گفتگو", "پاسخ پیشنهادی", "تبدیل به وظیفه"],
   files: ["خلاصه این پوشه", "کدام سند درباره رطوبت است؟", "مقایسه دو نسخه"],
   projects: ["گزارش وضعیت هفتگی", "ریسک تأخیر", "ساخت وظایف از صورت‌جلسه"],
+  "page/friends": ["درخواست‌های ارتباطی امروز چیست؟", "چه کسانی را به ارتباطاتم اضافه کنم؟"],
+  "page/blogs": ["خلاصه‌ی تازه‌ترین وبلاگ", "کدام وبلاگ درباره‌ی QC-SOP-07 است؟"],
+  "page/magazines": ["خلاصه‌ی آخرین شماره", "کدام شماره درباره‌ی خط ۲ است؟"],
+  "page/media": ["جدیدترین ویدیوهای آموزشی کدام‌اند؟", "اسناد مربوط به HD5502 را پیدا کن"],
+  "page/forums": ["پرسش‌های بدون پاسخ کدام‌اند؟", "پاسخ پیشنهادی برای پرسش خط ۲"],
+  "page/faqs": ["حد مجاز رطوبت گرانول چقدر است؟", "نمونه‌برداری طبق QC-SOP-07 چگونه است؟"],
+  "page/hashtags": ["کدام هشتگ‌ها در حال رشد هستند؟", "پرکاربردترین هشتگ این هفته چیست؟"],
+  "page/categories": ["کدام دسته‌بندی بیشترین آیتم را دارد؟", "پیشنهاد دسته‌بندی برای اسناد کیفیت"],
+  "page/events": ["دستور جلسه‌ی امروز", "کدام جلسه‌ها پیش رو هستند؟"],
+  "page/activity-report": ["گزارش هفته‌ی من", "چه وظایف معوقی دارم؟"],
+  "page/project-settings": ["چه کسانی مدیر پروژه‌اند؟", "عضو مناسب برای پروژه‌ی خط ۲ چه کسی است؟"],
+  "page/access": ["به کدام مدل‌ها دسترسی دارم؟", "کدام اتصال‌ها فقط خواندنی هستند؟"],
+  "page/support": ["پاسخ پیشنهادی برای تیکت باز", "چطور دسترسی بیشتر بگیرم؟"],
   default: ["خلاصه این صفحه", "چه کمکی می‌توانی بکنی؟"],
 };
 
@@ -43,6 +70,6 @@ export function getPageContext(pathname: string): PageContext {
   return match ? { key: match.key, title: match.title } : { key: "default", title: "این صفحه" };
 }
 
-export function getQuickQuestions(key: QuickKey): string[] {
-  return quickQuestions[key];
+export function getQuickQuestions(key: QuickKey | string): string[] {
+  return quickQuestions[key] ?? quickQuestions.default;
 }

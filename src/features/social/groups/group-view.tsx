@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { BotIcon, SendIcon } from "lucide-react";
+import { BotIcon, ChevronRightIcon, SendIcon } from "lucide-react";
 import { PersonAvatar } from "@/components/shared/person-avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,17 +17,18 @@ import { formatTime } from "../lib/jalali";
 import type { Group, GroupMessage } from "../types";
 import { GroupSummaryAnswer } from "./group-summary-answer";
 
-type GroupViewProps = { group: Group; messages: GroupMessage[]; onSend: (text: string) => void; onAddAgent: () => void };
+type GroupViewProps = { group: Group; messages: GroupMessage[]; onSend: (text: string) => void; onAddAgent: () => void; /** Back to the list on phones. */ onBack?: () => void };
 
 /** One group: header, the assistant's unread digest, the messages (Agents answer with sources) and the message box. */
-export function GroupView({ group, messages, onSend, onAddAgent }: GroupViewProps) {
+export function GroupView({ group, messages, onSend, onAddAgent, onBack }: GroupViewProps) {
   const [text, setText] = useState("");
   const [summaryKey, setSummaryKey] = useState<number | null>(null);
   const { summary } = group;
   const agentNames = group.agentIds.map((id) => getAgentMember(id)?.handle).filter(Boolean).join("، ");
   return (
-    <section aria-label={group.name} className="flex min-w-0 flex-col gap-4 rounded-2xl border bg-card p-4">
+    <section aria-label={group.name} className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 p-4">
       <header className="flex flex-wrap items-center gap-3 border-b pb-3">
+        {onBack ? <Button type="button" variant="ghost" size="icon" aria-label="بازگشت به فهرست گروه‌ها" onClick={onBack} className="md:hidden"><ChevronRightIcon aria-hidden /></Button> : null}
         <span aria-hidden className="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-h4 text-primary">{group.name[0]}</span>
         <div className="min-w-40 flex-1 basis-[calc(100%-3.5rem)] sm:basis-0">
           <h2 className="text-h4">{group.name}</h2>
@@ -42,7 +43,7 @@ export function GroupView({ group, messages, onSend, onAddAgent }: GroupViewProp
           <span className="text-body-sm">موضوع اصلی: {summary.topic} · ۱ تصمیم باز · {formatNumber(summary.actions.length)} اقدام پیشنهادی</span>
         </button>
       ) : null}
-      <ul className="flex flex-col gap-3" aria-label="پیام‌ها">
+      <ul className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto" aria-label="پیام‌ها">
         {messages.length === 0 ? <li className="py-6 text-center text-body-sm text-muted-foreground">هنوز پیامی نیست.</li> : null}
         {messages.map((message) => {
           const agent = getAgentMember(message.authorId);

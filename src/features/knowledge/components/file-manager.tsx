@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
-import { FolderPlusIcon, UploadIcon } from "lucide-react";
+import { FolderIcon, FolderPlusIcon, UploadIcon } from "lucide-react";
 import { toast } from "sonner";
-import { SearchField } from "@/components/shared/search-field";
+import { DashedEmpty, FilterPill, MotoPage, MotoPageHeader, MotoSearch, StatusTabs } from "@/components/shared/moto/moto";
 import { Button } from "@/components/ui/button";
 import { useAiPanel } from "@/features/ai-panel/components/ai-panel-provider";
 import { formatNumber } from "@/lib/format";
@@ -12,15 +12,15 @@ import { isConfidentialDocument } from "../data/documents";
 import { folderAnswer, metaAnswer, summaryAnswer } from "../lib/ai-answers";
 import { folderCounts, semanticSearch, sortDocuments, type SortDirection, type SortKey } from "../lib/documents";
 import type { DocumentKind, KnowledgeDocument } from "../types";
+import { CollectionCards } from "./collection-cards";
 import { DocumentTable, type FileAiAction } from "./document-table";
-import { FolderList } from "./folder-list";
 import { useKnowledgeFiles } from "./knowledge-files-provider";
 import { NewFolderDialog } from "./new-folder-dialog";
 
 const uploadKinds: Record<string, DocumentKind> = { pdf: "pdf", doc: "word", docx: "word", xls: "excel", xlsx: "excel" };
 
 /** Folders and files with name or semantic search, smart tags and the AI actions. Added folders, files and tags (and files made by AI) are temporary. */
-export function FileManager({ initial }: { initial: KnowledgeDocument[] }) {
+export function FileManager({ initial, onAskAll }: { initial: KnowledgeDocument[]; /** The «✦ پرسش از کل دانش» button of the page header. */ onAskAll: () => void }) {
   const { openPanel } = useAiPanel();
   const policies = usePolicies();
   // Files Agents and workflows made in this visit join the list, newest on top, also while the page is open.
@@ -39,6 +39,7 @@ export function FileManager({ initial }: { initial: KnowledgeDocument[] }) {
   const [sortKey, setSortKey] = useState<SortKey>("updatedAt");
   const [direction, setDirection] = useState<SortDirection>("desc");
   const [folderOpen, setFolderOpen] = useState(false);
+  const [tab, setTab] = useState<"files" | "collections">("files");
   const fileRef = useRef<HTMLInputElement>(null);
   const counter = useRef(0);
 
@@ -74,26 +75,39 @@ export function FileManager({ initial }: { initial: KnowledgeDocument[] }) {
     }
   }
 
+  const folderOptions = [{ value: "", label: `همه‌ی پوشه‌ها (${formatNumber(documents.length)})` }, ...allFolders.map((item) => ({ value: item.name, label: `${item.name} (${formatNumber(item.count)})` }))];
+
   return (
-    <div className="grid gap-6 md:grid-cols-[14rem_minmax(0,1fr)]">
-      <FolderList folders={allFolders} total={documents.length} selected={folder} onSelect={setFolder} />
-      <section aria-label="اسناد" className="flex min-w-0 flex-col gap-4">
-        <div className="flex flex-wrap items-center gap-2">
-          <div data-ai className="flex min-w-0 basis-full flex-wrap items-center gap-2 rounded-lg sm:flex-1 sm:basis-0 sm:flex-nowrap">
-            <SearchField value={query} onValueChange={setQuery} label={semantic ? "جستجوی معنایی" : "جست‌وجو در اسناد"} placeholder={semantic ? "سندی که درباره رطوبت مواد ورودی است" : "جست‌وجو در اسناد"} className="sm:max-w-none" />
-            <Button type="button" size="sm" variant={semantic ? "default" : "soft"} aria-pressed={semantic} onClick={() => setSemantic(!semantic)} className="shrink-0">✦ جستجوی معنایی</Button>
-          </div>
-          <Button data-ai type="button" size="sm" variant="soft" onClick={() => openPanel({ context: folderName, question: `خلاصه‌ی ${folderName}`, answer: folderAnswer(folderName, inFolder) })}>✦ خلاصه این پوشه</Button>
-          <Button type="button" size="sm" variant="outline" onClick={() => setFolderOpen(true)}><FolderPlusIcon aria-hidden />پوشه جدید</Button>
-          <Button type="button" size="sm" onClick={() => fileRef.current?.click()}><UploadIcon aria-hidden />آپلود فایل</Button>
+    <MotoPage>
+      <MotoPageHeader
+        title="مدیریت فایل‌ها"
+        icon={FolderIcon}
+        description="فایل‌ها و مجموعه‌هایی که به آن‌ها دسترسی دارید؛ دسترسی از سامانه‌ی مبدأ به ارث می‌رسد."
+        action={<>
+          <Button data-ai type="button" className="h-10" onClick={onAskAll}>✦ پرسش از کل دانش</Button>
+          <Button type="button" variant="soft" className="h-10" onClick={() => setFolderOpen(true)}><FolderPlusIcon aria-hidden />پوشه جدید</Button>
+          <Button type="button" className="h-10" onClick={() => fileRef.current?.click()}><UploadIcon aria-hidden />آپلود فایل</Button>
           <input ref={fileRef} type="file" multiple hidden accept=".pdf,.doc,.docx,.xls,.xlsx" onChange={(event) => { if (event.target.files) upload(event.target.files); event.target.value = ""; }} />
-        </div>
-        <p className="text-body-sm text-muted-foreground" aria-live="polite">{folderName} · {formatNumber(shown.length)} سند{ranked ? " · به ترتیب ارتباط معنایی" : ""}</p>
-        {shown.length === 0
-          ? <p className="py-6 text-center text-body text-muted-foreground">{folder && inFolder.length === 0 ? "این پوشه خالی است. فایلی آپلود کنید." : "سندی پیدا نشد."}</p>
-          : <div className="rounded-xl border bg-card"><DocumentTable documents={shown} sortKey={sortKey} direction={direction} onSort={sortBy} showFolder={folder === null} scores={scores} isConfidential={(doc) => isConfidentialDocument(doc, policies)} onAi={runAi} /></div>}
-      </section>
-      <NewFolderDialog open={folderOpen} onOpenChange={setFolderOpen} existing={allFolders.map((item) => item.name)} onCreate={(name) => { setFolders((list) => [...list, name]); setFolder(name); }} />
-    </div>
+        </>}
+      />
+      <StatusTabs label="بخش دانش" value={tab} onChange={setTab} options={[{ value: "files", label: "فایل‌ها" }, { value: "collections", label: "مجموعه‌ها" }]} />
+      {tab === "collections" ? <CollectionCards /> : (
+        <>
+          <div className="flex flex-wrap items-center gap-2">
+            <MotoSearch value={query} onChange={setQuery} placeholder={semantic ? "سندی که درباره رطوبت مواد ورودی است" : "جستجو"} className="sm:max-w-md" />
+            <FilterPill label="پوشه" value={folder ?? ""} options={folderOptions} onChange={(value) => setFolder(value === "" ? null : value)} />
+            <div data-ai className="flex flex-wrap items-center gap-2 sm:ms-auto">
+              <Button type="button" size="sm" variant={semantic ? "default" : "soft"} aria-pressed={semantic} onClick={() => setSemantic(!semantic)}>✦ جستجوی معنایی</Button>
+              <Button data-ai type="button" size="sm" variant="soft" onClick={() => openPanel({ context: folderName, question: `خلاصه‌ی ${folderName}`, answer: folderAnswer(folderName, inFolder) })}>✦ خلاصه این پوشه</Button>
+            </div>
+          </div>
+          <p className="text-body-sm text-muted-foreground" aria-live="polite">{folderName} · {formatNumber(shown.length)} سند{ranked ? " · به ترتیب ارتباط معنایی" : ""}</p>
+          {shown.length === 0
+            ? <DashedEmpty title={folder && inFolder.length === 0 ? "این پوشه خالی است" : "سندی پیدا نشد"} description={folder && inFolder.length === 0 ? "یک پوشه جدید بسازید یا فایل آپلود کنید" : undefined} />
+            : <div className="rounded-xl border bg-card"><DocumentTable documents={shown} sortKey={sortKey} direction={direction} onSort={sortBy} showFolder={folder === null} scores={scores} isConfidential={(doc) => isConfidentialDocument(doc, policies)} onAi={runAi} /></div>}
+        </>
+      )}
+      <NewFolderDialog open={folderOpen} onOpenChange={setFolderOpen} existing={allFolders.map((item) => item.name)} onCreate={(name) => { setFolders((list) => [...list, name]); setFolder(name); setTab("files"); }} />
+    </MotoPage>
   );
 }

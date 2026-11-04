@@ -3,9 +3,9 @@
 import Link from "@/components/shared/app-link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
-import { MegaphoneIcon, PlusIcon } from "lucide-react";
+import { BellIcon, ChevronRightIcon, MegaphoneIcon } from "lucide-react";
 import { toast } from "sonner";
-import { PageHeader } from "@/components/shared/page-header";
+import { FilterPill, MotoSearch, PaneHeader, RoundFab, RoundIconButton, TwoPaneShell } from "@/components/shared/moto/moto";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -27,7 +27,9 @@ export function ChannelsPageContent() {
   const [posts, setPosts] = useState(getChannelPosts);
   // `?id=` (from the chat list or the sidebar) opens that channel.
   const requested = useSearchParams().get("id");
-  const [selectedId, setSelectedId] = useState(() => (requested && channels.some((c) => c.id === requested) ? requested : "ch-alerts"));
+  const [selectedId, setSelectedId] = useState<string | null>(() => (requested && channels.some((c) => c.id === requested) ? requested : null));
+  const [query, setQuery] = useState("");
+  const [newest, setNewest] = useState(true);
   const [seenRequest, setSeenRequest] = useState(requested);
   if (requested !== seenRequest) {
     setSeenRequest(requested);
@@ -36,16 +38,17 @@ export function ChannelsPageContent() {
   const [creating, setCreating] = useState(false);
   const [name, setName] = useState("");
   const counter = useRef(0);
-  const selected = channels.find((c) => c.id === selectedId) ?? channels[0];
+  const selected = channels.find((c) => c.id === selectedId) ?? null;
+  const selectedKey = selected?.id ?? "";
   // What workflows published in the channel during this visit, for example the production plan in «هشدارهای تولید».
   const { messagesOf, markRead } = useMessenger();
-  const fromFlows: ChannelPost[] = messagesOf(selected.id).map((item) => ({
-    id: item.id, channelId: selected.id, author: item.sender ?? "جریان‌ها", createdAt: item.createdAt, text: item.text,
+  const fromFlows: ChannelPost[] = messagesOf(selectedKey).map((item) => ({
+    id: item.id, channelId: selectedKey, author: item.sender ?? "جریان‌ها", createdAt: item.createdAt, text: item.text,
     automatic: { href: item.alert?.workflowId ? `/workflows/${item.alert.workflowId}` : "/workflows", label: item.sender ?? "جریان‌ها" },
   }));
-  useEffect(() => { markRead(selected.id); }, [selected.id, fromFlows.length, markRead]);
-  const shown = [...posts.filter((p) => p.channelId === selected.id), ...fromFlows].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-  const publish = (text: string) => { setPosts((list) => [...list, { id: `cp-new-${++counter.current}`, channelId: selected.id, author: getCurrentUser().name, createdAt: new Date().toISOString(), text }]); toast.success(`در کانال «${selected.name}» منتشر شد`); };
+  useEffect(() => { if (selectedKey) markRead(selectedKey); }, [selectedKey, fromFlows.length, markRead]);
+  const shown = [...posts.filter((p) => p.channelId === selectedKey), ...fromFlows].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+  const publish = (text: string) => { if (!selected) return; setPosts((list) => [...list, { id: `cp-new-${++counter.current}`, channelId: selected.id, author: getCurrentUser().name, createdAt: new Date().toISOString(), text }]); toast.success(`در کانال «${selected.name}» منتشر شد`); };
 
   function create(event: FormEvent) {
     event.preventDefault();
@@ -55,37 +58,62 @@ export function ChannelsPageContent() {
     toast.success(`کانال «${channel.name}» ساخته شد`);
   }
 
-  return (
-    <div className="mx-auto flex w-full max-w-page flex-col gap-6 page-gutter py-8">
-      <PageHeader title="کانال‌ها" description="اطلاع‌رسانی یک‌طرفه به همکاران؛ عامل‌ها و جریان‌ها هم می‌توانند منتشر کنند." action={<Button onClick={() => setCreating(true)}><PlusIcon data-icon="inline-start" aria-hidden />ایجاد کانال</Button>} />
-      <ul className="grid gap-3 md:grid-cols-3" aria-label="فهرست کانال‌ها">
-        {channels.map((c) => (
+  const shownChannels = channels.filter((c) => !query.trim() || c.name.includes(query.trim()));
+  if (!newest) shownChannels.reverse();
+
+  const list = (
+    <>
+      <PaneHeader
+        title="کانال‌ها"
+        icon={MegaphoneIcon}
+        tools={<RoundIconButton label="اعلان‌ها" icon={BellIcon} href="/alerts" />}
+        search={<MotoSearch value={query} onChange={setQuery} placeholder="جستجوی کانال‌ها" className="sm:max-w-none" />}
+        filters={<FilterPill label="ترتیب" sort value={newest ? "new" : "old"} options={[{ value: "new", label: "جدیدترین" }, { value: "old", label: "قدیمی‌ترین" }]} onChange={(v) => setNewest(v === "new")} />}
+      />
+      <ul className="flex flex-col gap-0.5 p-2 pb-20" aria-label="فهرست کانال‌ها">
+        {shownChannels.length === 0 ? <li className="px-2 py-3 text-body-sm text-muted-foreground">کانالی پیدا نشد.</li> : null}
+        {shownChannels.map((c) => (
           <li key={c.id}>
-            <button type="button" aria-current={c.id === selected.id ? "true" : undefined} onClick={() => setSelectedId(c.id)} className={cn("flex h-full w-full flex-col gap-1 rounded-xl border bg-card p-4 text-start outline-none focus-visible:ring-3 focus-visible:ring-ring/50", c.id === selected.id && "border-primary ring-1 ring-primary/30")}>
-              <span className="flex items-center gap-2 text-label"><MegaphoneIcon className="size-4 text-primary" aria-hidden />{c.name}</span>
-              <span className="text-caption text-muted-foreground">{formatNumber(c.memberCount)} عضو{c.publisher ? ` · منتشرکننده: ${c.publisher}` : ""}</span>
-              {c.automatic ? <Badge variant="info" className="mt-1">✦ پیام‌های خودکار از عامل‌ها</Badge> : null}
+            <button type="button" aria-current={c.id === selectedKey ? "true" : undefined} onClick={() => setSelectedId(c.id)} className={cn("flex w-full items-center gap-3 rounded-lg p-2 text-start outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50", c.id === selectedKey && "bg-muted")}>
+              <span aria-hidden className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary"><MegaphoneIcon className="size-5" /></span>
+              <span className="flex min-w-0 flex-1 flex-col">
+                <span className="truncate text-label">{c.name}</span>
+                <span className="truncate text-caption text-muted-foreground">{formatNumber(c.memberCount)} عضو{c.publisher ? ` · منتشرکننده: ${c.publisher}` : ""}</span>
+                {c.automatic ? <Badge variant="info" className="mt-1 w-fit">✦ پیام‌های خودکار از عامل‌ها</Badge> : null}
+              </span>
             </button>
           </li>
         ))}
       </ul>
-      <section aria-label={selected.name} className="flex flex-col gap-3 rounded-2xl border bg-card p-4">
-        <header className="flex flex-wrap items-center justify-between gap-2 border-b pb-3">
-          <h2 className="text-h4">{selected.name}</h2>
-          <AiAction key={selected.id} label="پیش‌نویس اطلاعیه" context={`کانال ${selected.name}`}>{(close) => <Draft initial={announcementDrafts[selected.id] ?? `اطلاعیه‌ی کانال «${selected.name}»: `} onPublish={(text) => { publish(text); close(); }} />}</AiAction>
-        </header>
-        {shown.length === 0 ? <p className="py-6 text-center text-body-sm text-muted-foreground">هنوز چیزی منتشر نشده است.</p> : (
-          <ul className="flex flex-col gap-3">
-            {shown.map((p) => (
-              <li key={p.id} className={cn("flex flex-col gap-1 rounded-xl p-3", p.automatic ? "border border-primary/20 bg-primary/5" : "bg-muted/60")}>
-                <span className="text-caption text-muted-foreground"><span className="font-medium text-foreground">{p.automatic ? "✦ " : ""}{p.author}</span> · {formatDay(p.createdAt)} {formatTime(p.createdAt)}</span>
-                <p className="text-body">{p.text}</p>
-                {p.automatic ? <Link href={p.automatic.href} className="w-fit text-caption text-primary hover:underline">خودکار از {p.automatic.label}</Link> : null}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+    </>
+  );
+
+  return (
+    <>
+      <TwoPaneShell list={list} hasOpenItem={selected !== null} emptyText="یک کانال را انتخاب کنید" fab={<RoundFab label="ایجاد کانال" onClick={() => setCreating(true)} />}>
+        {selected ? (
+          <section aria-label={selected.name} className="flex min-h-0 min-w-0 flex-1 flex-col gap-3 p-4">
+            <header className="flex flex-wrap items-center justify-between gap-2 border-b pb-3">
+              <div className="flex min-w-0 items-center gap-2">
+                <Button type="button" variant="ghost" size="icon" aria-label="بازگشت به فهرست کانال‌ها" onClick={() => setSelectedId(null)} className="md:hidden"><ChevronRightIcon aria-hidden /></Button>
+                <div className="min-w-0"><h2 className="truncate text-h4">{selected.name}</h2><p className="truncate text-caption text-muted-foreground">{selected.description}</p></div>
+              </div>
+              <AiAction key={selected.id} label="پیش‌نویس اطلاعیه" context={`کانال ${selected.name}`}>{(close) => <Draft initial={announcementDrafts[selected.id] ?? `اطلاعیه‌ی کانال «${selected.name}»: `} onPublish={(text) => { publish(text); close(); }} />}</AiAction>
+            </header>
+            {shown.length === 0 ? <p className="py-6 text-center text-body-sm text-muted-foreground">هنوز چیزی منتشر نشده است.</p> : (
+              <ul className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto">
+                {shown.map((p) => (
+                  <li key={p.id} className={cn("flex flex-col gap-1 rounded-xl p-3", p.automatic ? "border border-primary/20 bg-primary/5" : "bg-muted/60")}>
+                    <span className="text-caption text-muted-foreground"><span className="font-medium text-foreground">{p.automatic ? "✦ " : ""}{p.author}</span> · {formatDay(p.createdAt)} {formatTime(p.createdAt)}</span>
+                    <p className="text-body">{p.text}</p>
+                    {p.automatic ? <Link href={p.automatic.href} className="w-fit text-caption text-primary hover:underline">خودکار از {p.automatic.label}</Link> : null}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ) : null}
+      </TwoPaneShell>
       <Dialog open={creating} onOpenChange={setCreating}>
         <DialogContent>
           <DialogHeader><DialogTitle>کانال تازه</DialogTitle></DialogHeader>
@@ -95,7 +123,7 @@ export function ChannelsPageContent() {
           </form>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 }
 

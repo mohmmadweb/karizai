@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import Link from "@/components/shared/app-link";
-import { ChevronDownIcon, SparklesIcon } from "lucide-react";
+import { ChevronDownIcon } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { isSectionPath } from "../data/user-sections";
 import type { UserSection, UserSectionGroup } from "../types";
 
 export const itemClass =
-  "flex h-10 items-center gap-3 rounded-lg border border-transparent px-3 text-label text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-3 focus-visible:ring-sidebar-ring/50 aria-[current=page]:border-(--sidebar-active-border) aria-[current=page]:bg-sidebar-primary aria-[current=page]:text-sidebar-primary-foreground";
+  "flex h-11 items-center gap-3 rounded-lg border border-transparent px-3 text-body text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-3 focus-visible:ring-sidebar-ring/50 aria-[current=page]:border-(--sidebar-active-border) aria-[current=page]:bg-sidebar-primary aria-[current=page]:text-sidebar-primary-foreground";
 
 type SidebarNavProps = {
   groups: UserSectionGroup[];
@@ -41,9 +41,12 @@ export function Item({ section, pathname, collapsed, onNavigate }: { section: Us
   );
 }
 
-/** Titled, collapsible groups of items; with a collapsed sidebar only the icons remain. */
+/** Motoshub's menu: bold group titles that open like an accordion, one at a time; with a collapsed sidebar only the icons remain. */
 export function SidebarNav({ groups, pathname, collapsed = false, flat = false, onNavigate }: SidebarNavProps) {
-  const [closed, setClosed] = useState<string[]>([]);
+  const activeGroup = groups.find((group) => !group.always && group.sections.some((section) => isSectionPath(pathname, section)))?.id ?? null;
+  // null: follow the current page. A click overrides it until the page changes.
+  const [choice, setChoice] = useState<{ pathname: string; group: string | null } | null>(null);
+  const openGroup = choice && choice.pathname === pathname ? choice.group : activeGroup;
   if (flat) {
     return (
       <nav aria-label="بخش‌های پنل کاربر">
@@ -54,25 +57,26 @@ export function SidebarNav({ groups, pathname, collapsed = false, flat = false, 
     );
   }
   return (
-    <nav aria-label="بخش‌های پنل کاربر" className="flex flex-col gap-3">
+    <nav aria-label="بخش‌های پنل کاربر" className="flex flex-col gap-1">
       {groups.map((group, index) => {
-        const open = collapsed || group.bare || !closed.includes(group.id);
+        const open = collapsed || group.always || openGroup === group.id;
         return (
-          <section key={group.id} aria-label={group.heading ?? group.title} className={cn("flex flex-col gap-1", collapsed && index > 0 && "border-t border-sidebar-border pt-3")}>
-            {group.heading && !collapsed ? <h2 className="flex items-center gap-2 px-3 pt-1 text-label text-sidebar-foreground/60"><SparklesIcon className="size-4" aria-hidden />{group.heading}</h2> : null}
-            {collapsed || group.bare ? null : (
+          <section key={group.id} aria-label={group.title} className={cn("flex flex-col gap-1", collapsed && index > 0 && "border-t border-sidebar-border pt-2")}>
+            {collapsed ? null : group.always ? (
+              <h2 className="flex h-10 items-center px-3 text-body font-bold">{group.title}</h2>
+            ) : (
               <button
                 type="button"
                 aria-expanded={open}
-                onClick={() => setClosed((list) => (list.includes(group.id) ? list.filter((id) => id !== group.id) : [...list, group.id]))}
-                className="flex h-9 items-center justify-between rounded-lg px-3 text-start text-label outline-none hover:bg-sidebar-accent focus-visible:ring-3 focus-visible:ring-sidebar-ring/50"
+                onClick={() => setChoice({ pathname, group: open ? null : group.id })}
+                className="flex h-11 items-center justify-between rounded-lg px-3 text-start text-body font-bold outline-none hover:bg-sidebar-accent focus-visible:ring-3 focus-visible:ring-sidebar-ring/50"
               >
-                <span className="flex items-center gap-2"><group.icon className="size-4 text-sidebar-foreground/70" aria-hidden />{group.title}</span>
-                <ChevronDownIcon className={cn("size-4 text-sidebar-foreground/70 transition-transform", open && "rotate-180")} aria-hidden />
+                {group.title}
+                <ChevronDownIcon className={cn("size-4 text-sidebar-foreground/70 transition-transform motion-reduce:transition-none", open && "rotate-180")} aria-hidden />
               </button>
             )}
             {open ? (
-              <ul className="flex flex-col gap-0.5">
+              <ul className="flex flex-col gap-1">
                 {group.sections.map((section) => <li key={section.id}><Item section={section} pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} /></li>)}
               </ul>
             ) : null}

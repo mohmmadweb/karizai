@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { SendIcon } from "lucide-react";
+import { ChevronRightIcon, SendIcon } from "lucide-react";
+import Link from "@/components/shared/app-link";
 import { EntityNotFound } from "@/components/shared/entity-not-found";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,7 @@ import { getBotById } from "../data/bots";
 import { getColleagueById } from "../data/colleagues";
 import { agentAnswer, callsAssistant, mentionedAgentId } from "@/features/social/lib/agent-replies";
 import { ComposerAi } from "./composer-ai";
-import { ThreadList } from "./thread-list";
+import { MessengerShell } from "./messenger-shell";
 import { MessageItem } from "./message-item";
 import { useMessenger } from "./messenger-provider";
 import { ThreadAiActions } from "./thread-ai-actions";
@@ -43,10 +44,10 @@ export function ThreadView({ threadId }: { threadId: string }) {
   }
 
   return (
-    <div className="flex h-full min-h-0 w-full">
-    <ThreadList activeId={threadId} />
-    <div className="mx-auto flex h-full min-h-0 w-full min-w-0 max-w-3xl flex-col">
+    <MessengerShell activeId={threadId}>
+    <div className="flex h-full min-h-0 w-full min-w-0 flex-1 flex-col">
       <header className="flex flex-wrap items-center gap-3 border-b bg-card page-gutter py-3">
+        <Link href="/messenger" aria-label="بازگشت به فهرست گفتگوها" className="flex size-9 items-center justify-center rounded-full outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50 md:hidden"><ChevronRightIcon className="size-5" aria-hidden /></Link>
         <ThreadAvatar threadId={threadId} className="size-11" />
         <div className="min-w-0">
           <h1 className="flex items-center gap-2 text-h4">{bot?.name ?? colleague!.name}{bot ? <Badge variant="secondary">ربات</Badge> : null}</h1>
@@ -70,6 +71,6 @@ export function ThreadView({ threadId }: { threadId: string }) {
         </div>
       )}
     </div>
-    </div>
+    </MessengerShell>
   );
 }

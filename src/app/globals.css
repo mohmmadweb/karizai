@@ -118,20 +118,20 @@
 /* Light theme (default). */
 :root {
   color-scheme: light;
-  --background: oklch(0.955 0.018 258);
-  --foreground: oklch(0.2 0.04 262);
+  --background: #f0f4fa;
+  --foreground: #0f1828;
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.04 262);
+  --card-foreground: #0f1828;
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0.04 262);
-  --primary: oklch(0.32 0.1 262);
-  --primary-foreground: oklch(0.985 0.005 255);
+  --popover-foreground: #0f1828;
+  --primary: #1a3a6a;
+  --primary-foreground: #ffffff;
   --secondary: oklch(0.94 0.035 205);
   --secondary-foreground: oklch(0.3 0.07 240);
-  --muted: oklch(0.93 0.018 258);
-  --muted-foreground: oklch(0.44 0.035 258);
-  --accent: oklch(0.92 0.03 252);
-  --accent-foreground: oklch(0.28 0.08 262);
+  --muted: #e8edf5;
+  --muted-foreground: #4a5a6a;
+  --accent: #e0e8f5;
+  --accent-foreground: #1a3a6a;
   --destructive: oklch(0.5 0.21 27);
   --destructive-foreground: oklch(0.985 0.005 27);
   --success: oklch(0.46 0.12 155);
@@ -140,7 +140,7 @@
   --warning-foreground: oklch(0.25 0.05 80);
   --info: oklch(0.48 0.13 235);
   --info-foreground: oklch(0.985 0.005 235);
-  --border: oklch(0.88 0.02 258);
+  --border: #d1d9e6;
   --scrollbar-thumb: oklch(0.46 0.03 258 / 30%);
   --scrollbar-thumb-hover: oklch(0.46 0.03 258 / 55%);
   --input: oklch(0.66 0.025 258);
@@ -152,13 +152,13 @@
   --chart-5: oklch(0.75 0.14 80);
   --radius: 0.625rem;
   /* Sidebar: dark navy in both themes; the active item is a light-blue pill. */
-  --sidebar: oklch(0.24 0.055 262);
+  --sidebar: #1a2a45;
   --sidebar-foreground: oklch(0.96 0.01 255);
-  --sidebar-primary: oklch(0.92 0.045 255);
-  --sidebar-primary-foreground: oklch(0.25 0.07 262);
-  --sidebar-accent: oklch(0.32 0.07 260);
+  --sidebar-primary: #e0e8f5;
+  --sidebar-primary-foreground: #1a3a6a;
+  --sidebar-accent: #26385a;
   --sidebar-accent-foreground: oklch(0.97 0.01 255);
-  --sidebar-border: oklch(0.34 0.05 262);
+  --sidebar-border: #33466a;
   --sidebar-ring: oklch(0.75 0.12 245);
   --sidebar-active-border: oklch(0.98 0.01 255 / 70%);
 }

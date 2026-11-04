@@ -32,9 +32,9 @@ export function AdminMobileNav({ groups }: { groups: AdminSectionGroup[] }) {
       >
         <MenuIcon aria-hidden />
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className="dark bg-sidebar text-sidebar-foreground">
         <SheetHeader>
-          <BrandLockup alt="کاریز" markClassName="w-9" textClassName="w-24" />
+          <BrandLockup alt="کاریز" tone="white" markClassName="w-9" textClassName="w-24" />
           <SheetTitle className="sr-only">منوی پنل ادمین</SheetTitle>
           <SheetDescription className="sr-only">
             بخش‌های پنل ادمین

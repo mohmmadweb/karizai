@@ -15,7 +15,7 @@ export function AdminSidebar({ groups, collapsed }: AdminSidebarProps) {
   return (
     <aside
       className={cn(
-        "sticky top-0 z-sticky hidden h-dvh shrink-0 flex-col gap-4 border-e bg-card p-3 transition-[width] duration-200 motion-reduce:transition-none lg:flex",
+        "dark sticky top-0 z-sticky hidden h-dvh shrink-0 flex-col gap-4 border-e border-sidebar-border bg-sidebar p-3 text-sidebar-foreground transition-[width] duration-200 motion-reduce:transition-none lg:flex",
         collapsed ? "w-16" : "w-64",
       )}
     >
@@ -24,9 +24,9 @@ export function AdminSidebar({ groups, collapsed }: AdminSidebarProps) {
         className="flex h-14 items-center justify-center rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
       >
         {collapsed ? (
-          <BrandLogo alt="کاریز" variant="kariz" className="w-9" />
+          <BrandLogo alt="کاریز" variant="kariz" tone="white" className="w-9" />
         ) : (
-          <BrandLockup alt="کاریز" markClassName="w-9" textClassName="w-24" />
+          <BrandLockup alt="کاریز" tone="white" markClassName="w-9" textClassName="w-24" />
         )}
       </Link>
       <div className="flex-1 overflow-y-auto">

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "@/components/shared/app-link";
 import { ActivityIcon, CalendarClockIcon, HistoryIcon, ListChecksIcon, MessagesSquareIcon, PackageCheckIcon } from "lucide-react";
+import { MotoPage } from "@/components/shared/moto/moto";
 import { useCalendar } from "@/features/social/components/calendar-provider";
 import { useChat } from "@/features/chat/components/chat-provider";
 import { useMessenger } from "@/features/messenger/components/messenger-provider";
@@ -39,7 +40,7 @@ export function DeskPageContent() {
     next ? `رویداد بعدی: «${next.title}» ${formatDate(next.start, { weekday: "long", day: "numeric", month: "long" })}، ساعت ${formatDate(next.start, { timeStyle: "short" })}.` : "",
   ].filter(Boolean);
   return (
-    <div className="mx-auto flex w-full max-w-page flex-col gap-6 page-gutter py-8">
+    <MotoPage>
       <header className="flex flex-col gap-1">
         <h1 className="text-h1">نمای کلی فعالیت‌های من</h1>
         <p className="text-body text-muted-foreground">{formatDate(new Date(), { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</p>
@@ -70,6 +71,6 @@ export function DeskPageContent() {
           </DeskPanel>
         </div>
       </div>
-    </div>
+    </MotoPage>
   );
 }

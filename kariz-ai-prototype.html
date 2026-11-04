@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>کاریز | نمونه رابط کاربری با کاریز AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+ --bg:#f2f4f8;--card:#fff;--fg:#1c2433;--mut:#6b7385;--bd:#e3e7ef;--soft:#f6f8fb;
+ --nav:#16233f;--nav2:#1f2f52;--navfg:#dfe6f5;--navmut:#9aa8c4;
+ --pri:#1c3a6e;--pri-soft:#e8eefb;
+ --ai:#6b4fd8;--ai2:#9a6bff;--ai-soft:#f1edff;--ai-bd:#d9cffc;
+ --ok:#1d9e75;--ok-soft:#e3f5ee;--warn:#ba7517;--warn-soft:#fdf2dd;--bad:#c2412d;--bad-soft:#fbe9e5;
+}
+[data-theme=dark]{
+ --bg:#10151f;--card:#171e2b;--fg:#e7ebf3;--mut:#9aa3b5;--bd:#263045;--soft:#1b2333;
+ --nav:#0c1220;--nav2:#16203a;--pri:#8fb0ff;--pri-soft:#1c2a4a;
+ --ai:#a58bff;--ai2:#c3a8ff;--ai-soft:#231c40;--ai-bd:#3b2f6b;
+ --ok-soft:#12302a;--warn-soft:#3a2c0c;--bad-soft:#3a1a14;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--fg);font:14px/1.75 Vazirmatn,Tahoma,sans-serif}
+button,input,select,textarea{font:inherit;color:inherit}
+a{color:inherit;text-decoration:none}
+.app{display:flex;height:100vh}
+/* sidebar */
+.side{width:250px;flex-shrink:0;background:var(--nav);color:var(--navfg);display:flex;flex-direction:column;overflow-y:auto}
+.brand{display:flex;align-items:center;gap:10px;padding:16px 18px;font-weight:700;font-size:20px;letter-spacing:.3px}
+.brand .lg{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,#3a6fd8,#6b4fd8);display:grid;place-items:center}
+.sec{padding:6px 10px}
+.sec-h{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;font-weight:700;color:var(--navmut);padding:8px 10px 4px;cursor:pointer;user-select:none}
+.sec-h.aih{color:#c9b8ff}
+.nv{display:flex;align-items:center;gap:10px;padding:7px 12px;margin:1px 0;border-radius:9px;font-size:13.5px;color:var(--navfg);cursor:pointer}
+.nv:hover{background:var(--nav2)}
+.nv.on{background:#e8eefb;color:#16233f;font-weight:700}
+.nv svg{width:17px;height:17px;flex-shrink:0}
+.nv .tag{margin-right:auto;font-size:10.5px;background:#6b4fd8;color:#fff;border-radius:6px;padding:0 6px}
+.nv.ai-item svg{color:#c9b8ff}.nv.on.ai-item svg{color:#6b4fd8}
+.side-foot{margin-top:auto;padding:12px 18px;font-size:11.5px;color:var(--navmut)}
+/* main */
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.top{height:62px;background:var(--card);border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:12px;padding:0 18px;flex-shrink:0}
+.me{display:flex;align-items:center;gap:8px;font-weight:700;white-space:nowrap}
+.av{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0}
+.search{flex:1;max-width:520px;display:flex;align-items:center;gap:6px;background:var(--soft);border:1px solid var(--bd);border-radius:12px;padding:4px 6px 4px 10px}
+.search input{flex:1;border:0;background:transparent;outline:0;padding:4px}
+.search .mode{font-size:12px;border-radius:8px;padding:3px 10px;border:1px solid var(--bd);background:var(--card);cursor:pointer;white-space:nowrap}
+.search .mode.ai{background:var(--ai);color:#fff;border-color:var(--ai)}
+.kbd{font-size:11px;color:var(--mut);border:1px solid var(--bd);border-radius:5px;padding:0 5px}
+.tb{display:flex;align-items:center;gap:8px;margin-right:auto}
+.ibtn{width:36px;height:36px;border-radius:10px;border:1px solid var(--bd);background:var(--card);display:grid;place-items:center;cursor:pointer;position:relative}
+.ibtn svg{width:18px;height:18px}
+.badge{position:absolute;top:-5px;left:-5px;background:var(--bad);color:#fff;font-size:10px;border-radius:9px;padding:0 5px;line-height:16px}
+.org{display:flex;align-items:center;gap:6px;border:1px solid var(--bd);border-radius:10px;padding:6px 10px;background:var(--card);font-size:13px;cursor:pointer;position:relative}
+.dd{position:absolute;top:44px;left:0;background:var(--card);border:1px solid var(--bd);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.12);min-width:230px;z-index:50;padding:6px;display:none}
+.dd.open{display:block}
+.dd .di{padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px}
+.dd .di:hover{background:var(--soft)}
+.hl-toggle{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--mut);cursor:pointer;white-space:nowrap}
+.sw{width:34px;height:20px;border-radius:12px;background:var(--bd);position:relative;transition:.2s}
+.sw:after{content:"";position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.2s}
+.sw.on{background:var(--ai)}.sw.on:after{right:16px}
+.view{flex:1;overflow-y:auto;padding:20px 22px 90px}
+/* common */
+h1{font-size:20px;margin:0}
+.ph{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.ph p{margin:2px 0 0;color:var(--mut);font-size:13px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px 16px}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.g3{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.g4{grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.ct{font-weight:700;font-size:14.5px;display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:10px}
+.ct small{font-weight:400;color:var(--mut);font-size:12px}
+.btn{display:inline-flex;align-items:center;gap:6px;border-radius:10px;padding:7px 14px;border:1px solid var(--bd);background:var(--card);cursor:pointer;font-size:13px;white-space:nowrap}
+.btn.pri{background:var(--pri);color:#fff;border-color:var(--pri)}
+[data-theme=dark] .btn.pri{color:#0c1220}
+.btn.sm{padding:4px 10px;font-size:12px;border-radius:8px}
+.btn svg{width:15px;height:15px}
+.ai-btn{background:var(--ai-soft);color:var(--ai);border:1px solid var(--ai-bd)}
+.ai-btn:hover{background:var(--ai);color:#fff}
+.ai-btn.solid{background:linear-gradient(135deg,var(--ai),var(--ai2));color:#fff;border:0}
+.spark{display:inline-block;color:var(--ai);font-weight:700}
+.chip{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;border-radius:999px;padding:1px 9px;border:1px solid var(--bd);background:var(--soft);white-space:nowrap}
+.chip.ai{background:var(--ai-soft);color:var(--ai);border-color:var(--ai-bd)}
+.chip.ok{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.chip.warn{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.chip.bad{background:var(--bad-soft);color:var(--bad);border-color:transparent}
+.chip.loc{background:var(--ok-soft);color:var(--ok);border-color:transparent}
+.chip.ext{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+.mut{color:var(--mut)}.sm{font-size:12.5px}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sp{margin-right:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{background:var(--pri);color:#fff;font-weight:500;text-align:right;padding:9px 10px}
+[data-theme=dark] th{color:#0c1220}
+td{padding:9px 10px;border-bottom:1px solid var(--bd);vertical-align:middle}
+tr:hover td{background:var(--soft)}
+.tw{overflow-x:auto;border:1px solid var(--bd);border-radius:12px;background:var(--card)}
+.ai-card{background:var(--ai-soft);border:1px solid var(--ai-bd);border-radius:14px;padding:14px 16px}
+.ai-card .ct{color:var(--ai)}
+.li{display:flex;align-items:flex-start;gap:10px;padding:9px 0;border-bottom:1px solid var(--bd)}
+.li:last-child{border-bottom:0}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tab{padding:6px 14px;border-radius:10px;border:1px solid var(--bd);background:var(--card);cursor:pointer;font-size:13px}
+.tab.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+[data-theme=dark] .tab.on{color:#0c1220}
+.bar{height:8px;border-radius:5px;background:var(--bd);overflow:hidden}
+.bar>i{display:block;height:100%;background:var(--pri);border-radius:5px}
+.bar.ai>i{background:linear-gradient(90deg,var(--ai),var(--ai2))}
+/* AI highlight mode */
+body.hl .ai-el{outline:2px dashed var(--ai);outline-offset:3px;border-radius:12px;position:relative}
+body.hl .ai-el:before{content:"✦ کاریز AI";position:absolute;top:-11px;left:10px;background:var(--ai);color:#fff;font-size:10px;padding:0 6px;border-radius:6px;line-height:16px;z-index:2}
+/* AI floating + panel */
+.fab{position:fixed;left:22px;bottom:22px;width:56px;height:56px;border-radius:18px;background:linear-gradient(135deg,var(--ai),var(--ai2));color:#fff;display:grid;place-items:center;box-shadow:0 10px 28px rgba(107,79,216,.45);cursor:pointer;z-index:60;border:0}
+.fab svg{width:26px;height:26px}
+.panel{position:fixed;top:0;left:0;height:100vh;width:420px;max-width:100vw;background:var(--card);border-right:1px solid var(--bd);box-shadow:8px 0 30px rgba(0,0,0,.12);z-index:70;display:flex;flex-direction:column;transform:translateX(-105%);transition:.25s}
+.panel.open{transform:none}
+.pn-h{padding:14px 16px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:8px}
+.pn-h b{font-size:15px}
+.ctx{margin:10px 16px 0;font-size:12px;background:var(--ai-soft);color:var(--ai);border-radius:10px;padding:6px 10px}
+.pn-b{flex:1;overflow-y:auto;padding:12px 16px}
+.qa{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.msg{margin:8px 0;padding:10px 12px;border-radius:12px;font-size:13.5px;max-width:92%}
+.msg.u{background:var(--pri-soft);margin-right:auto}
+.msg.a{background:var(--soft);border:1px solid var(--bd)}
+.msg.a .who{font-size:11.5px;color:var(--ai);font-weight:700;margin-bottom:4px}
+.src{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.src span{font-size:11px;border:1px solid var(--bd);border-radius:6px;padding:0 6px;background:var(--card)}
+.compose{border-top:1px solid var(--bd);padding:10px 12px}
+.cbox{border:1px solid var(--bd);border-radius:12px;padding:8px;background:var(--soft)}
+.cbox textarea{width:100%;border:0;background:transparent;resize:none;outline:0;min-height:44px}
+.typing span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ai);margin:0 2px;animation:b 1s infinite}
+.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+@keyframes b{0%,100%{opacity:.25}50%{opacity:1}}
+/* modal */
+.mask{position:fixed;inset:0;background:rgba(10,15,30,.45);z-index:80;display:none;align-items:center;justify-content:center;padding:16px}
+.mask.open{display:flex}
+.modal{background:var(--card);border-radius:16px;width:640px;max-width:100%;max-height:90vh;overflow-y:auto;padding:18px 20px}
+.fld{margin-bottom:12px}
+.fld label{display:block;font-size:12.5px;color:var(--mut);margin-bottom:4px}
+.inp{width:100%;border:1px solid var(--bd);border-radius:10px;padding:8px 10px;background:var(--soft)}
+/* chat page */
+.chatwrap{display:grid;grid-template-columns:280px 1fr;gap:14px;height:calc(100vh - 150px)}
+.clist{overflow-y:auto}
+.citem{display:flex;gap:10px;padding:10px;border-radius:10px;cursor:pointer;align-items:center}
+.citem:hover,.citem.on{background:var(--soft)}
+.cpane{display:flex;flex-direction:column;min-height:0}
+.cmsgs{flex:1;overflow-y:auto;padding:6px 4px}
+.bub{max-width:75%;padding:9px 12px;border-radius:12px;margin:6px 0;font-size:13.5px}
+.bub.in{background:var(--soft);border:1px solid var(--bd)}
+.bub.out{background:var(--pri-soft);margin-right:auto}
+.bub.bot{background:var(--ai-soft);border:1px solid var(--ai-bd)}
+.bub .t{font-size:11px;color:var(--mut);margin-top:3px}
+/* assistant */
+.starter{cursor:pointer}
+.starter:hover{border-color:var(--ai-bd);background:var(--ai-soft)}
+.flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.step{border:1px solid var(--bd);border-radius:10px;padding:6px 10px;font-size:12.5px;background:var(--soft)}
+.step.ap{border-color:var(--warn);background:var(--warn-soft)}
+.step.ag{border-color:var(--ai-bd);background:var(--ai-soft)}
+.arw{color:var(--mut)}
+.bars{display:flex;align-items:flex-end;gap:10px;height:150px;padding:10px 4px 0}
+.bars div{flex:1;background:linear-gradient(180deg,var(--ai2),var(--ai));border-radius:6px 6px 0 0;position:relative}
+.bars div span{position:absolute;bottom:-20px;right:0;left:0;text-align:center;font-size:11px;color:var(--mut)}
+.code{direction:ltr;text-align:left;font-family:ui-monospace,Consolas,monospace;font-size:12px;background:var(--soft);border:1px solid var(--bd);border-radius:10px;padding:10px;white-space:pre-wrap}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--bd);border-radius:12px;overflow:hidden;background:var(--card)}
+.cal div{min-height:86px;border-left:1px solid var(--bd);border-bottom:1px solid var(--bd);padding:6px;font-size:12px}
+.cal .hd{min-height:0;background:var(--pri);color:#fff;text-align:center;font-weight:500}
+[data-theme=dark] .cal .hd{color:#0c1220}
+.ev{display:block;font-size:11px;border-radius:6px;padding:1px 6px;margin-top:4px;background:var(--pri-soft);cursor:pointer}
+.ev.ai{background:var(--ai-soft);color:var(--ai)}
+.toast{position:fixed;bottom:24px;right:50%;transform:translateX(50%);background:var(--fg);color:var(--card);padding:9px 16px;border-radius:12px;font-size:13px;z-index:90;opacity:0;transition:.25s;pointer-events:none}
+.toast.on{opacity:1}
+@media(max-width:900px){.side{position:fixed;right:-260px;z-index:75;height:100vh;transition:.2s}.side.open{right:0}.chatwrap{grid-template-columns:1fr}.hide-m{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side" id="side"></aside>
+<div class="main">
+<header class="top">
+ <button class="ibtn" id="menuBtn" style="display:none" aria-label="منو"></button>
+ <div class="me"><div class="av" style="background:#2f6fd0">م</div><span class="hide-m">مریم احمدی</span><span class="mut sm hide-m">مسئول کیفیت</span></div>
+ <div class="search ai-el" id="searchBox">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+  <input id="searchInp" placeholder="جستجو در کاریز…">
+  <span class="kbd hide-m">Ctrl K</span>
+  <button class="mode" id="modeKw">جستجو</button>
+  <button class="mode ai" id="modeAi">✦ پرسش از AI</button>
+ </div>
+ <div class="tb">
+  <div class="hl-toggle" id="hlToggle" title="نمایش بخش‌هایی که کاریز AI اضافه کرده"><div class="sw" id="hlSw"></div><span class="hide-m">نمایش لایه AI</span></div>
+  <div class="org" id="orgBtn">🏭 <span id="orgName">پارسا پلیمر شریف</span> ▾
+   <div class="dd" id="orgDd"><div class="mut sm" style="padding:4px 10px">تغییر سازمان</div><div class="di" data-org="پارسا پلیمر شریف">✓ پارسا پلیمر شریف</div><div class="di" data-org="هلدینگ صنایع شیمیایی">هلدینگ صنایع شیمیایی</div></div>
+  </div>
+  <button class="ibtn" id="bellBtn" aria-label="اعلان‌ها">🔔<span class="badge">۵</span>
+   <div class="dd" id="bellDd" style="width:330px;text-align:right"></div>
+  </button>
+  <button class="ibtn" id="themeBtn" aria-label="تغییر حالت">◐</button>
+ </div>
+</header>
+<main class="view" id="view"></main>
+</div>
+</div>
+
+<button class="fab ai-el" id="fab" title="دستیار کاریز AI"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 5.4L19 9l-5.2 1.6L12 16l-1.8-5.4L5 9l5.2-1.6zM19 14l.9 2.6L22 17.5l-2.1.9L19 21l-.9-2.6L16 17.5l2.1-.9zM5 15l.7 1.8L7.5 17.5l-1.8.7L5 20l-.7-1.8L2.5 17.5l1.8-.7z"/></svg></button>
+
+<aside class="panel" id="panel">
+ <div class="pn-h"><span class="spark" style="font-size:20px">✦</span><b>دستیار کاریز AI</b><span class="chip loc">مدل داخلی</span><button class="btn sm sp" id="pClose">بستن ✕</button></div>
+ <div class="ctx" id="pCtx">زمینه: میز کار من</div>
+ <div class="pn-b" id="pBody"></div>
+ <div class="compose"><div class="cbox"><textarea id="pInp" placeholder="بپرسید یا @ برای انتخاب عامل…"></textarea><div class="row"><span class="chip">📎 پیوست</span><span class="chip" id="pAgent">@ عامل: خودکار</span><span class="sp"></span><button class="btn sm ai-btn solid" id="pSend">ارسال</button></div></div>
+ <div class="mut" style="font-size:11px;margin-top:6px">پاسخ‌ها فقط از اطلاعاتی ساخته می‌شوند که شما به آن‌ها دسترسی دارید.</div></div>
+</aside>
+
+<div class="mask" id="mask"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- icons ---------- */
+const I={
+home:'<path d="M3 10.5 12 3l9 7.5V21H3z"/><path d="M9 21v-6h6v6"/>',
+cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+folder:'<path d="M3 6h6l2 2h10v11H3z"/>',
+spark:'<path d="M12 3l1.6 4.8L18.5 9l-4.9 1.4L12 15l-1.6-4.6L5.5 9l4.9-1.2z"/><path d="M18 15l.8 2.2 2.2.8-2.2.8L18 21l-.8-2.2-2.2-.8 2.2-.8z"/>',
+bot:'<rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9 13h.01M15 13h.01M9 17h6"/>',
+store:'<path d="M4 9h16l-1 11H5z"/><path d="M8 9V6a4 4 0 0 1 8 0v3"/>',
+flow:'<circle cx="5" cy="6" r="2"/><circle cx="19" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M7 6h10M6 8l5 8M18 8l-5 8"/>',
+book:'<path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4z"/><path d="M20 4h-4a2 2 0 0 0-2 2"/>',
+chart:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+plug:'<path d="M9 3v5M15 3v5M6 8h12v3a6 6 0 0 1-12 0zM12 17v4"/>',
+gauge:'<path d="M12 14l4-4"/><path d="M3 14a9 9 0 0 1 18 0"/>',
+users:'<circle cx="9" cy="8" r="3"/><path d="M3 20a6 6 0 0 1 12 0"/><circle cx="17" cy="9" r="2.5"/><path d="M15 15a5 5 0 0 1 6 5"/>',
+chat:'<path d="M4 5h16v11H8l-4 4z"/>',
+group:'<circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M2 20a6 6 0 0 1 12 0M10 20a6 6 0 0 1 12 0"/>',
+mega:'<path d="M3 11v2l13 5V6z"/><path d="M16 9a3 3 0 0 1 0 6M6 14l1 5h3l-1-4"/>',
+news:'<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h10M7 16h6"/>',
+brief:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5h8v2"/>',
+check:'<rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 3 3 5-6"/>',
+shield:'<path d="M12 3 4 6v6c0 5 4 8 8 9 4-1 8-4 8-9V6z"/>'
+};
+function ic(n){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+I[n]+'</svg>';}
+
+/* ---------- nav ---------- */
+const NAV=[
+{h:'داشبورد',items:[['dash','میز کار من','home'],['calendar','تقویم کاری من','cal'],['files','مدیریت فایل‌های من','folder']]},
+{h:'✦ کاریز AI',ai:1,items:[['assistant','دستیار هوشمند من','spark'],['agents','عامل‌های من','bot'],['store','مخزن عامل‌ها','store',''],['workflows','جریان‌های خودکار','flow'],['knowledge','دانش سازمانی','book'],['data','داده و تحلیل','chart'],['connections','اتصال‌ها','plug'],['usage','مصرف من','gauge']]},
+{h:'همکاران',items:[['members','اعضای سازمان','users']]},
+{h:'شبکه اجتماعی',items:[['conversations','گفتگوها','chat'],['groups','گروه‌ها','group'],['channels','کانال‌ها','mega'],['news','اخبار سازمان','news']]},
+{h:'پروژه‌ها و فعالیت‌ها',items:[['projects','پروژه‌های من','brief'],['tasks','فعالیت و وظایف من','check']]},
+{h:'مدیریت سیستم',items:[['admin','مدیریت هوش مصنوعی','shield']]}
+];
+function renderNav(cur){
+ let h='<div class="brand"><div class="lg">'+ic('spark').replace('stroke="currentColor"','stroke="#fff"')+'</div>کاریز</div>';
+ for(const s of NAV){h+='<div class="sec"><div class="sec-h'+(s.ai?' aih':'')+'">'+s.h+'</div>';
+  for(const [k,t,i] of s.items){const aiItem=s.ai||k==='admin';h+='<a class="nv'+(cur===k?' on':'')+(aiItem?' ai-item':'')+'" href="#'+k+'">'+ic(i)+'<span>'+t+'</span>'+(k==='store'?'<span class="tag">جدید</span>':'')+'</a>';}
+  h+='</div>';}
+ h+='<div class="side-foot">کاریز ۲.۰ · کاریز AI نسخه نمایشی<br>همه پردازش‌ها روی سرورهای سازمان</div>';
+ document.getElementById('side').innerHTML=h;
+}
+
+/* ---------- data ---------- */
+const P={
+ m:['مریم احمدی','#2f6fd0','مسئول کیفیت'],a:['علی رضایی','#d0742f','مدیر تولید'],s:['سارا کریمی','#1d9e75','مسئول تدارکات'],
+ r:['رضا محمدی','#7f77dd','سرپرست نگهداری'],n:['نرگس حسینی','#c2412d','کارشناس فروش'],k:['محمد کاظمی','#185fa5','مدیرعامل']};
+function av(key,size){const p=P[key];const s=size||32;return '<div class="av" style="width:'+s+'px;height:'+s+'px;background:'+p[1]+'">'+p[0][0]+'</div>';}
+const AGENTS=[
+ {n:'دستیار کیفیت و فرمولاسیون',d:'یافتن علت مردودی بچ و پیشنهاد رسپی بر پایه نتایج آزمایشگاه و فرمول‌های ثبت‌شده.',m:'Qwen داخلی',loc:1,tools:['LIMS: نتایج آزمون بچ','جستجوی فرمول‌های مشابه'],scope:'تیم کیفیت',v:'۱.۳',ev:'۹۲٪',st:'فعال'},
+ {n:'دستیار نگهداری و تعمیرات',d:'«این آلارم چیست و دفعه قبل چه کردیم؟» از سوابق تعمیرات و گفتگوهای همکاران.',m:'Qwen داخلی',loc:1,tools:['CMMS: سوابق تعمیرات','گروه «نگهداری» در کاریز'],scope:'واحد نگهداری',v:'۱.۱',ev:'۸۸٪',st:'فعال'},
+ {n:'تحلیل‌گر شاخص‌های تولید',d:'مقایسه شاخص‌های لحظه‌ای خط با حد مجاز و نوشتن علت احتمالی.',m:'خودکار',loc:1,tools:['MES: شاخص‌های لحظه‌ای','روند ۲۴ ساعته'],scope:'واحد تولید',v:'۲.۰',ev:'۹۰٪',st:'فعال'},
+ {n:'دستیار سند',d:'پاسخ از اسناد سازمان با ارجاع به سند و بخش.',m:'خودکار',loc:1,tools:['دانش سازمانی'],scope:'همه کارکنان',v:'۳.۲',ev:'۹۴٪',st:'فعال'},
+ {n:'دستیار فروش و قیمت‌گذاری',d:'محاسبه قیمت و حاشیه سود و آماده‌سازی پیش‌فاکتور Word و Excel.',m:'DeepSeek',loc:0,tools:['نرخ ارز و مواد اولیه','راهکاران: موجودی'],scope:'تیم فروش',v:'۱.۰',ev:'۸۵٪',st:'فعال'},
+ {n:'نگارنده نامه اداری',d:'نامه رسمی با سربرگ و قالب سازمان؛ آماده ارجاع در دیدگاه.',m:'Qwen داخلی',loc:1,tools:['قالب‌های Word','دیدگاه: ثبت پیش‌نویس'],scope:'همه کارکنان',v:'۱.۴',ev:'۹۱٪',st:'در انتظار تأیید'}
+];
+const STORE=[
+ ['تدارک و انبار','دستیار سفارش مواد اولیه','موجودی و محموله‌های در راه را می‌خواند و پیشنهاد سفارش می‌دهد.','۸۶'],
+ ['تولید','گزارش‌ساز تحویل شیفت','گزارش کوتاه تحویل شیفت از شاخص‌ها و پیام‌های گروه شیفت.','۴۱'],
+ ['کیفیت','بازرس کیفیت بچ','مقایسه نتایج آزمون بچ با فرمول‌های مشابه.','۵۲'],
+ ['نگهداری','راهنمای عیب‌یابی دستگاه','کد آلارم را در سوابق تعمیرات پیدا می‌کند.','۴۷'],
+ ['بازرگانی','مقایسه‌گر قیمت تامین‌کنندگان','استعلام از چند تامین‌کننده و جدول مقایسه.','۳۸'],
+ ['مدیریت','صورت‌جلسه‌نویس','از صوت یا یادداشت جلسه، تصمیم‌ها و اقدام‌ها را به وظایف کاریز تبدیل می‌کند.','۱۲۰'],
+ ['ایمنی','تحلیل‌گر گزارش حادثه','الگوهای تکرارشونده و علل ریشه‌ای در گزارش‌های HSE.','۲۲'],
+ ['اداری','پاسخگوی آیین‌نامه‌ها','پاسخ به پرسش‌های اداری و منابع انسانی با ارجاع.','۹۵']
+];
+
+/* ---------- canned AI ---------- */
+const AI={
+ brief:`<b>خلاصه امروز شما</b><ul style="margin:6px 0;padding-right:18px">
+ <li>۳ بچ امروز آزمون شدند؛ بچ <b>B-1405-212</b> در شاخص جریان مذاب (MFI) مردود شد.</li>
+ <li>گروه «کیفیت و فرمولاسیون»: ۲۴ پیام خوانده‌نشده؛ موضوع اصلی تأمین مستربچ مشکی.</li>
+ <li>۱ درخواست تأیید منتظر شماست: سفارش ۸۰ تن PE سنگین.</li>
+ <li>جلسه بازبینی کیفیت ساعت ۱۰:۳۰؛ دستور جلسه آماده است.</li></ul>`,
+ summarizeGroup:`<b>خلاصه ۲۴ پیام خوانده‌نشده</b><ul style="margin:6px 0;padding-right:18px">
+ <li>تأمین‌کننده فعلی مستربچ مشکی ۴۰٪ تحویل را ۱۰ روز عقب انداخته (سارا کریمی).</li>
+ <li>علی رضایی پیشنهاد آزمون گرید جایگزین روی خط ۲ را داده است.</li>
+ <li>تصمیم‌گیری باز: تأیید آزمون آزمایشی تا پنجشنبه.</li></ul><div class="row"><button class="btn sm ai-btn" onclick="toast('۲ وظیفه در پروژه «بهبود کیفیت ۱۴۰۵» ساخته شد')">✦ تبدیل اقدام‌ها به وظیفه</button></div>`,
+ rca:`<b>تحلیل مردودی بچ B-1405-212</b><br>MFI اندازه‌گیری‌شده <b>۸.۹</b> در برابر حد مجاز <b>۱۰–۱۴</b>.<br>محتمل‌ترین علت: دمای ناحیه ۴ اکسترودر <b>۲۴۸°C</b> (حد ۲۴۰) و رطوبت بالای مواد ورودی.<br>پیشنهاد: کاهش دمای ناحیه ۴ به ۲۳۵ و خشک‌کردن مواد ۲ ساعت در ۸۰°C.
+ <div class="src"><span>LIMS: آزمون بچ ۲۱۲</span><span>MES: روند دمای ناحیه ۴</span><span>QC-SOP-07 بند ۴.۲</span></div>
+ <div class="row" style="margin-top:8px"><button class="btn sm ai-btn" onclick="toast('گزارش عدم انطباق در فایل‌ها ذخیره شد')">ذخیره گزارش Word</button><button class="btn sm ai-btn" onclick="toast('در گروه کیفیت ارسال شد')">ارسال به گروه</button><button class="btn sm ai-btn" onclick="toast('وظیفه اقدام اصلاحی برای علی رضایی ساخته شد')">ساخت اقدام اصلاحی</button></div>`,
+ doc:`<b>خلاصه «رویه کنترل کیفیت ورودی QC-SOP-07»</b><ul style="margin:6px 0;padding-right:18px"><li>نمونه‌برداری از هر محموله: حداقل ۳ نمونه از کیسه‌های مختلف.</li><li>آزمون‌های اجباری: MFI، رطوبت، رنگ.</li><li>محموله مردود تا تصمیم کمیته کیفیت در انبار قرنطینه می‌ماند.</li></ul><div class="src"><span>QC-SOP-07 · صفحات ۲ تا ۵</span></div>`,
+ meta:`<b>اطلاعات استخراج‌شده</b><table style="margin-top:6px"><tr><td>نوع سند</td><td>رویه اجرایی</td></tr><tr><td>کد</td><td>QC-SOP-07</td></tr><tr><td>مالک</td><td>واحد کیفیت</td></tr><tr><td>تاریخ بازنگری</td><td>۱۴۰۵/۰۶/۱۴</td></tr><tr><td>سطح محرمانگی</td><td>داخلی</td></tr></table><div class="row" style="margin-top:8px"><button class="btn sm ai-btn" onclick="toast('برچسب‌ها روی فایل ذخیره شد')">ذخیره به‌عنوان برچسب فایل</button></div>`,
+ tasks:`<b>۴ وظیفه از صورت‌جلسه «بازبینی کیفیت» استخراج شد</b><ul style="margin:6px 0;padding-right:18px"><li>آزمون گرید جایگزین روی خط ۲ · علی رضایی · ۱۴۰۵/۰۸/۱۵</li><li>استعلام از دو تامین‌کننده جدید مستربچ · سارا کریمی · ۱۴۰۵/۰۸/۱۴</li><li>بازنگری بند ۴.۲ رویه QC-SOP-07 · مریم احمدی · ۱۴۰۵/۰۸/۲۰</li><li>کالیبراسیون حسگر دمای ناحیه ۴ · رضا محمدی · ۱۴۰۵/۰۸/۱۳</li></ul><div class="row"><button class="btn sm ai-btn solid" onclick="toast('۴ وظیفه به پروژه اضافه و به مسئولان اعلان شد')">افزودن به پروژه</button></div>`,
+ risk:`<b>تحلیل ریسک تأخیر پروژه</b><br>احتمال تأخیر فاز ۲: <b>بالا</b>. ۳ وظیفه مسیر بحرانی بیش از ۵ روز عقب‌اند و تأمین مستربچ وابستگی بیرونی باز دارد.<br>پیشنهاد: جابه‌جایی آزمون خط ۲ به هفته بعد و افزودن یک تامین‌کننده جایگزین.`,
+ status:`<b>گزارش وضعیت هفتگی (پیش‌نویس)</b><br>پیشرفت ۶۸٪ (+۷٪ نسبت به هفته قبل). ۱۲ وظیفه انجام، ۴ وظیفه معوق. ریسک اصلی: تأخیر تأمین مستربچ.<div class="row" style="margin-top:8px"><button class="btn sm ai-btn" onclick="toast('در کانال «اطلاع‌رسانی پروژه‌ها» منتشر شد')">انتشار در کانال</button></div>`,
+ news:`<b>پیش‌نویس خبر</b><br><b>کاهش ۳۰ درصدی ضایعات خط ۲ در مهرماه</b><br>با اجرای طرح بهبود دمای اکسترودر، ضایعات خط ۲ از ۳.۱٪ به ۲.۲٪ رسید. واحد کیفیت از همکاری تیم‌های تولید و نگهداری قدردانی می‌کند.<div class="row" style="margin-top:8px"><button class="btn sm ai-btn" onclick="toast('پیش‌نویس در بخش اخبار ذخیره شد')">ذخیره به‌عنوان پیش‌نویس</button></div>`,
+ reply:`<b>پاسخ پیشنهادی</b><br>سلام آقای رضایی، نتایج آزمون بچ ۲۱۲ را بررسی کردم؛ علت محتمل دمای ناحیه ۴ است. پیشنهاد می‌کنم آزمون بعدی با دمای ۲۳۵ انجام شود. گزارش کامل را پیوست کردم.<div class="row" style="margin-top:8px"><button class="btn sm ai-btn" onclick="toast('متن در کادر پیام قرار گرفت')">استفاده از این متن</button></div>`,
+ generic:`بر اساس اطلاعاتی که به آن دسترسی دارید پاسخ را آماده کردم. در نسخه واقعی، پاسخ از دانش سازمانی، داده‌های متصل و گفتگوهای کاریز ساخته می‌شود و منابع کنار هر بخش نمایش داده می‌شود.<div class="src"><span>دانش سازمانی</span><span>گروه کیفیت</span></div>`
+};
+
+/* ---------- panel ---------- */
+const panel=document.getElementById('panel'),pBody=document.getElementById('pBody'),pCtx=document.getElementById('pCtx');
+const CTXQA={
+ dash:['خلاصه امروز من','چه کارهایی معوق دارم؟','دستور جلسه ساعت ۱۰:۳۰'],
+ groups:['خلاصه پیام‌های خوانده‌نشده','تصمیم‌های باز گروه','پیش‌نویس پیام برای گروه'],
+ conversations:['خلاصه این گفتگو','پاسخ پیشنهادی','تبدیل به وظیفه'],
+ files:['خلاصه این پوشه','کدام سند درباره رطوبت است؟','مقایسه دو نسخه'],
+ projects:['گزارش وضعیت هفتگی','ریسک تأخیر','ساخت وظایف از صورت‌جلسه'],
+ default:['خلاصه این صفحه','چه کمکی می‌توانی بکنی؟']
+};
+function openPanel(ctxName,firstKey){
+ panel.classList.add('open');pCtx.textContent='زمینه: '+ctxName;
+ const qa=CTXQA[cur]||CTXQA.default;
+ pBody.innerHTML='<div class="qa">'+qa.map(q=>'<button class="btn sm ai-btn" data-q="'+q+'">'+q+'</button>').join('')+'</div>';
+ pBody.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>ask(b.dataset.q));
+ if(firstKey)ask(null,firstKey);
+}
+function ask(q,key){
+ if(q)pBody.insertAdjacentHTML('beforeend','<div class="msg u">'+q+'</div>');
+ const id='t'+Math.random().toString(36).slice(2);
+ pBody.insertAdjacentHTML('beforeend','<div class="msg a" id="'+id+'"><div class="who">✦ کاریز AI · مدل داخلی</div><div class="typing"><span></span><span></span><span></span></div></div>');
+ pBody.scrollTop=pBody.scrollHeight;
+ const k=key||(q&&q.includes('خلاصه امروز')?'brief':q&&q.includes('خوانده‌نشده')?'summarizeGroup':q&&q.includes('وضعیت')?'status':q&&q.includes('ریسک')?'risk':q&&q.includes('صورت‌جلسه')?'tasks':q&&q.includes('پاسخ')?'reply':q&&q.includes('دستور جلسه')?'brief':'generic');
+ setTimeout(()=>{const el=document.getElementById(id);el.innerHTML='<div class="who">✦ کاریز AI · مدل داخلی</div>'+AI[k];pBody.scrollTop=pBody.scrollHeight;},700);
+}
+document.getElementById('fab').onclick=()=>openPanel(TITLES[cur]||'این صفحه');
+document.getElementById('pClose').onclick=()=>panel.classList.remove('open');
+document.getElementById('pSend').onclick=()=>{const t=document.getElementById('pInp');if(t.value.trim()){ask(t.value.trim());t.value='';}};
+function aiAct(key,ctx){openPanel(ctx||TITLES[cur]);setTimeout(()=>ask(null,key),50);}
+
+/* ---------- utils ---------- */
+function toast(t){const e=document.getElementById('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2200);}
+function modal(h){document.getElementById('modal').innerHTML=h;document.getElementById('mask').classList.add('open');}
+function closeModal(){document.getElementById('mask').classList.remove('open');}
+document.getElementById('mask').onclick=e=>{if(e.target.id==='mask')closeModal();};
+function aib(label,key,extra){return '<button class="btn sm ai-btn ai-el" onclick="aiAct(\''+key+'\''+(extra?',\''+extra+'\'':'')+')">✦ '+label+'</button>';}
+
+/* ---------- pages ---------- */
+const TITLES={dash:'میز کار من',calendar:'تقویم کاری',files:'مدیریت فایل‌ها',assistant:'دستیار هوشمند',agents:'عامل‌های من',store:'مخزن عامل‌ها',workflows:'جریان‌های خودکار',knowledge:'دانش سازمانی',data:'داده و تحلیل',connections:'اتصال‌ها',usage:'مصرف من',members:'اعضای سازمان',conversations:'گفتگوها',groups:'گروه‌ها',channels:'کانال‌ها',news:'اخبار سازمان',projects:'پروژه‌های من',tasks:'وظایف من',admin:'مدیریت هوش مصنوعی'};
+const PAGES={};
+
+PAGES.dash=()=>`
+<div class="ph"><div><h1>نمای کلی فعالیت‌های من</h1><p>یکشنبه ۱۱ آبان ۱۴۰۵</p></div></div>
+<div class="ai-card ai-el" style="margin-bottom:14px"><div class="ct">✦ خلاصه هوشمند امروز <small>ساخته‌شده از گروه‌ها، وظایف، تقویم و سامانه‌های متصل</small></div>${AI.brief}
+<div class="row"><button class="btn sm ai-btn" onclick="aiAct('summarizeGroup','گروه کیفیت و فرمولاسیون')">خلاصه گروه کیفیت</button><button class="btn sm ai-btn" onclick="aiAct('rca','بچ B-1405-212')">تحلیل بچ مردود</button><button class="btn sm ai-btn" onclick="location.hash='assistant'">گفتگو با دستیار</button></div></div>
+<div class="grid g2">
+<div class="card ai-el"><div class="ct">نیاز به تأیید شما <span class="chip warn">۱ مورد</span></div>
+ <div class="li"><span style="font-size:20px">📦</span><div style="flex:1"><b>کالا نیازمند سفارش مجدد است</b><div class="sm mut">جریان «سفارش‌دهی خودکار مواد اولیه» · PE سنگین HD5502 · موجودی ۱۸ تن (۳ روز) · پیشنهاد ۸۰ تن · حدود ۶٬۵۶۰ میلیون تومان · بهترین قیمت: پلیمر خزر</div>
+ <div class="row" style="margin-top:6px"><button class="btn sm pri" onclick="toast('تأیید شد؛ پیش‌نویس سفارش خرید در راهکاران ثبت شد')">تأیید</button><button class="btn sm" onclick="toast('رد شد و به مسئول تدارکات اطلاع داده شد')">رد</button><button class="btn sm ai-btn" onclick="toast('جزئیات جریان باز شد')">مشاهده جریان</button></div></div></div></div>
+<div class="card"><div class="ct">رویدادهای در حال برگزاری <small>مشاهده همه</small></div>
+ <div class="li">📅<div style="flex:1"><b>جلسه بازبینی کیفیت</b><div class="sm mut">امروز ۱۰:۳۰ · اتاق جلسات ۲</div></div>${aib('دستور جلسه','brief','جلسه بازبینی کیفیت')}</div>
+ <div class="li">📅<div style="flex:1"><b>نمایشگاه صنایع پلیمر</b><div class="sm mut">۱۴ آبان · تهران</div></div></div></div>
+<div class="card"><div class="ct">گروه‌های من <small>مشاهده همه</small></div>
+ ${[['کیفیت و فرمولاسیون','۲۴ پیام خوانده‌نشده'],['تولید خط ۲','۷ پیام'],['نگهداری و تعمیرات','۳ پیام']].map(g=>`<div class="li">${ic('group').replace('<svg','<svg width="22" height="22"')}<div style="flex:1"><b>${g[0]}</b><div class="sm mut">${g[1]}</div></div>${aib('خلاصه','summarizeGroup',g[0])}</div>`).join('')}</div>
+<div class="card ai-el"><div class="ct">✦ هشدارهای جریان‌ها <small>از عامل‌ها</small></div>
+ <div class="li">⚠️<div><b>دمای ناحیه ۴ اکسترودر خارج از حد</b><div class="sm mut">۲۴۸°C (حد ۲۴۰) · ضایعات ۳.۸٪ · علت احتمالی: سنسور یا تنظیم هیتر</div></div></div>
+ <div class="li">🧪<div><b>بچ B-1405-212 مردود شد</b><div class="sm mut">MFI ۸.۹ · تحلیل علت آماده است</div><button class="btn sm ai-btn" style="margin-top:4px" onclick="aiAct('rca','بچ B-1405-212')">✦ مشاهده تحلیل</button></div></div></div>
+</div>`;
+
+PAGES.calendar=()=>{
+ let c='<div class="cal">'+['شنبه','یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه'].map(d=>'<div class="hd">'+d+'</div>').join('');
+ const fa='۰۱۲۳۴۵۶۷۸۹';const n=x=>String(x).replace(/\d/g,d=>fa[d]);
+ for(let i=1;i<=28;i++){let e='';if(i===11)e='<span class="ev">بازبینی کیفیت ۱۰:۳۰</span><span class="ev ai" onclick="aiAct(\'tasks\',\'جلسه بازبینی کیفیت\')">✦ صورت‌جلسه و وظایف</span>';if(i===14)e='<span class="ev">نمایشگاه پلیمر</span>';if(i===8)e='<span class="ev">جلسه تأمین</span><span class="ev ai" onclick="aiAct(\'tasks\',\'جلسه تأمین\')">✦ صورت‌جلسه آماده است</span>';if(i===18)e='<span class="ev ai">✦ پیشنهاد زمان: جلسه فروش</span>';c+='<div><b>'+n(i)+'</b>'+e+'</div>';}
+ c+='</div>';
+ return `<div class="ph"><div><h1>تقویم کاری من</h1><p>آبان ۱۴۰۵</p></div><div class="row">${aib('پیشنهاد زمان جلسه','generic')}<button class="btn pri">+ رویداد</button></div></div>${c}
+ <p class="sm mut" style="margin-top:10px">✦ جلسه‌هایی که ضبط یا یادداشت دارند، صورت‌جلسه و وظایف خودکار می‌گیرند.</p>`;};
+
+PAGES.files=()=>`
+<div class="ph"><div><h1>مدیریت فایل‌های من</h1><p>مدیریت فایل‌ها / کیفیت</p></div><div class="row"><button class="btn">پوشه جدید</button><button class="btn pri">آپلود فایل</button></div></div>
+<div class="row" style="margin-bottom:12px"><div class="search ai-el" style="max-width:none;flex:1"><input placeholder="جستجوی معنایی: «سندی که درباره رطوبت مواد ورودی است»"><button class="mode ai">✦ جستجوی معنایی</button></div>${aib('خلاصه این پوشه','doc','پوشه کیفیت')}</div>
+<div class="tw"><table><tr><th>نام</th><th>نوع</th><th>تاریخ تغییر</th><th class="hide-m">برچسب‌های هوشمند</th><th>عملیات</th></tr>
+${[['دانشنامه','پوشه','۱۴۰۵/۰۷/۲۰','',0],['QC-SOP-07 رویه کنترل کیفیت ورودی.pdf','PDF','۱۴۰۵/۰۶/۱۴','رویه · کیفیت · داخلی',1],['برگه فنی گرید PP-T20.pdf','PDF','۱۴۰۵/۰۵/۱۱','برگه فنی · محصول',1],['گزارش عدم انطباق بچ ۲۱۲.docx','Word','۱۴۰۵/۰۸/۱۱','ساخته‌شده با AI',1],['نتایج آزمون مهر.xlsx','Excel','۱۴۰۵/۰۸/۰۱','داده · آزمایشگاه',1]].map(f=>`<tr><td>${f[1]==='پوشه'?'📁':'📄'} ${f[0]}</td><td>${f[1]}</td><td>${f[2]}</td><td class="hide-m">${f[3]?f[3].split(' · ').map(x=>`<span class="chip ai" style="margin-left:4px">${x}</span>`).join(''):''}</td><td>${f[4]?`<div class="row ai-el">${'<button class="btn sm ai-btn" onclick="aiAct(\'doc\',\''+f[0]+'\')">✦ خلاصه</button><button class="btn sm ai-btn" onclick="aiAct(\'generic\',\''+f[0]+'\')">✦ پرسش</button><button class="btn sm ai-btn" onclick="aiAct(\'meta\',\''+f[0]+'\')">✦ استخراج</button>'}</div>`:'⋮'}</td></tr>`).join('')}
+</table></div>
+<p class="sm mut" style="margin-top:10px">✦ فایل‌های این بخش با رعایت سطح دسترسی هر کاربر در دانش سازمانی نمایه می‌شوند؛ هر کس فقط پاسخ از فایل‌هایی می‌گیرد که می‌تواند باز کند.</p>`;
+
+PAGES.assistant=()=>`
+<div class="ph"><div><h1>دستیار هوشمند من</h1><p>گفتگو با عامل‌های مجاز، روی دانش و داده‌های سازمان</p></div>
+<div class="row"><select class="inp" style="width:auto"><option>مدل: خودکار</option><option>Qwen (داخلی)</option><option>Llama (داخلی)</option><option>DeepSeek (بیرونی، با پوشاندن داده)</option></select><span class="chip loc">🔒 داده حساس → فقط مدل داخلی</span></div></div>
+<div class="grid g3" style="margin-bottom:14px">
+${[['🧪','کیفیت و فرمولاسیون','علت مردودی بچ را با شواهد می‌نویسد.','rca'],['🔧','آلارم دستگاه','دفعه قبل برای این آلارم چه کردیم؟','generic'],['📈','شاخص‌های خط تولید','شاخص‌های خارج از حد و علت آن.','generic'],['📚','دانش سازمانی','پاسخ از اسناد با ارجاع به منبع.','doc'],['🧾','پیش‌فاکتور Word و Excel','قیمت و حاشیه سود و فایل پیش‌فاکتور.','generic'],['✉️','نامه اداری','نامه رسمی با سربرگ، آماده ارجاع در دیدگاه.','generic']].map(s=>`<div class="card starter" onclick="aiAct('${s[3]}','${s[1]}')"><div style="font-size:22px">${s[0]}</div><b>${s[1]}</b><div class="sm mut">${s[2]}</div></div>`).join('')}
+</div>
+<div class="card"><div class="ct">ادامه گفتگو: «تحلیل بچ مردود» <small>دستیار کیفیت و فرمولاسیون · Qwen داخلی</small></div>
+<div class="msg u">چرا بچ B-1405-212 مردود شد و چه کنیم؟</div>
+<div class="msg a" style="max-width:100%"><div class="who">✦ دستیار کیفیت و فرمولاسیون</div>${AI.rca}</div>
+<div class="cbox" style="margin-top:10px"><textarea placeholder="پیام خود را بنویسید… (@ برای عامل، / برای اسکیل)"></textarea><div class="row"><span class="chip">📎 فایل از کاریز</span><span class="chip ai">@ دستیار کیفیت</span><span class="chip">🌐 جستجوی وب: خاموش</span><span class="sp"></span><button class="btn sm ai-btn solid" onclick="aiAct('generic','دستیار هوشمند')">ارسال</button></div></div></div>`;
+
+PAGES.agents=()=>`
+<div class="ph"><div><h1>عامل‌های من</h1><p>عامل‌هایی که ساخته‌اید یا با شما به اشتراک گذاشته شده‌اند</p></div><button class="btn ai-btn solid" onclick="agentBuilder()">✦ ساخت عامل</button></div>
+<div class="grid g3">${AGENTS.map(a=>`<div class="card ai-el"><div class="ct">${a.n}<span class="chip ${a.st==='فعال'?'ok':'warn'}">${a.st}</span></div><div class="sm mut" style="min-height:44px">${a.d}</div>
+<div class="row" style="margin:8px 0"><span class="chip ${a.loc?'loc':'ext'}">${a.loc?'🔒':'🌐'} ${a.m}</span><span class="chip">نسخه ${a.v}</span><span class="chip ai">ارزیابی ${a.ev}</span></div>
+<div class="sm"><b>ابزارها:</b> ${a.tools.join('، ')}</div><div class="sm"><b>دسترسی:</b> ${a.scope}</div>
+<div class="row" style="margin-top:10px"><button class="btn sm ai-btn" onclick="aiAct('generic','${a.n}')">گفتگو</button><button class="btn sm" onclick="agentBuilder('${a.n}')">ویرایش</button><button class="btn sm" onclick="toast('عامل به گروه «کیفیت» در کاریز اضافه شد')">افزودن به گروه کاریز</button></div></div>`).join('')}</div>`;
+
+function agentBuilder(name){modal(`<div class="ct" style="font-size:16px">✦ ${name?'ویرایش':'ساخت'} عامل</div>
+<div class="fld"><label>نام عامل</label><input class="inp" value="${name||'بازرس کیفیت مواد ورودی'}"></div>
+<div class="fld"><label>دستورالعمل (به زبان ساده توضیح دهید)</label><textarea class="inp" rows="3">نتایج آزمون مواد ورودی را با برگه فنی تامین‌کننده مقایسه کن، موارد خارج از حد را با ارجاع به رویه QC-SOP-07 گزارش بده و در صورت مردودی، پیش‌نویس نامه به تامین‌کننده آماده کن.</textarea></div>
+<div class="grid g2"><div class="fld"><label>دانش</label><div class="row"><span class="chip ai">پوشه کیفیت (کاریز)</span><span class="chip ai">برگه‌های فنی</span><span class="chip">+ افزودن</span></div></div>
+<div class="fld"><label>ابزارها (از اتصال‌های مجاز)</label><div class="row"><span class="chip ai">LIMS: نتایج آزمون</span><span class="chip ai">نامه Word از قالب</span><span class="chip">+ افزودن</span></div></div>
+<div class="fld"><label>سیاست مدل</label><select class="inp"><option>فقط مدل داخلی (داده حساس)</option><option>خودکار</option></select></div>
+<div class="fld"><label>دسترسی</label><select class="inp"><option>تیم کیفیت</option><option>فقط من</option><option>کل سازمان</option></select></div>
+<div class="fld"><label>اجرا در</label><div class="row"><span class="chip ai">دستیار هوشمند</span><span class="chip ai">گروه کیفیت کاریز</span><span class="chip">جریان‌ها</span></div></div>
+<div class="fld"><label>مجموعه ارزیابی</label><div class="row"><span class="chip ok">۱۸ نمونه · آخرین نتیجه ۹۰٪</span></div></div></div>
+<div class="row" style="margin-top:6px"><button class="btn" onclick="closeModal()">انصراف</button><button class="btn ai-btn" onclick="toast('ارزیابی اجرا شد: ۱۶ از ۱۸ درست')">اجرای ارزیابی</button><span class="sp"></span><button class="btn ai-btn solid" onclick="closeModal();toast('برای تأیید ادمین ارسال شد')">ارسال برای تأیید</button></div>`);}
+
+PAGES.store=()=>`
+<div class="ph"><div><h1>مخزن عامل‌ها</h1><p>بسته‌های آماده کاریز و عامل‌هایی که همکاران عمومی کرده‌اند</p></div></div>
+<div class="tabs">${['همه','تولید','کیفیت','نگهداری','تدارک و انبار','بازرگانی','ایمنی','اداری','مدیریت'].map((t,i)=>`<span class="tab${i?'':' on'}">${t}</span>`).join('')}</div>
+<div class="grid g4">${STORE.map(s=>`<div class="card ai-el"><span class="chip">${s[0]}</span><div style="font-weight:700;margin:8px 0 4px">${s[1]}</div><div class="sm mut" style="min-height:60px">${s[2]}</div><div class="row sm mut" style="margin:6px 0">⭐ ۴.${(s[3].length+5)%10} · ${s[3]} استفاده · <span class="chip ok">بسته رسمی</span></div><button class="btn sm ai-btn" style="width:100%;justify-content:center" onclick="toast('«${s[1]}» به عامل‌های شما اضافه شد')">افزودن به عامل‌های من</button></div>`).join('')}</div>`;
+
+PAGES.workflows=()=>`
+<div class="ph"><div><h1>جریان‌های خودکار</h1><p>چند گام پشت‌سرهم با عامل‌ها و ابزارها؛ دستی، زمان‌بندی‌شده یا رویدادمحور</p></div><button class="btn ai-btn solid" onclick="toast('سازنده جریان باز شد')">+ جریان تازه</button></div>
+<div class="card ai-el" style="margin-bottom:14px"><div class="ct">سفارش‌دهی خودکار مواد اولیه <span class="chip ok">فعال</span></div>
+<div class="flow"><span class="step">⏰ هر روز ۰۸:۰۰</span><span class="arw">←</span><span class="step">راهکاران: موجودی</span><span class="arw">←</span><span class="step">SQL: محموله‌های در راه</span><span class="arw">←</span><span class="step ag">✦ عامل پیش‌بینی کمبود</span><span class="arw">←</span><span class="step ap">✋ تأیید مدیر تدارکات</span><span class="arw">←</span><span class="step">استعلام از تامین‌کنندگان</span><span class="arw">←</span><span class="step ag">✦ جدول مقایسه</span><span class="arw">←</span><span class="step">پیش‌نویس سفارش در راهکاران</span><span class="arw">←</span><span class="step">🔔 اعلان در کاریز</span></div>
+<div class="sm mut" style="margin-top:8px">آخرین اجرا: ۹ آبان ۰۸:۳۰ · ۸ گام · منتظر تأیید: ۱</div></div>
+<div class="tw"><table><tr><th>جریان</th><th>آغازگر</th><th>وضعیت</th><th>آخرین اجرا</th><th></th></tr>
+${[['مرکز شاخص‌ها و هشدار هوشمند','هر ساعت + خروج شاخص از حد','فعال','امروز ۰۹:۰۰'],['تحلیل بچ مردود','رویداد: مردودی در LIMS','فعال','امروز ۰۸:۱۲'],['پیش‌فاکتور خودکار','رویداد: ایمیل استعلام','فعال','دیروز ۱۲:۰۵'],['گزارش تحویل شیفت','هر شیفت','فعال','امروز ۰۷:۰۰'],['خلاصه هفتگی برای مدیرعامل','هر شنبه ۰۸:۰۰','در انتظار تأیید ادمین','—']].map(w=>`<tr><td>${w[0]}</td><td class="sm">${w[1]}</td><td><span class="chip ${w[2]==='فعال'?'ok':'warn'}">${w[2]}</span></td><td class="sm">${w[3]}</td><td><button class="btn sm">اجرا</button></td></tr>`).join('')}
+</table></div>`;
+
+PAGES.knowledge=()=>`
+<div class="ph"><div><h1>دانش سازمانی</h1><p>مجموعه‌هایی که شما به آن‌ها دسترسی دارید؛ دسترسی از سامانه مبدأ به ارث می‌رسد</p></div>${aib('پرسش از کل دانش','doc','دانش سازمانی')}</div>
+<div class="grid g3">${[['📁','فایل‌های کاریز · کیفیت','کاریز (درگاه اسناد)','۲۳۴ سند','همگام'],['📁','آیین‌نامه‌ها و مقررات','کاریز','۵۸ سند','همگام'],['🗂️','بایگانی فنی','SharePoint (درگاه اسناد)','۱٬۲۰۴ سند','همگام · ۲ ساعت پیش'],['✉️','نامه‌های اداری','دیدگاه چارگون','۳٬۹۱۰ نامه','همگام'],['💬','گفتگوهای گروه نگهداری','کاریز (پیام‌ها)','۶ ماه اخیر','همگام'],['📄','اسناد اسکن‌شده انبار','سرور فایل · OCR فارسی','۴۱۲ سند','در حال پردازش ۸۰٪']].map(k=>`<div class="card"><div style="font-size:22px">${k[0]}</div><b>${k[1]}</b><div class="sm mut">منبع: ${k[2]}</div><div class="row" style="margin-top:8px"><span class="chip">${k[3]}</span><span class="chip ${k[4].includes('پردازش')?'warn':'ok'}">${k[4]}</span></div><button class="btn sm ai-btn ai-el" style="margin-top:10px" onclick="aiAct('doc','${k[1]}')">✦ گفتگو درباره این مجموعه</button></div>`).join('')}</div>`;
+
+PAGES.data=()=>`
+<div class="ph"><div><h1>داده و تحلیل</h1><p>پرسش از داده‌های سازمان به زبان ساده؛ فقط‌خواندنی و با قواعد دسترسی سطری</p></div><div class="row"><span class="chip">منبع: انبار داده تولید (SQL Server)</span><span class="chip ok">لایه معنایی: ۸۴ اصطلاح</span></div></div>
+<div class="card ai-el" style="margin-bottom:14px"><div class="cbox"><textarea>ضایعات خط ۲ در ۶ ماه گذشته به تفکیک ماه چقدر بوده؟</textarea><div class="row"><span class="chip ai">✦ دستیار هوش تجاری</span><span class="sp"></span><button class="btn sm ai-btn solid" onclick="toast('پاسخ به‌روز شد')">پرسیدن</button></div></div>
+<div class="grid g2" style="margin-top:14px"><div><b>ضایعات خط ۲ (درصد)</b><div class="bars">${[['اردیبهشت',3.4],['خرداد',3.6],['تیر',3.1],['مرداد',3.3],['شهریور',2.8],['مهر',2.2]].map(b=>`<div style="height:${b[1]*25}%"><span>${b[0]}</span></div>`).join('')}</div><p class="sm" style="margin-top:28px">✦ ضایعات از شهریور ۳۳٪ کاهش یافته و هم‌زمان با تنظیم دمای ناحیه ۴ است.</p></div>
+<div><b>کوئری تولیدشده</b> <span class="chip ok">فقط SELECT · محدود به خط‌های مجاز شما</span><div class="code">SELECT month, ROUND(SUM(scrap_kg)*100.0/SUM(output_kg),1) AS scrap_pct
+FROM prod.line_daily
+WHERE line_id = 2 AND date &gt;= DATEADD(month,-6,GETDATE())
+GROUP BY month ORDER BY month;</div>
+<div class="row" style="margin-top:10px"><button class="btn sm ai-btn" onclick="toast('به داشبورد «کیفیت تولید» افزوده شد')">افزودن به داشبورد</button><button class="btn sm ai-btn" onclick="toast('خروجی Excel ساخته شد')">خروجی Excel</button><button class="btn sm ai-btn" onclick="toast('در گروه تولید خط ۲ ارسال شد')">ارسال به گروه</button></div></div></div></div>
+<div class="ct">داشبوردهای من</div><div class="grid g4">${[['کیفیت تولید','۶ نمودار · به‌روز هر ساعت'],['مصرف مواد اولیه','۴ نمودار'],['OEE خطوط','۳ نمودار']].map(d=>`<div class="card"><b>📊 ${d[0]}</b><div class="sm mut">${d[1]}</div></div>`).join('')}</div>`;
+
+PAGES.connections=()=>`
+<div class="ph"><div><h1>اتصال‌ها</h1><p>هر درگاه یک قرارداد استاندارد دارد؛ سازمان می‌تواند کاریز یا سامانه خودش را وصل کند</p></div></div>
+<div class="grid g3">${[['🪪','هویت','کاریز SSO','AD / LDAP'],['🔐','دسترسی‌ها','API دسترسی کاریز','—'],['📄','اسناد','فایل‌های کاریز','SharePoint · سرور فایل · دیدگاه'],['✅','کار و وظایف','پروژه‌های کاریز','GitLab · MS Project · Trello'],['💬','پیام و اعلان','گفتگو و اعلان کاریز','پیامک کاوه‌نگار · ایمیل · بله'],['📅','تقویم','تقویم کاریز','Exchange'],['🗄️','داده سازمانی','—','SQL Server انبار · SQL Server تدارک · راهکاران · سپیدار'],['🏭','سامانه‌های کارخانه','—','MES · LIMS · CMMS · حسگرهای MQTT']].map(p=>`<div class="card ai-el"><div class="ct">${p[0]} درگاه ${p[1]}</div>${p[2]!=='—'?`<div class="li"><span class="chip ok">فعال</span><div><b>${p[2]}</b><div class="sm mut">آداپتر کاریز</div></div></div>`:''}${p[3]!=='—'?p[3].split(' · ').map((x,i)=>`<div class="li"><span class="chip ${i===0&&p[2]==='—'?'ok':''}">${i===0&&p[2]==='—'?'فعال':'متصل'}</span><div><b>${x}</b><div class="sm mut">${/SQL|راهکاران|سپیدار|MES|LIMS|CMMS/.test(x)?'فقط‌خواندنی':'آداپتر بیرونی'}</div></div></div>`).join(''):''}</div>`).join('')}</div>`;
+
+PAGES.usage=()=>`
+<div class="ph"><div><h1>مصرف من</h1><p>فقط مصرف خودتان نمایش داده می‌شود</p></div></div>
+<div class="grid g2"><div class="card ai-el"><div class="ct">باقی‌مانده سهمیه این ماه</div><div style="font-size:28px;font-weight:700">۷۱٬۶۰۰ <span class="sm mut">توکن از ۲۰۰٬۰۰۰</span></div><div class="bar ai" style="margin:8px 0"><i style="width:64%"></i></div><div class="sm mut">معادل حدود ۱٬۸۴۰٬۰۰۰ ریال · بازنشانی: ۱ آذر ۱۴۰۵ · پس از اتمام: تغییر به مدل سبک داخلی</div></div>
+<div class="card"><div class="ct">به تفکیک مدل</div>${[['Qwen (داخلی)',62],['DeepSeek (بیرونی)',24],['Llama (داخلی)',14]].map(m=>`<div class="sm">${m[0]} · ${m[1]}٪</div><div class="bar" style="margin:4px 0 8px"><i style="width:${m[1]}%"></i></div>`).join('')}</div>
+<div class="card"><div class="ct">به تفکیک عامل</div>${[['دستیار کیفیت و فرمولاسیون','۳۸ درخواست · ۴۱٬۲۰۰'],['دستیار سند','۲۲ درخواست · ۱۸٬۹۰۰'],['بدون عامل','۴۴ درخواست · ۳۶٬۱۰۰']].map(a=>`<div class="li"><b style="flex:1">${a[0]}</b><span class="sm mut">${a[1]}</span></div>`).join('')}</div></div>`;
+
+PAGES.members=()=>`
+<div class="ph"><div><h1>اعضای سازمان</h1><p>۲۱۴ نفر · همگام با Active Directory</p></div><button class="btn">درون‌ریزی / برون‌ریزی</button></div>
+<div class="tw"><table><tr><th>نام</th><th>سمت</th><th class="hide-m">واحد</th><th>آخرین فعالیت</th><th></th></tr>${Object.keys(P).map(k=>`<tr><td><div class="row">${av(k,28)}${P[k][0]}</div></td><td>${P[k][2]}</td><td class="hide-m">${k==='m'?'کیفیت':k==='a'?'تولید':k==='s'?'تدارکات':k==='r'?'نگهداری':k==='n'?'فروش':'مدیریت'}</td><td class="sm">امروز</td><td><button class="btn sm">پیام</button></td></tr>`).join('')}
+<tr><td><div class="row"><div class="av" style="width:28px;height:28px;background:linear-gradient(135deg,#6b4fd8,#9a6bff)">✦</div>دستیار کیفیت و فرمولاسیون</div></td><td><span class="chip ai">عامل هوش مصنوعی</span></td><td class="hide-m">کیفیت</td><td class="sm">همیشه</td><td><button class="btn sm ai-btn">گفتگو</button></td></tr></table></div>`;
+
+let curChat='a';
+PAGES.conversations=()=>{
+ const list=[['bot','دستیار هوشمند','آماده کمک است','ai'],['a','علی رضایی','نتایج بچ ۲۱۲ را دیدی؟',''],['s','سارا کریمی','تامین‌کننده تأخیر دارد',''],['r','رضا محمدی','سنسور ناحیه ۴ کالیبره شد',''],['k','محمد کاظمی','گزارش هفتگی را بفرستید','']];
+ return `<div class="chatwrap"><div class="card clist"><input class="inp" placeholder="جستجوی گفتگوها" style="margin-bottom:8px">${list.map(c=>`<div class="citem ${c[0]===curChat?'on':''} ${c[3]?'ai-el':''}" onclick="${c[3]?"location.hash='assistant'":"curChat='"+c[0]+"';render()"}">${c[3]?'<div class="av" style="background:linear-gradient(135deg,#6b4fd8,#9a6bff)">✦</div>':av(c[0])}<div><b>${c[1]}</b><div class="sm mut">${c[2]}</div></div></div>`).join('')}</div>
+ <div class="card cpane"><div class="row" style="border-bottom:1px solid var(--bd);padding-bottom:10px">${av(curChat)}<b>${P[curChat][0]}</b><span class="sp"></span>${aib('خلاصه گفتگو','summarizeGroup','گفتگو با '+P[curChat][0])}${aib('تبدیل به وظیفه','tasks','گفتگو با '+P[curChat][0])}</div>
+ <div class="cmsgs"><div class="bub in">سلام خانم احمدی، نتایج آزمون بچ ۲۱۲ را دیدی؟ MFI پایین آمده.<div class="t">۰۹:۱۲</div></div>
+ <div class="bub out">سلام، الان بررسی می‌کنم.<div class="t">۰۹:۱۵</div></div>
+ <div class="bub out ai-el">@دستیار کیفیت علت مردودی بچ ۲۱۲ چیست؟<div class="t">۰۹:۱۶</div></div>
+ <div class="bub bot ai-el"><div class="sm" style="color:var(--ai);font-weight:700">✦ دستیار کیفیت و فرمولاسیون</div>علت محتمل: دمای ناحیه ۴ اکسترودر (۲۴۸°C) و رطوبت مواد ورودی. پیشنهاد: کاهش دما به ۲۳۵ و خشک‌کردن مواد.<div class="src"><span>LIMS بچ ۲۱۲</span><span>MES ناحیه ۴</span></div><div class="t">۰۹:۱۶</div></div>
+ <div class="bub in">ممنون، پس آزمون بعدی را با ۲۳۵ می‌گیریم.<div class="t">۰۹:۲۰</div></div></div>
+ <div class="cbox"><textarea placeholder="پیام… (@ برای صدا زدن عامل)"></textarea><div class="row"><span class="chip">📎</span><span class="chip">😊</span>${aib('پیشنهاد پاسخ','reply')}${aib('بهبود متن','reply')}<span class="sp"></span><button class="btn sm pri">ارسال</button></div></div></div></div>`;};
+
+PAGES.groups=()=>`
+<div class="ph"><div><h1>گروه‌ها</h1></div><button class="btn pri">+ ایجاد گروه</button></div>
+<div class="grid g2"><div class="card"><div class="row" style="border-bottom:1px solid var(--bd);padding-bottom:10px"><div class="av" style="background:#1d9e75">ک</div><div><b>کیفیت و فرمولاسیون</b><div class="sm mut">۱۸ عضو · ۱ عامل هوشمند</div></div><span class="sp"></span>${aib('خلاصه خوانده‌نشده‌ها','summarizeGroup','گروه کیفیت و فرمولاسیون')}</div>
+<div class="ai-card ai-el" style="margin:10px 0;padding:10px 12px"><b style="color:var(--ai)">✦ ۲۴ پیام خوانده‌نشده</b><div class="sm">موضوع اصلی: تأخیر تأمین مستربچ مشکی · ۱ تصمیم باز · ۲ اقدام پیشنهادی</div></div>
+<div class="bub in"><b class="sm">سارا کریمی</b><br>تامین‌کننده فعلی تحویل را ۱۰ روز عقب انداخت.</div>
+<div class="bub in"><b class="sm">علی رضایی</b><br>پیشنهاد می‌کنم گرید جایگزین را روی خط ۲ آزمون کنیم.</div>
+<div class="bub bot ai-el"><div class="sm" style="color:var(--ai);font-weight:700">✦ دستیار کیفیت و فرمولاسیون</div>در ۶ ماه گذشته دو بار گرید جایگزین آزمون شده؛ نتایج در «گزارش آزمون ۱۴۰۵/۰۳». MFI گرید جایگزین ۱۲.۱ و در حد مجاز بود.<div class="src"><span>گزارش آزمون ۱۴۰۵/۰۳</span></div></div></div>
+<div class="grid" style="align-content:start">${[['تولید خط ۲','۲۲ عضو'],['نگهداری و تعمیرات','۱۲ عضو'],['تدارکات و انبار','۹ عضو'],['فروش','۱۴ عضو']].map(g=>`<div class="card row"><div class="av" style="background:#185fa5">${g[0][0]}</div><div><b>${g[0]}</b><div class="sm mut">${g[1]}</div></div><span class="sp"></span>${aib('خلاصه','summarizeGroup','گروه '+g[0])}</div>`).join('')}</div></div>`;
+
+PAGES.channels=()=>`
+<div class="ph"><div><h1>کانال‌ها</h1></div><button class="btn pri">+ ایجاد کانال</button></div>
+<div class="grid g3">${[['اطلاع‌رسانی مدیریت','۲۱۴ عضو'],['هشدارهای تولید','۴۸ عضو · منتشرکننده: جریان شاخص‌ها',1],['اطلاع‌رسانی پروژه‌ها','۸۰ عضو']].map(c=>`<div class="card"><b>📢 ${c[0]}</b><div class="sm mut">${c[1]}</div>${c[2]?'<span class="chip ai" style="margin-top:6px">✦ پیام‌های خودکار از عامل‌ها</span>':''}<div class="row" style="margin-top:10px">${aib('پیش‌نویس اطلاعیه','news','کانال '+c[0])}</div></div>`).join('')}</div>`;
+
+PAGES.news=()=>`
+<div class="ph"><div><h1>اخبار سازمان</h1></div><div class="row">${aib('نوشتن خبر با AI','news','اخبار سازمان')}<button class="btn pri">+ خبر جدید</button></div></div>
+<div class="tabs">${['همه','کیفیت','تولید','رویدادها','فرهنگ سازمانی'].map((t,i)=>`<span class="tab${i?'':' on'}">${t}</span>`).join('')}</div>
+<div class="grid g3">${[['کاهش ۳۰ درصدی ضایعات خط ۲','کیفیت','۱۴۰۵/۰۸/۰۵'],['افتتاح آزمایشگاه رنگ','تولید','۱۴۰۵/۰۷/۲۸'],['برگزیدگان طرح پیشنهادها','فرهنگ سازمانی','۱۴۰۵/۰۷/۲۰']].map(n=>`<div class="card"><span class="chip">${n[1]}</span><div style="font-weight:700;margin:8px 0">${n[0]}</div><div class="sm mut">${n[2]}</div><div class="row" style="margin-top:8px">${aib('خلاصه','doc',n[0])}${aib('ترجمه انگلیسی','generic',n[0])}</div></div>`).join('')}</div>`;
+
+PAGES.projects=()=>`
+<div class="ph"><div><h1>پروژه‌ها</h1></div><div class="row">${aib('گزارش وضعیت همه پروژه‌ها','status','پروژه‌های من')}<button class="btn pri">+ ایجاد پروژه</button></div></div>
+<div class="grid g3">${[['بهبود کیفیت ۱۴۰۵','کاهش مردودی بچ‌ها به زیر ۲٪',68,'بالا'],['راه‌اندازی خط ۳','نصب و راه‌اندازی اکسترودر جدید',41,'متوسط'],['مستندسازی رویه‌ها','بازنگری رویه‌های ISO 9001',82,'کم']].map(p=>`<div class="card"><b>${p[0]}</b><div class="sm mut">${p[1]}</div><div class="row sm" style="margin-top:8px">پیشرفت ${p[2]}٪<span class="sp"></span><span class="chip ai ai-el">✦ ریسک تأخیر: ${p[3]}</span></div><div class="bar" style="margin:6px 0 10px"><i style="width:${p[2]}%"></i></div><div class="row">${aib('گزارش وضعیت','status',p[0])}${aib('ریسک','risk',p[0])}${aib('وظایف از صورت‌جلسه','tasks',p[0])}</div></div>`).join('')}</div>`;
+
+PAGES.tasks=()=>`
+<div class="ph"><div><h1>فعالیت و وظایف من</h1></div>${aib('اولویت‌بندی امروز من','brief','وظایف من')}</div>
+<div class="tw"><table><tr><th>وظیفه</th><th>پروژه</th><th>مهلت</th><th>منبع</th><th>وضعیت</th></tr>
+${[['بازنگری بند ۴.۲ رویه QC-SOP-07','بهبود کیفیت ۱۴۰۵','۱۴۰۵/۰۸/۲۰','✦ صورت‌جلسه بازبینی کیفیت','باز'],['تأیید سفارش ۸۰ تن PE','—','امروز','✦ جریان سفارش مواد','منتظر شما'],['اقدام اصلاحی بچ ۲۱۲','بهبود کیفیت ۱۴۰۵','۱۴۰۵/۰۸/۱۴','✦ دستیار کیفیت','در حال انجام'],['گزارش ماهانه کیفیت','مستندسازی رویه‌ها','۱۴۰۵/۰۸/۳۰','دستی','باز']].map(t=>`<tr><td>${t[0]}</td><td class="sm">${t[1]}</td><td class="sm">${t[2]}</td><td>${t[3].startsWith('✦')?`<span class="chip ai ai-el">${t[3]}</span>`:`<span class="chip">${t[3]}</span>`}</td><td><span class="chip ${t[4]==='منتظر شما'?'warn':t[4]==='در حال انجام'?'ok':''}">${t[4]}</span></td></tr>`).join('')}
+</table></div><p class="sm mut" style="margin-top:10px">✦ وظایفی که عامل‌ها می‌سازند در همین بخش و با همان دسترسی‌ها مدیریت می‌شوند؛ اگر سازمان از GitLab یا MS Project استفاده کند، از درگاه «کار و وظایف» به همان‌جا می‌روند.</p>`;
+
+let adminTab=0;
+PAGES.admin=()=>{
+ const tabs=['مدل‌ها و سیاست‌ها','بودجه و مصرف','صف تأیید','ممیزی','پوشاندن داده','ارزیابی عامل‌ها'];
+ let body='';
+ if(adminTab===0)body=`<div class="tw"><table><tr><th>مدل</th><th>محل اجرا</th><th>عمومی</th><th>داخلی</th><th>محرمانه</th><th>وضعیت</th></tr>${[['Qwen 32B','سرور GPU سازمان','✓','✓','✓','فعال'],['Llama 70B','سرور GPU سازمان','✓','✓','✓','فعال'],['DeepSeek','بیرونی (با پوشاندن)','✓','✓','✗','فعال'],['Claude / GPT','بیرونی (با پوشاندن)','✓','✗','✗','غیرفعال برای این سازمان']].map(m=>`<tr><td><b>${m[0]}</b></td><td><span class="chip ${m[1].includes('سازمان')?'loc':'ext'}">${m[1]}</span></td><td>${m[2]}</td><td>${m[3]}</td><td>${m[4]}</td><td class="sm">${m[5]}</td></tr>`).join('')}</table></div><p class="sm mut">سطح محرمانگی هر منبع داده تعیین می‌کند کدام مدل‌ها مجازند؛ عامل‌ها نمی‌توانند این سیاست را دور بزنند. در صورت قطع مدل بیرونی، درخواست خودکار به مدل داخلی منتقل می‌شود.</p>`;
+ if(adminTab===1)body=`<div class="tw"><table><tr><th>واحد</th><th>بودجه ماهانه (ریال)</th><th>مصرف</th><th>رفتار پس از اتمام</th></tr>${[['کیفیت','۴۰۰٬۰۰۰٬۰۰۰',72],['تولید','۶۰۰٬۰۰۰٬۰۰۰',55],['فروش','۳۰۰٬۰۰۰٬۰۰۰',91],['مدیریت','۲۰۰٬۰۰۰٬۰۰۰',38]].map(d=>`<tr><td>${d[0]}</td><td>${d[1]}</td><td style="min-width:140px"><div class="bar ${d[2]>85?'':'ai'}"><i style="width:${d[2]}%;${d[2]>85?'background:var(--bad)':''}"></i></div><span class="sm">${d[2]}٪</span></td><td class="sm">${d[2]>85?'هشدار به مدیر واحد':'تغییر به مدل سبک'}</td></tr>`).join('')}</table></div><div class="row" style="margin-top:10px"><button class="btn sm" onclick="toast('خروجی Excel ساخته شد')">خروجی Excel</button><span class="chip ok">تطبیق با صورت‌حساب ارائه‌دهنده: بدون مغایرت</span></div>`;
+ if(adminTab===2)body=`<div class="grid g2">${[['عامل','نگارنده نامه اداری','مریم احمدی','ارزیابی ۹۱٪ · فقط مدل داخلی'],['اسکیل','تحلیل قرارداد','نرگس حسینی','بدون ارسال به سرویس بیرونی'],['جریان','خلاصه هفتگی برای مدیرعامل','محمد کاظمی','زمان‌بندی: هر شنبه'],['اتصال','GitLab پروژه‌های نرم‌افزاری','واحد فناوری','فقط‌خواندنی']].map(q=>`<div class="card"><span class="chip">${q[0]}</span><div style="font-weight:700;margin:6px 0">${q[1]}</div><div class="sm mut">درخواست: ${q[2]} · ${q[3]}</div><div class="row" style="margin-top:8px"><button class="btn sm pri" onclick="toast('تأیید و منتشر شد')">تأیید</button><button class="btn sm" onclick="toast('رد شد؛ دلیل برای درخواست‌دهنده ارسال شد')">رد با دلیل</button></div></div>`).join('')}</div>`;
+ if(adminTab===3)body=`<div class="tw"><table><tr><th>زمان</th><th>کاربر</th><th>عامل</th><th>ابزار / منبع</th><th>مدل</th><th>نتیجه</th></tr>${[['۰۹:۱۶','مریم احمدی','دستیار کیفیت','LIMS: بچ ۲۱۲','Qwen داخلی','موفق'],['۰۸:۳۰','جریان سفارش مواد','عامل پیش‌بینی','SQL تدارک (فقط‌خواندنی)','Qwen داخلی','منتظر تأیید'],['۰۸:۰۵','نرگس حسینی','دستیار فروش','نرخ ارز','DeepSeek (پوشانده)','موفق'],['دیروز','رضا محمدی','دستیار نگهداری','CMMS','Qwen داخلی','دسترسی رد شد: خارج از واحد']].map(a=>`<tr>${a.map((x,i)=>`<td class="${i?'':'sm'}">${i===5?`<span class="chip ${x==='موفق'?'ok':x.startsWith('دسترسی')?'bad':'warn'}">${x}</span>`:x}</td>`).join('')}</tr>`).join('')}</table></div>`;
+ if(adminTab===4)body=`<div class="tw"><table><tr><th>نوع داده</th><th>نمونه</th><th>اقدام پیش از مدل بیرونی</th></tr>${[['کد ملی','۰۰۱۲۳۴۵۶۷۸','جایگزینی با [کد_ملی_۱]'],['شماره شبا','IR06…','جایگزینی'],['فرمول کامپاند','PP 72% · Talc 20%…','ممنوع: فقط مدل داخلی'],['نام مشتری','شرکت نمونه','جایگزینی با نام مستعار'],['قیمت فروش','۱۲۰٬۰۰۰ تومان/kg','فقط مدل داخلی']].map(r=>`<tr><td>${r[0]}</td><td class="sm" style="direction:ltr;text-align:right">${r[1]}</td><td><span class="chip ${r[2].startsWith('ممنوع')||r[2].startsWith('فقط')?'bad':'ok'}">${r[2]}</span></td></tr>`).join('')}</table></div>`;
+ if(adminTab===5)body=`<div class="tw"><table><tr><th>عامل</th><th>نسخه</th><th>مجموعه ارزیابی</th><th>دقت</th><th>تغییر</th></tr>${AGENTS.map((a,i)=>`<tr><td>${a.n}</td><td>${a.v}</td><td class="sm">${12+i*3} نمونه</td><td><span class="chip ok">${a.ev}</span></td><td class="sm">${i%2?'+۲٪':'بدون تغییر'}</td></tr>`).join('')}</table></div><p class="sm mut">پیش از انتشار هر نسخه یا تغییر مدل، ارزیابی خودکار اجرا می‌شود؛ افت دقت مانع انتشار است.</p>`;
+ return `<div class="ph"><div><h1>مدیریت هوش مصنوعی</h1><p>سیاست‌ها، بودجه‌ها، تأییدها و ممیزی در سطح سازمان</p></div><span class="chip loc">🔒 همه مدل‌های داخلی روی سرورهای سازمان</span></div>
+ <div class="tabs">${tabs.map((t,i)=>`<span class="tab${i===adminTab?' on':''}" onclick="adminTab=${i};render()">${t}</span>`).join('')}</div><div class="ai-el">${body}</div>`;};
+
+/* ---------- router ---------- */
+let cur='dash';
+function render(){cur=(location.hash||'#dash').slice(1);if(!PAGES[cur])cur='dash';renderNav(cur);document.getElementById('view').innerHTML=PAGES[cur]();document.getElementById('view').scrollTop=0;if(window.innerWidth<900)document.getElementById('side').classList.remove('open');}
+window.addEventListener('hashchange',render);
+
+/* ---------- top bar ---------- */
+document.getElementById('hlToggle').onclick=()=>{document.body.classList.toggle('hl');document.getElementById('hlSw').classList.toggle('on');};
+document.getElementById('themeBtn').onclick=()=>{const d=document.documentElement;d.dataset.theme=d.dataset.theme==='dark'?'':'dark';};
+const orgBtn=document.getElementById('orgBtn'),orgDd=document.getElementById('orgDd');
+orgBtn.onclick=e=>{e.stopPropagation();orgDd.classList.toggle('open');};
+orgDd.querySelectorAll('[data-org]').forEach(d=>d.onclick=e=>{e.stopPropagation();document.getElementById('orgName').textContent=d.dataset.org;orgDd.classList.remove('open');toast('سازمان تغییر کرد؛ عامل‌ها، دانش و سهمیه‌ها مخصوص همین سازمان‌اند');});
+const bellBtn=document.getElementById('bellBtn'),bellDd=document.getElementById('bellDd');
+bellDd.innerHTML='<div class="mut sm" style="padding:4px 10px">اعلان‌ها</div>'+[['✦','جریان سفارش مواد منتظر تأیید شماست'],['✦','تحلیل بچ ۲۱۲ آماده است'],['💬','علی رضایی در گروه کیفیت شما را نام برد'],['📅','جلسه بازبینی کیفیت ۱۰:۳۰'],['✦','صورت‌جلسه «جلسه تأمین» آماده شد']].map(n=>'<div class="di"><span class="'+(n[0]==='✦'?'spark':'')+'">'+n[0]+'</span> '+n[1]+'</div>').join('');
+bellBtn.onclick=e=>{e.stopPropagation();bellDd.classList.toggle('open');};
+document.addEventListener('click',()=>{orgDd.classList.remove('open');bellDd.classList.remove('open');});
+const modeKw=document.getElementById('modeKw'),modeAi=document.getElementById('modeAi'),sInp=document.getElementById('searchInp');
+modeKw.onclick=()=>{modeKw.classList.add('ai');modeAi.classList.remove('ai');sInp.placeholder='جستجو در کاریز…';};
+modeAi.onclick=()=>{modeAi.classList.add('ai');modeKw.classList.remove('ai');sInp.placeholder='از کاریز بپرسید: «آخرین تصمیم درباره مستربچ مشکی چه بود؟»';sInp.focus();};
+sInp.addEventListener('keydown',e=>{if(e.key==='Enter'&&sInp.value.trim()){if(modeAi.classList.contains('ai')){openPanel('جستجوی سراسری');ask(sInp.value.trim());}else toast('نتایج جستجو');sInp.value='';}});
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();modeAi.click();}});
+const mb=document.getElementById('menuBtn');if(window.innerWidth<900){mb.style.display='grid';mb.textContent='☰';mb.onclick=()=>document.getElementById('side').classList.toggle('open');}
+render();
+</script>
+</body>
+</html>

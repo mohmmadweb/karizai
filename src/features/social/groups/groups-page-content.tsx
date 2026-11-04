@@ -2,10 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { PlusIcon } from "lucide-react";
+import { BellIcon, UsersIcon } from "lucide-react";
 import { toast } from "sonner";
-import { PageHeader } from "@/components/shared/page-header";
-import { Button } from "@/components/ui/button";
+import { FilterPill, MotoSearch, PaneHeader, RoundFab, RoundIconButton, TwoPaneShell } from "@/components/shared/moto/moto";
 import { useMessenger } from "@/features/messenger/components/messenger-provider";
 import { currentUserId } from "@/features/workspace/lib/people";
 import { formatNumber } from "@/lib/format";
@@ -25,7 +24,10 @@ export function GroupsPageContent() {
   const [messages, setMessages] = useState(getGroupMessages);
   // `?id=` (from the chat list or the sidebar) opens that group.
   const requested = useSearchParams().get("id");
-  const [selectedId, setSelectedId] = useState(() => (requested && groups.some((g) => g.id === requested) ? requested : groups[0].id));
+  const [selectedId, setSelectedId] = useState<string | null>(() => (requested && groups.some((g) => g.id === requested) ? requested : null));
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<"all" | "unread">("all");
+  const [newest, setNewest] = useState(true);
   const [seenRequest, setSeenRequest] = useState(requested);
   if (requested !== seenRequest) {
     setSeenRequest(requested);
@@ -35,14 +37,16 @@ export function GroupsPageContent() {
   const [creating, setCreating] = useState(false);
   const [addingAgent, setAddingAgent] = useState(false);
   const counter = useRef(0);
-  const selected = groups.find((g) => g.id === selectedId) ?? groups[0];
+  const selected = groups.find((g) => g.id === selectedId) ?? null;
+  const selectedKey = selected?.id ?? "";
   // What workflows announced in the group during this visit, for example the pricing workflow in «فروش».
-  const announcements: GroupMessage[] = messagesOf(selected.id).map((item) => ({ id: item.id, groupId: selected.id, authorId: "workflows", createdAt: item.createdAt, text: item.text, alert: item.alert }));
-  useEffect(() => { markRead(selected.id); }, [selected.id, announcements.length, markRead]);
+  const announcements: GroupMessage[] = messagesOf(selectedKey).map((item) => ({ id: item.id, groupId: selectedKey, authorId: "workflows", createdAt: item.createdAt, text: item.text, alert: item.alert }));
+  useEffect(() => { if (selectedKey) markRead(selectedKey); }, [selectedKey, announcements.length, markRead]);
   const post = (message: Omit<GroupMessage, "id" | "createdAt">) => setMessages((list) => [...list, { ...message, id: `gm-new-${++counter.current}`, createdAt: new Date().toISOString() }]);
 
   function send(text: string) {
     const group = selected;
+    if (!group) return;
     post({ groupId: group.id, authorId: currentUserId(), text });
     const agentId = mentionedAgentId(text);
     if (!agentId) return;
@@ -61,28 +65,46 @@ export function GroupsPageContent() {
     toast.success(`گروه «${name}» ساخته شد`);
   }
 
+  const shownGroups = groups.filter((g) => (!query.trim() || g.name.includes(query.trim())) && (filter === "all" || g.summary.unread > 0));
+  if (!newest) shownGroups.reverse();
+
+  const list = (
+    <>
+      <PaneHeader
+        title="گروه‌ها"
+        icon={UsersIcon}
+        tools={<RoundIconButton label="اعلان‌ها" icon={BellIcon} href="/alerts" />}
+        search={<MotoSearch value={query} onChange={setQuery} placeholder="جستجوی گروه‌ها" className="sm:max-w-none" />}
+        filters={<>
+          <FilterPill label="نمایش" value={filter} options={[{ value: "all", label: "همه" }, { value: "unread", label: "خوانده‌نشده" }]} onChange={setFilter} />
+          <FilterPill label="ترتیب" sort value={newest ? "new" : "old"} options={[{ value: "new", label: "جدیدترین" }, { value: "old", label: "قدیمی‌ترین" }]} onChange={(v) => setNewest(v === "new")} />
+        </>}
+      />
+      <ul className="flex flex-col gap-0.5 p-2 pb-20" aria-label="فهرست گروه‌ها">
+        {shownGroups.length === 0 ? <li className="px-2 py-3 text-body-sm text-muted-foreground">گروهی پیدا نشد.</li> : null}
+        {shownGroups.map((group) => (
+          <li key={group.id} className={cn("flex items-center gap-2 rounded-lg p-2 hover:bg-muted", group.id === selectedKey && "bg-muted")}>
+            <button type="button" aria-current={group.id === selectedKey ? "true" : undefined} onClick={() => setSelectedId(group.id)} className="flex min-w-0 flex-1 items-center gap-3 rounded-md text-start outline-none focus-visible:ring-3 focus-visible:ring-ring/50">
+              <span aria-hidden className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-label text-primary">{group.name[0]}</span>
+              <span className="min-w-0"><span className="block truncate text-label">{group.name}</span><span className="block truncate text-caption text-muted-foreground">{formatNumber(group.memberCount)} عضو{group.summary.unread > 0 ? ` · ${formatNumber(group.summary.unread)} خوانده‌نشده` : ""}</span></span>
+            </button>
+            <AiAction label="خلاصه" size="xs" context={`گروه ${group.name}`}><GroupSummaryAnswer group={group} /></AiAction>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+
   return (
-    <div className="mx-auto flex w-full max-w-page flex-col gap-6 page-gutter py-8">
-      <PageHeader title="گروه‌ها" description="گفتگوی تیمی با همکاران و عامل‌های هوشمند" action={<Button onClick={() => setCreating(true)}><PlusIcon data-icon="inline-start" aria-hidden />ایجاد گروه</Button>} />
-      <div className="grid gap-4 lg:grid-cols-[18rem_1fr]">
-        <ul className="flex flex-col gap-2" aria-label="فهرست گروه‌ها">
-          {groups.map((group) => (
-            <li key={group.id} className={cn("flex items-center gap-2 rounded-xl border bg-card p-3", group.id === selected.id && "border-primary ring-1 ring-primary/30")}>
-              <button type="button" aria-current={group.id === selected.id ? "true" : undefined} onClick={() => setSelectedId(group.id)} className="flex min-w-0 flex-1 items-center gap-2 rounded-md text-start outline-none focus-visible:ring-3 focus-visible:ring-ring/50">
-                <span aria-hidden className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-label text-primary">{group.name[0]}</span>
-                <span className="min-w-0"><span className="block truncate text-label">{group.name}</span><span className="block text-caption text-muted-foreground">{formatNumber(group.memberCount)} عضو{group.summary.unread > 0 ? ` · ${formatNumber(group.summary.unread)} خوانده‌نشده` : ""}</span></span>
-              </button>
-              <AiAction label="خلاصه" size="xs" context={`گروه ${group.name}`}><GroupSummaryAnswer group={group} /></AiAction>
-            </li>
-          ))}
-        </ul>
-        <GroupView key={selected.id} group={selected} messages={[...messages.filter((m) => m.groupId === selected.id), ...announcements].sort((a, b) => a.createdAt.localeCompare(b.createdAt))} onSend={send} onAddAgent={() => setAddingAgent(true)} />
-      </div>
+    <>
+      <TwoPaneShell list={list} hasOpenItem={selected !== null} emptyText="یک گروه را انتخاب کنید" fab={<RoundFab label="ایجاد گروه" onClick={() => setCreating(true)} />}>
+        {selected ? <GroupView key={selected.id} group={selected} messages={[...messages.filter((m) => m.groupId === selected.id), ...announcements].sort((a, b) => a.createdAt.localeCompare(b.createdAt))} onSend={send} onAddAgent={() => setAddingAgent(true)} onBack={() => setSelectedId(null)} /> : null}
+      </TwoPaneShell>
       <CreateGroupDialog open={creating} onOpenChange={setCreating} onCreate={create} />
-      <AddAgentDialog key={selected.id} open={addingAgent} onOpenChange={setAddingAgent} groupName={selected.name} current={selected.agentIds} onAdd={(ids) => {
+      {selected ? <AddAgentDialog key={selected.id} open={addingAgent} onOpenChange={setAddingAgent} groupName={selected.name} current={selected.agentIds} onAdd={(ids) => {
         setGroups((list) => list.map((g) => (g.id === selected.id ? { ...g, agentIds: [...g.agentIds, ...ids] } : g)));
         toast.success(`${formatNumber(ids.length)} عامل به گروه «${selected.name}» اضافه شد`);
-      }} />
-    </div>
+      }} /> : null}
+    </>
   );
 }

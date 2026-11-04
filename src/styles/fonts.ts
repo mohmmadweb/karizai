@@ -1,15 +1,10 @@
 import localFont from "next/font/local";
 
-// IRANSansX with built-in Persian digits (FaNum). Only the weights the panels use are loaded,
-// so the first visit downloads four files instead of nine.
+// Sahel, the font of the Motoshub platform. One variable file carries every weight, so the first
+// visit downloads 38KB instead of a file per weight. Open Font License (assets/fonts/Sahel-LICENSE.txt).
 export const fontSans = localFont({
   variable: "--font-sans",
   display: "swap",
   fallback: ["Tahoma", "system-ui", "sans-serif"],
-  src: [
-    { path: "../assets/fonts/IRANSansXFaNum-Regular.woff2", weight: "400" },
-    { path: "../assets/fonts/IRANSansXFaNum-Medium.woff2", weight: "500" },
-    { path: "../assets/fonts/IRANSansXFaNum-DemiBold.woff2", weight: "600" },
-    { path: "../assets/fonts/IRANSansXFaNum-Bold.woff2", weight: "700" },
-  ],
+  src: [{ path: "../assets/fonts/Sahel-VF.woff2", weight: "300 900", style: "normal" }],
 });

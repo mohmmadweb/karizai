@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { FormSection } from "@/components/shared/form-section";
+import { MotoPage } from "@/components/shared/moto/moto";
 import { PageHeader } from "@/components/shared/page-header";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -15,7 +16,7 @@ export function SettingsPageContent({ account }: { account: Account }) {
   const [style, setStyle] = useState("short");
 
   return (
-    <div className="mx-auto flex w-full max-w-page flex-col gap-8 page-gutter py-8">
+    <MotoPage className="gap-8">
       <PageHeader title="تنظیمات" description="اطلاعات حساب، ظاهر پنل و ترجیح‌های شما." />
       <FormSection title="حساب کاربری" description="این اطلاعات را مدیر سازمان تعیین می‌کند.">
         <dl className="grid gap-3 text-body md:col-span-2">
@@ -45,6 +46,6 @@ export function SettingsPageContent({ account }: { account: Account }) {
           <p>حذف یک گفتگو از فهرست شخصی شما، نسخه‌ی ثبت‌شده برای ممیزی را پاک نمی‌کند.</p>
         </div>
       </FormSection>
-    </div>
+    </MotoPage>
   );
 }

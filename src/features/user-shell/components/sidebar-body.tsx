@@ -1,14 +1,12 @@
 "use client";
 
 import Link from "@/components/shared/app-link";
-import { HistoryIcon, ActivityIcon, FolderIcon, MessagesSquareIcon, PanelRightCloseIcon, PanelRightOpenIcon, SquarePenIcon } from "lucide-react";
+import { HistoryIcon, FolderIcon, PanelRightCloseIcon, PanelRightOpenIcon, SquarePenIcon } from "lucide-react";
 import { BrandLockup } from "@/components/brand/brand-lockup";
 import { BrandLogo } from "@/components/brand/brand-logo";
 import { SearchField } from "@/components/shared/search-field";
 import { buttonVariants, Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { MessengerChats } from "@/features/messenger/components/messenger-nav";
-import { ActiveWorkflowsList } from "@/features/workflows/components/active-workflows-list";
 import { ConversationList } from "@/features/chat/components/conversation-list";
 import { ProjectList } from "@/features/chat/components/project-list";
 import { getCurrentUser } from "@/features/user-session/data/session";
@@ -17,7 +15,6 @@ import { cn } from "@/lib/utils";
 import { getNewChatSection, getUserSectionGroups } from "../data/user-sections";
 import { SidebarNav } from "./sidebar-nav";
 import { SidebarProfile } from "./sidebar-profile";
-import { SidebarSystem } from "./sidebar-system";
 import { SidebarSection } from "./sidebar-section";
 
 type SidebarBodyProps = {
@@ -39,7 +36,7 @@ type SidebarBodyProps = {
 export function SidebarBody({ pathname, query = "", onQueryChange, collapsed = false, onToggleCollapse, onNavigate }: SidebarBodyProps) {
   const { classic } = useLayoutStyle();
   const activeId = pathname.startsWith("/chat/") ? pathname.split("/")[2] : null;
-  const activeFlowId = pathname.startsWith("/workflows/") ? pathname.split("/")[2] : null;
+  const onChat = pathname === "/chat" || pathname.startsWith("/chat/");
   const tone = classic ? "auto" : "white";
 
   return (
@@ -70,31 +67,21 @@ export function SidebarBody({ pathname, query = "", onQueryChange, collapsed = f
       </div>
       {/* In a short window the content scrolls; without shrink-0 the rows would be squeezed flat instead. */}
       <div className={cn("flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto [&>*]:shrink-0 [mask-image:linear-gradient(to_bottom,black_calc(100%-1.5rem),transparent)]", !classic && "p-3 pb-6")}>
-        <NewChatButton collapsed={collapsed} classic={classic} onNavigate={onNavigate} />
         <SidebarNav groups={getUserSectionGroups()} flat={classic} pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} />
-        {collapsed ? null : (
-          <SidebarSection title="پیام‌رسان" icon={MessagesSquareIcon} classic={classic} openClassName="max-h-72 shrink-0">
-            <div className="min-h-0 flex-1 overflow-y-auto"><MessengerChats pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} /></div>
-          </SidebarSection>
-        )}
-        {collapsed ? null : (
-          <SidebarSection title="پروژه‌های گفتگو" icon={FolderIcon} classic={classic} openClassName="max-h-64 shrink-0">
-            <div className="min-h-0 flex-1 overflow-y-auto"><ProjectList activeId={activeId} onNavigate={onNavigate} /></div>
-          </SidebarSection>
-        )}
-        {collapsed ? null : (
-          <SidebarSection title="گفتگوهای اخیر" icon={HistoryIcon} classic={classic} defaultOpen={false} openClassName="min-h-40 flex-1">
-            {classic ? <SearchField value={query} onValueChange={(value) => onQueryChange?.(value)} label="جست‌وجو در گفتگوها" placeholder="جست‌وجو در گفتگوها" className="sm:max-w-none" /> : null}
-            <div className="min-h-0 flex-1 overflow-y-auto"><ConversationList activeId={activeId} onNavigate={onNavigate} query={query} /></div>
-          </SidebarSection>
-        )}
-        {collapsed ? null : (
-          <SidebarSection title="جریان‌های فعال" icon={ActivityIcon} classic={classic} defaultOpen={false} openClassName="max-h-48 shrink-0">
-            <div className="min-h-0 flex-1 overflow-y-auto"><ActiveWorkflowsList activeId={activeFlowId} onNavigate={onNavigate} /></div>
-          </SidebarSection>
-        )}
+        {/* The assistant's own lists appear only while working with it. */}
+        {onChat && !collapsed ? (
+          <>
+            <NewChatButton collapsed={collapsed} classic={classic} onNavigate={onNavigate} />
+            <SidebarSection title="پروژه‌های گفتگو" icon={FolderIcon} classic={classic} defaultOpen={false} openClassName="max-h-64 shrink-0">
+              <div className="min-h-0 flex-1 overflow-y-auto"><ProjectList activeId={activeId} onNavigate={onNavigate} /></div>
+            </SidebarSection>
+            <SidebarSection title="گفتگوهای اخیر" icon={HistoryIcon} classic={classic} openClassName="min-h-40">
+              {classic ? <SearchField value={query} onValueChange={(value) => onQueryChange?.(value)} label="جست‌وجو در گفتگوها" placeholder="جست‌وجو در گفتگوها" className="sm:max-w-none" /> : null}
+              <div className="min-h-0 flex-1 overflow-y-auto"><ConversationList activeId={activeId} onNavigate={onNavigate} query={query} /></div>
+            </SidebarSection>
+          </>
+        ) : null}
       </div>
-      <div className={cn("shrink-0", !classic && "px-3 pb-3")}><SidebarSystem pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} /></div>
       {classic ? <SidebarProfile user={getCurrentUser()} collapsed={collapsed} onNavigate={onNavigate} /> : null}
     </div>
   );

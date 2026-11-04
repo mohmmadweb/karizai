@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
-import { PlusIcon } from "lucide-react";
-import { toast } from "sonner";
-import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
+import { useState, type FormEvent } from "react";
+import { SettingsIcon } from "lucide-react";
+import { toast } from "sonner";
+import { CreateButton, DashedEmpty, FilterPill, MotoPage, MotoPageHeader, MotoSearch, RoundIconButton } from "@/components/shared/moto/moto";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { AiAction } from "@/features/social/components/ai-dialog";
 import { projectStatus } from "../lib/project-status";
-import { addDays } from "../lib/today";
+import { addDays, daysFromToday } from "../lib/today";
 import { AllProjectsReport } from "./project-ai-actions";
 import { ProjectCard } from "./project-card";
 import { useWorkspace } from "./workspace-provider";
@@ -24,7 +24,17 @@ export function ProjectsPageContent() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [due, setDue] = useState("30");
+  const [query, setQuery] = useState("");
+  const [state, setState] = useState<"all" | "running" | "late" | "done">("all");
+  const [newest, setNewest] = useState(true);
   const rows = projects.map((project) => ({ project, status: projectStatus(project, tasks) }));
+
+  const shown = projects.filter((project) => {
+    const percent = projectStatus(project, tasks).percent;
+    const fits = state === "all" || (state === "done" ? percent === 100 : state === "late" ? percent < 100 && daysFromToday(project.dueDate) < 0 : percent < 100 && daysFromToday(project.dueDate) >= 0);
+    return fits && (!query.trim() || `${project.name} ${project.description}`.includes(query.trim()));
+  });
+  if (!newest) shown.reverse();
 
   function create(event: FormEvent) {
     event.preventDefault();
@@ -35,16 +45,26 @@ export function ProjectsPageContent() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-page flex-col gap-8 page-gutter py-8">
-      <PageHeader title="پروژه‌ها" description="پروژه‌های سازمان با پیشرفت، ریسک تأخیر، اعضا و موعد. روی هر پروژه بزنید تا وظایفش را ببینید." action={
-        <div className="flex flex-wrap gap-2">
-          <Button onClick={() => setCreating(true)}><PlusIcon data-icon="inline-start" aria-hidden />ایجاد پروژه</Button>
+    <MotoPage>
+      <MotoPageHeader
+        title="پروژه‌ها"
+        description="پروژه‌های سازمان با پیشرفت، ریسک تأخیر، اعضا و موعد. روی هر پروژه بزنید تا وظایفش را ببینید."
+        tools={<RoundIconButton label="تنظیمات" icon={SettingsIcon} href="/settings" />}
+        search={<MotoSearch value={query} onChange={setQuery} placeholder="جستجوی پروژه‌ها" />}
+        filters={<>
+          <FilterPill label="وضعیت" value={state} options={[{ value: "all", label: "همه وضعیت‌ها" }, { value: "running", label: "در جریان" }, { value: "late", label: "دارای تأخیر" }, { value: "done", label: "تکمیل‌شده" }]} onChange={setState} />
+          <FilterPill label="ترتیب" sort value={newest ? "new" : "old"} options={[{ value: "new", label: "جدیدترین" }, { value: "old", label: "قدیمی‌ترین" }]} onChange={(v) => setNewest(v === "new")} />
+        </>}
+        action={<>
           <AiAction label="گزارش وضعیت همه‌ی پروژه‌ها" size="default" context="پروژه‌های من"><AllProjectsReport rows={rows} /></AiAction>
-        </div>
-      } />
-      <ul className="grid gap-4 md:grid-cols-2">
-        {projects.map((project) => <li key={project.id} className="relative"><ProjectCard project={project} tasks={tasks} /></li>)}
-      </ul>
+          <CreateButton onClick={() => setCreating(true)}>ایجاد پروژه</CreateButton>
+        </>}
+      />
+      {shown.length === 0 ? <DashedEmpty title="پروژه‌ای پیدا نشد" /> : (
+        <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {shown.map((project) => <li key={project.id} className="min-w-0"><ProjectCard project={project} tasks={tasks} /></li>)}
+        </ul>
+      )}
       <Dialog open={creating} onOpenChange={setCreating}>
         <DialogContent>
           <DialogHeader><DialogTitle>پروژه‌ی تازه</DialogTitle></DialogHeader>
@@ -58,6 +78,6 @@ export function ProjectsPageContent() {
           </form>
         </DialogContent>
       </Dialog>
-    </div>
+    </MotoPage>
   );
 }

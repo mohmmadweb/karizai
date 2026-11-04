@@ -21,7 +21,7 @@ type AdminNavListProps = {
 };
 
 const itemClass =
-  "relative flex h-10 items-center gap-3 rounded-lg px-3 text-label text-muted-foreground outline-none transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-3 focus-visible:ring-ring/50 aria-[current=page]:bg-primary/10 aria-[current=page]:text-primary dark:aria-[current=page]:bg-primary/20 aria-[current=page]:before:absolute aria-[current=page]:before:inset-y-2 aria-[current=page]:before:start-0 aria-[current=page]:before:w-1 aria-[current=page]:before:rounded-full aria-[current=page]:before:bg-primary";
+  "relative flex h-10 items-center gap-3 rounded-lg px-3 text-label text-sidebar-foreground outline-none transition-colors hover:bg-sidebar-accent focus-visible:ring-3 focus-visible:ring-sidebar-ring/50 aria-[current=page]:bg-sidebar-primary aria-[current=page]:text-sidebar-primary-foreground";
 
 /** The pathname is runtime data, so it is read inside a Suspense boundary. */
 export function AdminNavList(props: AdminNavListProps) {
@@ -51,7 +51,7 @@ function NavListView({
           className={cn("flex flex-col gap-1", collapsed && index > 0 && "border-t pt-3")}
         >
           {collapsed ? null : (
-            <h2 className="px-3 text-caption text-muted-foreground">{group.title}</h2>
+            <h2 className="px-3 text-label font-bold text-sidebar-foreground">{group.title}</h2>
           )}
           <ul className="flex flex-col gap-1">
             {group.sections.map((section) => {

@@ -1,23 +1,23 @@
-import { statusLabels, type Project, type Task, type TaskStatus } from "../types";
+import { MotoCard } from "@/components/shared/moto/moto";
+import { Table, TableBody, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import type { Project, Task, TaskStatus } from "../types";
 import { TaskRow } from "./task-row";
 
 const order: TaskStatus[] = ["todo", "doing", "done"];
 
-/** Tasks in three groups: not started, in progress, done. */
+/** Tasks in one table, not started first, then in progress, then done. */
 export function TaskList({ tasks, projects }: { tasks: Task[]; projects?: Project[] }) {
   if (tasks.length === 0) return <p className="py-6 text-center text-body text-muted-foreground">وظیفه‌ای نیست.</p>;
+  const sorted = order.flatMap((status) => tasks.filter((task) => task.status === status));
   return (
-    <div className="flex flex-col gap-6">
-      {order.map((status) => {
-        const group = tasks.filter((task) => task.status === status);
-        if (group.length === 0) return null;
-        return (
-          <section key={status} aria-label={statusLabels[status]} className="flex flex-col gap-3">
-            <h2 className="text-h4">{statusLabels[status]} <span className="text-body-sm text-muted-foreground">({group.length.toLocaleString("fa-IR")})</span></h2>
-            <ul className="flex flex-col gap-2">{group.map((task) => <TaskRow key={task.id} task={task} projectName={projects?.find((p) => p.id === task.projectId)?.name} />)}</ul>
-          </section>
-        );
-      })}
-    </div>
+    <MotoCard className="gap-0 overflow-hidden p-0">
+      <div className="overflow-x-auto">
+        <Table>
+          <TableHeader><TableRow><TableHead>وظیفه</TableHead><TableHead className="hidden md:table-cell">منبع</TableHead><TableHead>اولویت</TableHead><TableHead className="hidden sm:table-cell">مسئول</TableHead><TableHead className="hidden md:table-cell">موعد</TableHead><TableHead>وضعیت</TableHead></TableRow></TableHeader>
+          <TableBody>{sorted.map((task) => <TaskRow key={task.id} task={task} projectName={projects?.find((p) => p.id === task.projectId)?.name} />)}</TableBody>
+        </Table>
+      </div>
+      <p className="border-t px-5 py-3 text-caption text-muted-foreground">نمایش {tasks.length.toLocaleString("fa-IR")} آیتم</p>
+    </MotoCard>
   );
 }

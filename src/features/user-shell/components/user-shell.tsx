@@ -26,7 +26,10 @@ export function UserShell({ children }: { children: ReactNode }) {
         <div className="flex min-w-0 flex-1 flex-col">
           <TopBar query={query} onQueryChange={setQuery} />
           {/* The extra room at the end keeps the assistant button from covering the last line of a page. */}
-          <main className={cn("flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-y-auto", !fillsWindow(pathname) && "pb-24")}>{children}</main>
+          <main className={cn("flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-y-auto", !fillsWindow(pathname) && "pb-24")}>
+            {children}
+            {fillsWindow(pathname) ? null : <footer className="mt-auto pt-8 text-center text-caption text-muted-foreground">© ۱۴۰۵ کاریز - نسخه ۰٫۰٫۱</footer>}
+          </main>
         </div>
       </div>
       <AiFab />

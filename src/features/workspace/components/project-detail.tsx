@@ -2,6 +2,7 @@
 
 import { BackLink } from "@/components/shared/back-link";
 import { EntityNotFound } from "@/components/shared/entity-not-found";
+import { MotoPage } from "@/components/shared/moto/moto";
 import { PageHeader } from "@/components/shared/page-header";
 import { projectStatus } from "../lib/project-status";
 import { ProjectAiActions, RiskChip } from "./project-ai-actions";
@@ -13,11 +14,11 @@ export function ProjectDetail({ projectId }: { projectId: string }) {
   const project = projects.find((item) => item.id === projectId);
   if (!project) return <EntityNotFound title="پروژه پیدا نشد" backHref="/messenger/projects" backLabel="بازگشت به پروژه‌ها" />;
   return (
-    <div className="mx-auto flex w-full max-w-page flex-col gap-8 page-gutter py-8">
+    <MotoPage className="gap-8">
       <BackLink href="/messenger/projects">پروژه‌ها</BackLink>
       <PageHeader title={project.name} description={project.description} action={<RiskChip risk={projectStatus(project, tasks).insight.risk} />} />
       <ProjectAiActions project={project} status={projectStatus(project, tasks)} />
       <TaskList tasks={tasks.filter((task) => task.projectId === project.id)} />
-    </div>
+    </MotoPage>
   );
 }

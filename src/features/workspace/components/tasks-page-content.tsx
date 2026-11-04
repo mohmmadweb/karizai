@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { PlusIcon } from "lucide-react";
-import { PageHeader } from "@/components/shared/page-header";
+import { PlusIcon, SettingsIcon } from "lucide-react";
+import { RoundIconButton } from "@/components/shared/moto/moto";
+import { FilterPill, MotoPage, MotoPageHeader, MotoSearch, StatusTabs } from "@/components/shared/moto/moto";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AiAnswer } from "@/features/social/components/ai-answer";
 import { AiButton } from "@/features/social/components/ai-button";
 import { currentUserId } from "../lib/people";
@@ -22,7 +22,11 @@ export function TasksPageContent() {
   const [prioritiesKey, setPrioritiesKey] = useState<number | null>(null);
   const [projectId, setProjectId] = useState(projects[0].id);
   const items = projects.map((p) => ({ value: p.id, label: p.name }));
-  const shown = tasks.filter((task) => scope === "all" || task.assigneeId === currentUserId());
+  const [query, setQuery] = useState("");
+  const [status, setStatus] = useState<"all" | "todo" | "doing" | "done">("all");
+  const [newest, setNewest] = useState(true);
+  const shown = tasks.filter((task) => (scope === "all" || task.assigneeId === currentUserId()) && (status === "all" || task.status === status) && (!query.trim() || task.title.includes(query.trim())));
+  if (!newest) shown.reverse();
 
   function submit(event: FormEvent) {
     event.preventDefault();
@@ -33,8 +37,15 @@ export function TasksPageContent() {
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-page flex-col gap-6 page-gutter py-8">
-      <PageHeader title="فعالیت و وظایف من" description="وظایف پروژه‌ها را ببینید و وضعیتشان را عوض کنید." action={<AiButton label="اولویت‌بندی امروز من" size="default" onClick={() => setPrioritiesKey(Date.now())} />} />
+    <MotoPage>
+      <MotoPageHeader
+        title="فعالیت و وظایف من"
+        description="وظایف پروژه‌ها را ببینید و وضعیتشان را عوض کنید."
+        tools={<RoundIconButton label="تنظیمات" icon={SettingsIcon} href="/settings" />}
+        search={<MotoSearch value={query} onChange={setQuery} placeholder="جستجوی وظایف" />}
+        filters={<FilterPill label="ترتیب" sort value={newest ? "new" : "old"} options={[{ value: "new", label: "جدیدترین" }, { value: "old", label: "قدیمی‌ترین" }]} onChange={(v) => setNewest(v === "new")} />}
+        action={<AiButton label="اولویت‌بندی امروز من" size="default" onClick={() => setPrioritiesKey(Date.now())} />}
+      />
       {prioritiesKey ? (
         <AiAnswer key={prioritiesKey}>
           <h2 className="text-label">ترتیب پیشنهادی کارهای امروز</h2>
@@ -49,11 +60,12 @@ export function TasksPageContent() {
         </Select>
         <Button type="submit" disabled={!title.trim()}><PlusIcon data-icon="inline-start" aria-hidden />افزودن</Button>
       </form>
-      <Tabs value={scope} onValueChange={(v) => setScope(v as "mine" | "all")}>
-        <TabsList aria-label="نمایش وظایف"><TabsTrigger value="mine">وظایف من</TabsTrigger><TabsTrigger value="all">همه‌ی وظایف</TabsTrigger></TabsList>
-      </Tabs>
+      <div className="flex flex-wrap items-center gap-3">
+        <StatusTabs label="نمایش وظایف" value={scope} onChange={setScope} options={[{ value: "mine", label: "وظایف من" }, { value: "all", label: "همه‌ی وظایف" }]} />
+        <StatusTabs label="وضعیت وظیفه" value={status} onChange={setStatus} options={[{ value: "all", label: "همه" }, { value: "todo", label: "انجام‌نشده" }, { value: "doing", label: "در حال انجام" }, { value: "done", label: "انجام‌شده" }]} />
+      </div>
       <TaskList tasks={shown} projects={projects} />
       <p className="text-body-sm text-muted-foreground"><span aria-hidden className="text-primary">✦ </span>وظایفی که عامل‌ها می‌سازند در همین بخش و با همان دسترسی‌ها مدیریت می‌شوند؛ اگر سازمان از GitLab یا MS Project استفاده کند، از درگاه «کار و وظایف» به همان‌جا می‌روند.</p>
-    </div>
+    </MotoPage>
   );
 }
