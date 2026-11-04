@@ -328,3 +328,11 @@
   padding: 0.375rem 0.75rem;
   text-align: start;
 }
+
+/* Toasts use the product font and readable sizes, not sonner's system font. */
+html body [data-sonner-toaster],
+html body [data-sonner-toast],
+html body [data-sonner-toast] [data-button] { font-family: var(--font-sans); }
+html body [data-sonner-toast] [data-title] { font-size: 0.9375rem; font-weight: 600; line-height: 1.6; }
+html body [data-sonner-toast] [data-description] { font-size: 0.8125rem; line-height: 1.7; }
+html body [data-sonner-toast] [data-button] { font-size: 0.8125rem; font-weight: 600; height: 2rem; padding-inline: 0.75rem; }

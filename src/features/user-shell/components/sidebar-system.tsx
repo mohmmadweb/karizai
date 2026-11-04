@@ -7,11 +7,11 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { cn } from "@/lib/utils";
 import { itemClass } from "./sidebar-nav";
 
-type RowProps = { label: string; icon: ReactNode; href?: string; current?: boolean; collapsed: boolean; onNavigate?: () => void; /** A small count after the name. */ count?: number; /** Opens another app in a new tab. */ external?: boolean };
+type RowProps = { label: string; icon: ReactNode; href?: string; current?: boolean; collapsed: boolean; onNavigate?: () => void; /** A small count after the name. */ count?: number; /** Opens another app in a new tab. */ external?: boolean; /** Stands out from the other rows: used for the most important entry. */ emphasis?: boolean };
 
 /** A row with a page opens it; a row without one is shown but does not respond yet. */
-export function Row({ label, icon, href, current, collapsed, onNavigate, count = 0, external }: RowProps) {
-  const className = cn(itemClass, collapsed && "justify-center px-0", !href && "cursor-default opacity-60 hover:bg-transparent");
+export function Row({ label, icon, href, current, collapsed, onNavigate, count = 0, external, emphasis }: RowProps) {
+  const className = cn(itemClass, emphasis && "h-12 border-sidebar-primary/50 bg-sidebar-accent text-body font-semibold hover:border-sidebar-primary", collapsed && "justify-center px-0", !href && "cursor-default opacity-60 hover:bg-transparent");
   const content = <>{icon}{collapsed ? null : <span className="flex-1 truncate">{label}</span>}{collapsed || count === 0 ? null : <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-sidebar-primary px-1.5 text-caption text-sidebar-primary-foreground">{count.toLocaleString("fa-IR")}</span>}</>;
   const element = href && external
     ? <a href={href} target="_blank" rel="noopener noreferrer" aria-label={collapsed ? label : undefined} className={className}>{content}</a>

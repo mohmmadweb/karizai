@@ -22,6 +22,9 @@ import {
   UserRoundIcon,
   UsersRoundIcon,
   WorkflowIcon,
+  ZapIcon,
+  LibraryIcon,
+  RadioIcon,
   BriefcaseBusinessIcon,
   NetworkIcon,
 } from "lucide-react";
@@ -32,16 +35,16 @@ const workspacePages = ["members", "groups", "channels", "news", "projects", "ta
 
 const sections: UserSection[] = [
   { id: "new-chat", title: "گفتگوی تازه", href: "/chat", icon: SquarePenIcon, exact: true },
-  { id: "desk", title: "میز کار من", href: "/desk", icon: LayoutDashboardIcon },
+  { id: "desk", title: "میز کار", href: "/desk", icon: LayoutDashboardIcon },
   { id: "calendar", title: "تقویم کاری من", href: "/calendar", icon: CalendarDaysIcon },
-  { id: "assistant", title: "دستیار هوشمند من", href: "/chat", icon: BotMessageSquareIcon },
   { id: "agents", title: "عامل‌های من", href: "/agents", icon: BotIcon },
   { id: "agent-repository", title: "مخزن عامل‌ها", href: "/agent-repository", icon: LibraryBigIcon },
   { id: "skills", title: "اسکیل‌های من", href: "/skills", icon: SparklesIcon },
   { id: "compare", title: "مقایسه‌ی مدل‌ها", href: "/compare", icon: ScaleIcon },
   { id: "workflows", title: "جریان‌های خودکار", href: "/workflows", icon: WorkflowIcon },
   { id: "alerts", title: "هشدارها و گزارش‌ها", href: "/alerts", icon: BellRingIcon },
-  { id: "knowledge", title: "دانش و فایل‌های من", href: "/knowledge", icon: BookOpenIcon },
+  { id: "live", title: "فعالیت زنده", href: "/live", icon: RadioIcon },
+  { id: "knowledge", title: "دانش و مدیریت فایل", href: "/knowledge", icon: BookOpenIcon },
   { id: "data", title: "داده و تحلیل", href: "/data", icon: DatabaseZapIcon },
   { id: "connections", title: "اتصال‌ها", href: "/connections", icon: PlugIcon },
   {
@@ -65,11 +68,12 @@ const byId = (ids: string[]) => ids.map((id) => sections.find((section) => secti
 
 /** One sidebar for the whole app, grouped like the Kariz mockup: AI and the messenger side by side. */
 const groups: UserSectionGroup[] = [
-  { id: "dashboard", title: "داشبورد", icon: LayoutDashboardIcon, sections: byId(["desk", "calendar"]) },
-  { id: "ai", title: "✦ کاریز AI", icon: SparklesIcon, sections: byId(["assistant", "agents", "agent-repository", "skills", "compare", "workflows", "alerts", "knowledge", "data", "connections"]) },
+  { id: "start", title: "", icon: LayoutDashboardIcon, bare: true, sections: byId(["desk", "calendar"]) },
+  { id: "agents", title: "عامل‌ها", heading: "Kariz AI", icon: BotMessageSquareIcon, sections: byId(["agents", "agent-repository", "skills", "compare"]) },
+  { id: "automation", title: "اتوماسیون", icon: ZapIcon, sections: byId(["workflows", "connections", "alerts", "live"]) },
+  { id: "knowledge-usage", title: "", icon: LibraryIcon, bare: true, sections: byId(["knowledge", "data", "usage", "developer"]) },
   { id: "network", title: "همکاران و شبکه", icon: NetworkIcon, sections: byId(["messenger", "members", "groups", "channels", "news"]) },
   { id: "work", title: "پروژه‌ها و فعالیت‌ها", icon: BriefcaseBusinessIcon, sections: byId(["projects", "tasks"]) },
-  { id: "account", title: "حساب", icon: UserRoundIcon, sections: byId(["usage", "developer"]) },
 ];
 
 /** The new-chat entry is a prominent button above the groups, not a list item. */

@@ -1,17 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { BackLink } from "@/components/shared/back-link";
 import { EntityNotFound } from "@/components/shared/entity-not-found";
 import { PageHeader } from "@/components/shared/page-header";
-import { SearchableMultiSelect } from "@/components/shared/searchable-multi-select";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
 import { useDirectory } from "@/admin/features/user-management/hooks/use-directory";
 import { ConnectionInfoForm } from "./connection-info-form";
@@ -33,7 +32,7 @@ export function ConnectionDetail({ connectionId }: { connectionId: string }) {
       </div>
     );
   }
-  const groupItems = groups.filter((g) => g.status === "active" || connection.groupIds.includes(g.id)).map((g) => ({ value: g.id, label: g.name }));
+  const allowed = connection.groupIds.map((id) => ({ id, name: groups.find((g) => g.id === id)?.name ?? "گروه حذف‌شده" }));
   const canActivate = connection.tools.length > 0 && connection.groupIds.length > 0;
 
   return (
@@ -53,12 +52,19 @@ export function ConnectionDetail({ connectionId }: { connectionId: string }) {
       <section className="flex flex-col gap-3"><h2 className="text-h4">اطلاعات</h2><ConnectionInfoForm key={connection.id} connection={connection} /></section>
       <section className="flex flex-col gap-3"><h2 className="text-h4">ابزارها</h2><ConnectionTools tools={connection.tools} onChange={(tools) => updateConnection(connectionId, { tools, ...(tools.length === 0 ? { active: false } : {}) })} /></section>
       <section className="flex flex-col gap-3">
-        <h2 className="text-h4">دسترسی</h2>
-        <Field>
-          <FieldLabel htmlFor="c-groups">گروه‌هایی که می‌توانند استفاده کنند</FieldLabel>
-          <SearchableMultiSelect id="c-groups" items={groupItems} value={connection.groupIds} onValueChange={(ids) => updateConnection(connectionId, { groupIds: ids, ...(ids.length === 0 ? { active: false } : {}) })} placeholder="انتخاب گروه" searchPlaceholder="جست‌وجوی گروه" emptyText="گروهی پیدا نشد." />
-          <FieldDescription>تغییر همان لحظه اعمال می‌شود. بدون گروه، اتصال فعال نمی‌شود.</FieldDescription>
-        </Field>
+        <h2 className="text-h4">گروه‌های دارای دسترسی</h2>
+        {allowed.length === 0 ? (
+          <p className="text-body-sm text-muted-foreground">هنوز هیچ گروهی دسترسی ندارد. دسترسی را از تب «اتصال‌ها» در صفحه‌ی هر گروه بدهید.</p>
+        ) : (
+          <ul className="flex flex-wrap gap-2">
+            {allowed.map((g) => (
+              <li key={g.id}>
+                <Link href={`/admin/groups/${g.id}`} className="inline-flex min-h-10 items-center rounded-full border border-border px-3 text-body-sm outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50">{g.name}</Link>
+              </li>
+            ))}
+          </ul>
+        )}
+        {allowed.length > 0 ? <p className="text-body-sm text-muted-foreground">دسترسی از صفحه‌ی هر گروه داده یا برداشته می‌شود.</p> : null}
       </section>
       <AlertDialog open={confirming} onOpenChange={setConfirming}>
         <AlertDialogContent>

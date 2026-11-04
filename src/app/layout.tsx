@@ -8,7 +8,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "کاریز",
-  description: "کاریز، پنجره‌ی یکپارچه‌ی هوش مصنوعی سازمان",
+  description: "کاریز، هوش مصنوعی سازمانی",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

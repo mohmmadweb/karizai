@@ -40,7 +40,7 @@ const rows: EvalRow[] = [
   {
     id: "ev-pricing", agent: "دستیار فروش و قیمت‌گذاری", version: "1.0", model: "Qwen 32B", setSize: 24, accuracy: 0.85, previous: 0.85, status: "blocked",
     candidate: { version: "1.1", change: "تغییر مدل به DeepSeek", passRate: 0.79, result: 0.79 },
-    questions: ["قیمت {n}۰ تن PP-T20 برای آریاپلاست", "حاشیه‌ی سود سفارش {n} با نرخ ارز امروز", "پیش‌فاکتور با اعتبار {n} روز"],
+    questions: ["قیمت {n}۰ تن PP-T20 برای مشتری", "حاشیه‌ی سود سفارش {n} با نرخ ارز امروز", "پیش‌فاکتور با اعتبار {n} روز"],
   },
   {
     id: "ev-letters", agent: "نگارنده نامه اداری", version: "1.4", model: "Qwen 32B", setSize: 27, accuracy: 0.91, previous: 0.89, status: "ready",

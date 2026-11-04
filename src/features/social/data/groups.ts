@@ -40,7 +40,7 @@ const groups: Group[] = [
   },
   {
     id: "grp-sales", name: "فروش", description: "مشتریان، پیش‌فاکتورها و قیمت‌ها", memberCount: 14, agentIds: ["agent-pricing"],
-    summary: { unread: 0, topic: "پیش‌فاکتور آریاپلاست", points: ["پیش‌فاکتور ۲٬۲۹۶٫۸ میلیون تومانی آریاپلاست آماده و منتظر تأیید مدیر فروش است."], openDecision: "تأیید تخفیف ۳٪ برای آریاپلاست", actions: [] },
+    summary: { unread: 0, topic: "پیش‌فاکتور فروش", points: ["پیش‌فاکتور ۲٬۲۹۶٫۸ میلیون تومانی مشتری آماده و منتظر تأیید مدیر فروش است."], openDecision: "تأیید تخفیف ۳٪ برای مشتری", actions: [] },
   },
 ];
 
@@ -56,7 +56,7 @@ const messages: GroupMessage[] = [
   { id: "gm-9", groupId: "grp-supply", authorId: "col-ali", createdAt: "2026-11-02T05:00:00.000Z", text: "پیشنهاد سفارش ۸۰ تن HD5502 آمد؛ منتظر تأیید خانم احمدی هستیم." },
   { id: "gm-11", groupId: "grp-sales", authorId: "col-narges", createdAt: "2026-11-01T09:10:00.000Z", text: "قیمت پایه‌ی PP این هفته ۲٪ بالا رفته؛ در پیش‌فاکتورها اعتبار را ۵ روزه بنویسید." },
   { id: "gm-12", groupId: "grp-sales", authorId: "col-mohammad", createdAt: "2026-11-01T09:25:00.000Z", text: "موافقم. پیش‌فاکتورهای بالای سقف را برای تأیید من بفرستید." },
-  { id: "gm-10", groupId: "grp-sales", authorId: "col-mohammad", createdAt: "2026-11-01T12:00:00.000Z", text: "پیش‌فاکتور آریاپلاست را دیدم، فردا تأیید می‌کنم." },
+  { id: "gm-10", groupId: "grp-sales", authorId: "col-mohammad", createdAt: "2026-11-01T12:00:00.000Z", text: "پیش‌فاکتور فروش را دیدم، فردا تأیید می‌کنم." },
 ];
 
 export function getGroups(): Group[] {

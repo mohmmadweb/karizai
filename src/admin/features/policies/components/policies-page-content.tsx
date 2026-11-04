@@ -10,7 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { fallbackModelId, getDataSourceLevels, getPolicyModels } from "../data/policy-models";
 import type { Sensitivity } from "../types";
 import { BudgetTab } from "./budget-tab";
-import { ConfidentialityTab } from "./confidentiality-tab";
 import { ExternalRequests } from "./external-requests";
 import { MaskingTab } from "./masking-tab";
 import { usePolicies } from "./policies-provider";
@@ -19,7 +18,7 @@ import { SourceLevels } from "./source-levels";
 import { ToolAccessTab } from "./tool-access-tab";
 
 /**
- * «مرکز قواعد و سیاست‌ها»: confidentiality, group budgets, masking and read or
+ * «مرکز قواعد و سیاست‌ها»: group budgets, masking and read or
  * write access are the shared Policies (the user chat obeys them in the same
  * visit); the model matrix and the outside-request log are this page's own.
  */
@@ -40,7 +39,7 @@ export function PoliciesPageContent() {
     <div className="flex flex-col gap-8">
       <PageHeader
         title="مرکز قواعد و سیاست‌ها"
-        description="محرمانگی اسناد، بودجه‌ی هر گروه، پنهان‌سازی فیلدهای حساس، دسترسی خواندن و نوشتن و مدل‌های مجاز را در یک جا تعیین کنید. عامل‌ها نمی‌توانند این قواعد را دور بزنند."
+        description="بودجه‌ی هر گروه، پنهان‌سازی فیلدهای حساس، دسترسی خواندن و نوشتن و مدل‌های مجاز را در یک جا تعیین کنید. محرمانگی اسناد در بخش «اسناد» است. عامل‌ها نمی‌توانند این قواعد را دور بزنند."
       />
       {loading ? (
         <div className="flex flex-col gap-3" aria-busy="true" aria-label="در حال بارگذاری سیاست‌ها">
@@ -55,16 +54,14 @@ export function PoliciesPageContent() {
           <Button variant="outline" className="mt-2 w-fit" onClick={reload}>تلاش دوباره</Button>
         </Alert>
       ) : (
-        <Tabs defaultValue="confidentiality">
+        <Tabs defaultValue="budget">
           <TabsList aria-label="بخش‌های مرکز قواعد" className="h-auto max-w-full flex-wrap justify-start">
-            <TabsTrigger value="confidentiality">محرمانگی</TabsTrigger>
             <TabsTrigger value="budget">بودجه‌ی گروه‌ها</TabsTrigger>
             <TabsTrigger value="masking">پنهان‌سازی</TabsTrigger>
             <TabsTrigger value="access">خواندن و نوشتن</TabsTrigger>
             <TabsTrigger value="models">سیاست مدل‌ها</TabsTrigger>
             <TabsTrigger value="external">درخواست‌های بیرونی</TabsTrigger>
           </TabsList>
-          <TabsContent value="confidentiality" className="pt-4"><ConfidentialityTab /></TabsContent>
           <TabsContent value="budget" className="pt-4"><BudgetTab /></TabsContent>
           <TabsContent value="masking" className="pt-4"><MaskingTab /></TabsContent>
           <TabsContent value="access" className="pt-4"><ToolAccessTab /></TabsContent>

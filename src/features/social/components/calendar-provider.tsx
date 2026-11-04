@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useMemo, useRef, useState, type ReactNode } from "react";
-import { getEvents } from "../data/calendar";
+import { getEvents } from "@/features/desk/data/events";
 import type { CalendarEvent } from "../types";
 
 type CalendarContextValue = {

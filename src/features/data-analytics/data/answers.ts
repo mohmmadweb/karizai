@@ -11,7 +11,7 @@ const answers: DataAnswer[] = [
   },
   {
     id: "materials", question: "مصرف مواد اولیه در مهر به تفکیک ماده چقدر بوده؟", match: /(مصرف|مواد اولیه)/, chartTitle: "مصرف مواد اولیه در مهر (تن)", dashboardId: "dash-materials", groupName: "تدارک و انبار",
-    insight: "مصرف POE نسبت به شهریور ۱۸٪ بیشتر شده است؛ به‌خاطر سفارش گرید ضربه‌ای آریاپلاست.",
+    insight: "مصرف POE نسبت به شهریور ۱۸٪ بیشتر شده است؛ به‌خاطر سفارش گرید ضربه‌ای مشتری.",
     result: {
       query: "SELECT material, ROUND(SUM(qty_kg)/1000.0,1) AS tons\nFROM prod.material_usage\nWHERE month = '1405-07' AND line_id IN (1,2,3)\nGROUP BY material ORDER BY tons DESC;",
       columns: ["ماده", "مصرف (تن)"], rows: [["PP کوپلیمر", 412], ["تالک میکرونیزه", 118], ["POE", 96], ["HD5502", 74], ["مستربچ مشکی", 21]], suggested: "bar",

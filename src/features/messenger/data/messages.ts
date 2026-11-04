@@ -21,7 +21,7 @@ const messages: MessengerMessage[] = [
   {
     id: "msg-f1", threadId: "flows", from: "system", read: false, createdAt: "2026-11-02T08:41:00.000Z",
     text: "جریان «پیش‌فاکتور و قیمت‌گذاری خودکار» با موفقیت اجرا شد.",
-    alert: { title: "پیش‌فاکتور آریاپلاست آماده شد", tone: "info", workflowId: "wf-5", fields: [{ label: "مبلغ نهایی", value: "۲٬۲۹۶٫۸ میلیون تومان" }, { label: "وضعیت", value: "منتظر تأیید مدیر فروش" }] },
+    alert: { title: "پیش‌فاکتور فروش آماده شد", tone: "info", workflowId: "wf-5", fields: [{ label: "مبلغ نهایی", value: "۲٬۲۹۶٫۸ میلیون تومان" }, { label: "وضعیت", value: "منتظر تأیید مدیر فروش" }] },
   },
   {
     id: "msg-f2", threadId: "flows", from: "system", read: true, createdAt: "2026-11-01T05:02:00.000Z",

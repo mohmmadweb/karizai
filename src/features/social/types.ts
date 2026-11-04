@@ -52,6 +52,8 @@ export type CalendarEvent = {
   hasMinutes?: boolean;
   /** Added from «✦ پیشنهاد زمان جلسه». */
   suggested?: boolean;
+  /** The assistant has prepared an agenda for the meeting. */
+  agenda?: boolean;
 };
 
 export type MeetingMinutes = { eventId: string; decisions: string[]; tasks: SuggestedTask[] };

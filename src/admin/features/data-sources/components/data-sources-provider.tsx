@@ -77,7 +77,7 @@ export function DataSourcesProvider({ initialSources, initialDescriptions, initi
       initialSources,
       initialDescriptions,
       Object.fromEntries(
-        initialSources.filter((s) => s.testResult === "success").map((s) => [s.id, getSourceSchema(0, s.id)]),
+        initialSources.filter((s) => s.testResult === "success").map((s) => [s.id, getSourceSchema(s.id, 0)]),
       ),
     ),
   );
@@ -118,7 +118,7 @@ export function DataSourcesProvider({ initialSources, initialDescriptions, initi
         const result = await simulateConnectionTest(source);
         dispatch({ type: "setTest", id, result });
         if (result === "success" && !latest.current.schemas[id]) {
-          dispatch({ type: "setSchema", id, tables: getSourceSchema(rounds.current[id] ?? 0, id) });
+          dispatch({ type: "setSchema", id, tables: getSourceSchema(id, rounds.current[id] ?? 0) });
         }
         setTesting((t) => ({ ...t, [id]: undefined }));
         return result;
@@ -139,7 +139,7 @@ export function DataSourcesProvider({ initialSources, initialDescriptions, initi
         await simulateRequest(900);
         const round = (rounds.current[id] ?? 0) + 1;
         rounds.current[id] = round;
-        dispatch({ type: "setSchema", id, tables: getSourceSchema(round, id) });
+        dispatch({ type: "setSchema", id, tables: getSourceSchema(id, round) });
         setFetchingSchema((f) => ({ ...f, [id]: undefined }));
       },
       addDataSchema: (sourceId, input) => {

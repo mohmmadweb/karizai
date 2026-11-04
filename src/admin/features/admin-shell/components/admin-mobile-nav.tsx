@@ -34,7 +34,7 @@ export function AdminMobileNav({ groups }: { groups: AdminSectionGroup[] }) {
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>
-          <BrandLockup alt="موشکاف" markClassName="w-9" textClassName="w-24" />
+          <BrandLockup alt="کاریز" markClassName="w-9" textClassName="w-24" />
           <SheetTitle className="sr-only">منوی پنل ادمین</SheetTitle>
           <SheetDescription className="sr-only">
             بخش‌های پنل ادمین

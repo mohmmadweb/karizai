@@ -12,12 +12,11 @@ type Props = {
   tables: SourceTable[];
   accessCount: number;
   onEdit: () => void;
-  onAccess: () => void;
   onDelete: () => void;
 };
 
 /** One schema: its tables, how many have access, and its actions. */
-export function SchemaCard({ schema, tables, accessCount, onEdit, onAccess, onDelete }: Props) {
+export function SchemaCard({ schema, tables, accessCount, onEdit, onDelete }: Props) {
   const names = schema.tableIds.map((id) => ({ id, name: tables.find((t) => t.id === id)?.name, gone: !tables.some((t) => t.id === id) }));
   return (
     <Card>
@@ -30,7 +29,7 @@ export function SchemaCard({ schema, tables, accessCount, onEdit, onAccess, onDe
           {schema.description ? <p className="text-body-sm text-muted-foreground">{schema.description}</p> : null}
         </div>
         <Badge variant={accessCount === 0 ? "warning" : "secondary"}>
-          {accessCount === 0 ? "بدون دسترسی" : `${formatNumber(accessCount)} گروه یا کاربر`}
+          {accessCount === 0 ? "بدون دسترسی" : `${formatNumber(accessCount)} گروه`}
         </Badge>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
@@ -47,9 +46,8 @@ export function SchemaCard({ schema, tables, accessCount, onEdit, onAccess, onDe
             </li>
           ))}
         </ul>
-        {accessCount === 0 ? <p className="text-body-sm text-muted-foreground">هنوز هیچ‌کس به این اسکیما دسترسی ندارد.</p> : null}
+        {accessCount === 0 ? <p className="text-body-sm text-muted-foreground">هنوز هیچ گروهی به این اسکیما دسترسی ندارد.</p> : null}
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" className="min-h-10" onClick={onAccess}>دسترسی</Button>
           <Button variant="outline" className="min-h-10" onClick={onEdit}>ویرایش</Button>
           <Button variant="outline" className="min-h-10 text-destructive" onClick={onDelete}>حذف</Button>
         </div>

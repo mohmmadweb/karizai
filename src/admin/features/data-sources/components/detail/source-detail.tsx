@@ -8,12 +8,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDataSources } from "../../hooks/use-data-sources";
 import { databaseTypeLabel } from "../../lib/database-types";
 import { ActiveBadge, TestResultBadge } from "../list/source-badges";
-import { AccessTab } from "./access-tab";
 import { InfoTab } from "./info-tab";
 import { SchemasTab } from "./schemas-tab";
 import { StructureTab } from "./structure-tab";
 
-type Tab = "info" | "structure" | "schemas" | "access";
+type Tab = "info" | "structure" | "schemas";
 
 export function SourceDetail({ sourceId }: { sourceId: string }) {
   const { sources, descriptions } = useDataSources();
@@ -52,7 +51,6 @@ export function SourceDetail({ sourceId }: { sourceId: string }) {
           <TabsTrigger value="info">اطلاعات</TabsTrigger>
           <TabsTrigger value="structure">ساختار</TabsTrigger>
           <TabsTrigger value="schemas">اسکیماها</TabsTrigger>
-          <TabsTrigger value="access">دسترسی</TabsTrigger>
         </TabsList>
         <TabsContent value="info" className="pt-4">
           <InfoTab key={JSON.stringify(editable)} source={source} />
@@ -66,9 +64,6 @@ export function SourceDetail({ sourceId }: { sourceId: string }) {
         </TabsContent>
         <TabsContent value="schemas" className="pt-4">
           <SchemasTab source={source} onGoToInfo={() => setTab("info")} />
-        </TabsContent>
-        <TabsContent value="access" className="pt-4">
-          <AccessTab source={source} />
         </TabsContent>
       </Tabs>
     </div>

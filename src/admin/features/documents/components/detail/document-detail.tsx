@@ -6,7 +6,6 @@ import { PageHeader } from "@/components/shared/page-header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDocuments } from "../../hooks/use-documents";
 import { ConfidentialBadge, DocStatusBadge } from "../list/doc-badges";
-import { AccessTab } from "./access-tab";
 import { InfoTab } from "./info-tab";
 import { PipelineTab } from "./pipeline-tab";
 
@@ -42,11 +41,9 @@ export function DocumentDetail({ docId }: { docId: string }) {
         <TabsList>
           <TabsTrigger value="info">اطلاعات</TabsTrigger>
           <TabsTrigger value="pipeline">پردازش</TabsTrigger>
-          <TabsTrigger value="access">دسترسی</TabsTrigger>
         </TabsList>
         <TabsContent value="info" className="pt-4"><InfoTab key={formKey} doc={doc} /></TabsContent>
         <TabsContent value="pipeline" className="pt-4"><PipelineTab doc={doc} /></TabsContent>
-        <TabsContent value="access" className="pt-4"><AccessTab doc={doc} /></TabsContent>
       </Tabs>
     </div>
   );

@@ -24,9 +24,9 @@ export function AdminSidebar({ groups, collapsed }: AdminSidebarProps) {
         className="flex h-14 items-center justify-center rounded-lg outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
       >
         {collapsed ? (
-          <BrandLogo alt="موشکاف" variant="kariz" className="w-9" />
+          <BrandLogo alt="کاریز" variant="kariz" className="w-9" />
         ) : (
-          <BrandLockup alt="موشکاف" markClassName="w-9" textClassName="w-24" />
+          <BrandLockup alt="کاریز" markClassName="w-9" textClassName="w-24" />
         )}
       </Link>
       <div className="flex-1 overflow-y-auto">

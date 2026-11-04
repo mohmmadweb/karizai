@@ -51,7 +51,7 @@ export function ToolAccessTab() {
           <section key={connection.id} className="flex flex-col gap-3">
             <div className="flex flex-wrap items-baseline gap-3">
               <h2 className="text-h4 text-foreground">{connection.name}</h2>
-              {writable ? null : <span className="text-caption text-muted-foreground">بدون ابزار تغییردهنده</span>}
+              {writable ? null : <span className="text-caption text-muted-foreground">فعلاً ابزار تغییردهنده ندارد؛ تا ابزاری «تغییر می‌دهد» علامت نخورد اثری ندارد.</span>}
             </div>
             <ul className="grid gap-3 md:grid-cols-2">
               {active.map((g) => (
@@ -60,7 +60,7 @@ export function ToolAccessTab() {
                   <Select
                     items={items}
                     value={modeOf(draft, g.id, connection.id)}
-                    disabled={!writable || saving}
+                    disabled={saving}
                     onValueChange={(value) => value && setDraft((d) => withMode(d, g.id, connection.id, value as ToolMode))}
                   >
                     <SelectTrigger className="w-40" aria-labelledby={`tm-${connection.id}-${g.id}`}><SelectValue /></SelectTrigger>

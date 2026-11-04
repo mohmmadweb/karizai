@@ -7,8 +7,10 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Field, FieldDescription, FieldError, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { hasSchemaErrors, validateSchema, type SchemaErrors } from "../../lib/schema-form";
-import type { DataSchema, SchemaInput, SourceTable } from "../../types";
+import { getSchemaTemplates } from "../../data/schema-templates";
+import { hasSchemaErrors, tableIdsFor, templatesFor, validateSchema, type SchemaErrors } from "../../lib/schema-form";
+import type { DataSchema, SchemaInput, SchemaTemplate, SourceTable } from "../../types";
+import { SchemaTemplatePicker } from "./schema-template-picker";
 
 type Props = {
   open: boolean;
@@ -28,12 +30,21 @@ function SchemaForm({ onOpenChange, schema, siblings, tables, onSubmit }: Omit<P
   const [rowFilter, setRowFilter] = useState(schema?.rowFilter ?? "");
   const [confidential, setConfidential] = useState(schema?.confidential ?? false);
   const [errors, setErrors] = useState<SchemaErrors>({});
+  const [chosenId, setChosenId] = useState<string | null>(null);
+  const templates = schema ? [] : templatesFor(getSchemaTemplates(), tables);
   const missing = tableIds.filter((id) => !tables.some((t) => t.id === id));
 
   function submit() {
     const found = validateSchema({ name, description, tableIds }, siblings, schema?.id);
     setErrors(found);
     if (!hasSchemaErrors(found)) onSubmit({ name, description, tableIds, rowFilter, confidential });
+  }
+  function choose(template: SchemaTemplate) {
+    setChosenId(template.id);
+    setName(template.name);
+    setDescription(template.description);
+    setTableIds(tableIdsFor(template, tables));
+    setErrors({});
   }
   const toggle = (id: string, on: boolean) => {
     setTableIds((ids) => (on ? [...ids, id] : ids.filter((x) => x !== id)));
@@ -42,6 +53,7 @@ function SchemaForm({ onOpenChange, schema, siblings, tables, onSubmit }: Omit<P
 
   return (
     <form noValidate onSubmit={(event) => { event.preventDefault(); submit(); }} className="grid gap-4">
+      <SchemaTemplatePicker templates={templates} chosenId={chosenId} onChoose={choose} />
       <Field data-invalid={errors.name ? true : undefined}>
         <FieldLabel htmlFor="schema-name">نام اسکیما</FieldLabel>
         <Input id="schema-name" value={name} aria-invalid={Boolean(errors.name)} placeholder="مثلاً فروش" onChange={(e) => { setName(e.target.value); setErrors((x) => ({ ...x, name: undefined })); }} />

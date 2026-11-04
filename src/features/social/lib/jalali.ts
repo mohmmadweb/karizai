@@ -4,14 +4,11 @@
  */
 const zone = "Asia/Tehran";
 const parts = new Intl.DateTimeFormat("en-u-ca-persian-nu-latn", { timeZone: zone, year: "numeric", month: "numeric", day: "numeric" });
-const monthLabel = new Intl.DateTimeFormat("fa-IR-u-ca-persian", { timeZone: zone, month: "long", year: "numeric" });
 const dayLabel = new Intl.DateTimeFormat("fa-IR-u-ca-persian", { timeZone: zone, day: "numeric", month: "long" });
 const timeLabel = new Intl.DateTimeFormat("fa-IR", { timeZone: zone, hour: "2-digit", minute: "2-digit", hour12: false });
 const fullLabel = new Intl.DateTimeFormat("fa-IR-u-ca-persian", { timeZone: zone, weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
 const dayMs = 864e5;
-
-export const weekdayNames = ["شنبه", "یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه"];
 
 export type CalendarDay = { date: Date; key: string; day: number; /** 0 for Saturday. */ weekday: number };
 
@@ -48,14 +45,6 @@ export function monthDays(anchor: Date): CalendarDay[] {
   return days;
 }
 
-/** A day in the next or previous month. */
-export function shiftMonth(anchor: Date, step: 1 | -1): Date {
-  const days = monthDays(anchor);
-  const edge = step === 1 ? days[days.length - 1].date : days[0].date;
-  return new Date(edge.getTime() + step * dayMs);
-}
-
-export const formatMonth = (date: Date) => monthLabel.format(date);
 export const formatDay = (date: Date | string) => dayLabel.format(new Date(date));
 export const formatTime = (date: Date | string) => timeLabel.format(new Date(date));
 export const formatFullDate = (date: Date | string) => fullLabel.format(new Date(date));

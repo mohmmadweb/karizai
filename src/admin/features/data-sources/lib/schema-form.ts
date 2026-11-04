@@ -1,4 +1,4 @@
-import type { DataSchema, SchemaInput } from "../types";
+import type { DataSchema, SchemaInput, SchemaTemplate, SourceTable } from "../types";
 
 export type SchemaErrors = { name?: string; tables?: string };
 
@@ -14,3 +14,11 @@ export function validateSchema(input: SchemaInput, siblings: DataSchema[], excep
 }
 
 export const hasSchemaErrors = (errors: SchemaErrors) => Boolean(errors.name || errors.tables);
+
+/** Table ids of a template that exist in the structure. */
+export const tableIdsFor = (template: SchemaTemplate, tables: SourceTable[]) =>
+  tables.filter((t) => template.tableNames.includes(t.name)).map((t) => t.id);
+
+/** Templates with at least two of their tables in this database (all of them when the template has one). */
+export const templatesFor = (templates: SchemaTemplate[], tables: SourceTable[]) =>
+  templates.filter((t) => tableIdsFor(t, tables).length >= Math.min(2, t.tableNames.length));

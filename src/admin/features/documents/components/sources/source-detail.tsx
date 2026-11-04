@@ -6,7 +6,6 @@ import { PageHeader } from "@/components/shared/page-header";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDocuments } from "../../hooks/use-documents";
 import { protocolLabel, sourceLocation } from "../../lib/selectors";
-import { SourceAccessTab } from "./source-access-tab";
 import { SourceTestBadge } from "./source-badges";
 import { SourceInfoTab } from "./source-info-tab";
 
@@ -35,10 +34,8 @@ export function SourceDetail({ sourceId }: { sourceId: string }) {
       <Tabs defaultValue="info">
         <TabsList>
           <TabsTrigger value="info">اطلاعات</TabsTrigger>
-          <TabsTrigger value="access">دسترسی</TabsTrigger>
         </TabsList>
         <TabsContent value="info" className="pt-4"><SourceInfoTab key={formKey} source={source} /></TabsContent>
-        <TabsContent value="access" className="pt-4"><SourceAccessTab source={source} /></TabsContent>
       </Tabs>
     </div>
   );

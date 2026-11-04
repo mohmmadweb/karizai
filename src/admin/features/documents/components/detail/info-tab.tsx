@@ -85,7 +85,7 @@ export function InfoTab({ doc }: { doc: DocumentRecord }) {
           />
           <div className="flex flex-col gap-0.5">
             <FieldLabel htmlFor="doc-confidential">محرمانه</FieldLabel>
-            <FieldDescription>سند محرمانه فقط برای گروه‌ها و کاربرانی دیده می‌شود که صریحاً در تب «دسترسی» اضافه شده‌اند و فقط با مدل‌های داخلی (سلف‌هاست) کار می‌کند، نه مدل خارجی.</FieldDescription>
+            <FieldDescription>سند محرمانه فقط برای گروه‌هایی دیده می‌شود که صریحاً به آن دسترسی گرفته‌اند و فقط با مدل‌های داخلی (سلف‌هاست) کار می‌کند، نه مدل خارجی. دسترسی سند را از صفحه‌ی هر گروه تعیین می‌کنید.</FieldDescription>
           </div>
         </Field>
       </FieldGroup>

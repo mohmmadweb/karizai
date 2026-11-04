@@ -5,12 +5,11 @@ import { useSyncExternalStore } from "react";
 export type Theme = "light" | "dark";
 
 /**
- * Runs before first paint (inline in the root layout). The starting theme
- * follows the device setting. Changes made with the toggle are temporary:
- * nothing is stored, so a refresh returns to the device setting.
+ * Runs before first paint (inline in the root layout). The panel always
+ * starts in the light theme. Changes made with the toggle are temporary:
+ * nothing is stored, so a refresh returns to light.
  */
-export const themeInitScript =
-  "document.documentElement.classList.toggle('dark',matchMedia('(prefers-color-scheme: dark)').matches)";
+export const themeInitScript = "document.documentElement.classList.remove('dark')";
 
 function subscribe(onChange: () => void) {
   const observer = new MutationObserver(onChange);

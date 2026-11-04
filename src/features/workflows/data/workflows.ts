@@ -40,7 +40,7 @@ const runs: Run[] = [
   {
     id: "run-5", workflowId: "wf-5", startedAt: "2026-10-29T08:35:00.000Z", endedAt: "2026-10-29T08:41:30.000Z", status: "succeeded", startedBy: "رویداد: رسیدن ایمیل تازه",
     steps: [
-      { nodeId: "n1", label: "درخواست مشتری", status: "succeeded", durationMs: 3100, output: "آریاپلاست، ۲۰ تن PP-T20، تحویل ظرف ۱۰ روز.", modelName: "Claude Sonnet", inputTokens: 780, outputTokens: 150 },
+      { nodeId: "n1", label: "درخواست مشتری", status: "succeeded", durationMs: 3100, output: "مشتری، ۲۰ تن PP-T20، تحویل ظرف ۱۰ روز.", modelName: "Claude Sonnet", inputTokens: 780, outputTokens: 150 },
       { nodeId: "n2", label: "نرخ مواد اولیه", status: "succeeded", durationMs: 1200, output: "قیمت پایه‌ی PP کوپلیمر ۷۸٬۴۰۰ تومان بر کیلوگرم." },
       { nodeId: "n3", label: "موجودی و ظرفیت", status: "succeeded", durationMs: 1400, output: "۲۰ تن تا ۹ روز دیگر قابل تحویل است." },
       { nodeId: "n4", label: "محاسبه‌ی قیمت", status: "succeeded", durationMs: 4800, output: "قیمت پیشنهادی ۱۰۴٬۴۰۰ تومان بر کیلوگرم، حاشیه‌ی ۱۲٪.", modelName: "Claude Sonnet", inputTokens: 1620, outputTokens: 520 },

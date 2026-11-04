@@ -4,9 +4,9 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { AiDialog } from "../components/ai-dialog";
-import { atTehranTime, dayKey, formatDay, formatTime, type CalendarDay } from "../lib/jalali";
-import type { CalendarEvent } from "../types";
+import { AiDialog } from "@/features/social/components/ai-dialog";
+import { atTehranTime, dayKey, formatDay, formatTime, type CalendarDay } from "@/features/social/lib/jalali";
+import type { CalendarEvent } from "@/features/social/types";
 
 type SuggestTimeDialogProps = { open: boolean; onOpenChange: (open: boolean) => void; days: CalendarDay[]; events: CalendarEvent[]; todayKey: string; onBook: (event: Omit<CalendarEvent, "id">) => void };
 

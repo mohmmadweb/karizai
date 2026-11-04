@@ -56,4 +56,7 @@ export type DataSchema = {
   confidential?: boolean;
 };
 
+/** A ready-made schema: a name, a description and the names of the tables it usually holds. */
+export type SchemaTemplate = { id: string; name: string; description: string; tableNames: string[] };
+
 export type SchemaInput = { name: string; description: string; tableIds: string[]; rowFilter?: string; confidential?: boolean };
