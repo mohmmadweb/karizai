@@ -7,5 +7,5 @@ export const metadata: Metadata = { title: "تقویم کاری من | کاری�
 
 /** The calendar is drawn around today's date, so it is drawn in the browser. */
 export default function CalendarPage() {
-  return <ClientOnly fallback={<ListSkeleton title="تقویم کاری من" />}><CalendarPageContent /></ClientOnly>;
+  return <ClientOnly fallback={<div className="page-gutter py-8"><ListSkeleton title="تقویم کاری من" /></div>}><CalendarPageContent /></ClientOnly>;
 }

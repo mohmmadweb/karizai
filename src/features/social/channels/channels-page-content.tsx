@@ -2,7 +2,7 @@
 
 import Link from "@/components/shared/app-link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { useSearchParams } from "next/navigation";
+import { useQueryParam } from "@/lib/use-query-param";
 import { BellIcon, ChevronRightIcon, MegaphoneIcon } from "lucide-react";
 import { toast } from "sonner";
 import { FilterPill, MotoSearch, PaneHeader, RoundFab, RoundIconButton, TwoPaneShell } from "@/components/shared/moto/moto";
@@ -26,7 +26,7 @@ export function ChannelsPageContent() {
   const [channels, setChannels] = useState(getChannels);
   const [posts, setPosts] = useState(getChannelPosts);
   // `?id=` (from the chat list or the sidebar) opens that channel.
-  const requested = useSearchParams().get("id");
+  const requested = useQueryParam("id");
   const [selectedId, setSelectedId] = useState<string | null>(() => (requested && channels.some((c) => c.id === requested) ? requested : null));
   const [query, setQuery] = useState("");
   const [newest, setNewest] = useState(true);

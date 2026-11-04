@@ -7,5 +7,5 @@ export const metadata: Metadata = { title: "میز کار من | کاریز" };
 
 /** The desk shows today's date and events, so it is drawn in the browser. */
 export default function DeskPage() {
-  return <ClientOnly fallback={<ListSkeleton title="میز کار من" />}><DeskPageContent /></ClientOnly>;
+  return <ClientOnly fallback={<div className="page-gutter py-8"><ListSkeleton title="میز کار من" /></div>}><DeskPageContent /></ClientOnly>;
 }

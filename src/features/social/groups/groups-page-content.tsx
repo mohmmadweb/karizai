@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useQueryParam } from "@/lib/use-query-param";
 import { BellIcon, UsersIcon } from "lucide-react";
 import { toast } from "sonner";
 import { FilterPill, MotoSearch, PaneHeader, RoundFab, RoundIconButton, TwoPaneShell } from "@/components/shared/moto/moto";
@@ -23,7 +23,7 @@ export function GroupsPageContent() {
   const [groups, setGroups] = useState(getGroups);
   const [messages, setMessages] = useState(getGroupMessages);
   // `?id=` (from the chat list or the sidebar) opens that group.
-  const requested = useSearchParams().get("id");
+  const requested = useQueryParam("id");
   const [selectedId, setSelectedId] = useState<string | null>(() => (requested && groups.some((g) => g.id === requested) ? requested : null));
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<"all" | "unread">("all");
