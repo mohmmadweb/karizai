@@ -80,7 +80,7 @@ export function FileManager({ initial, onAskAll }: { initial: KnowledgeDocument[
   return (
     <MotoPage>
       <MotoPageHeader
-        title="مدیریت فایل‌ها"
+        title="مدیریت فایل‌های من"
         icon={FolderIcon}
         description="فایل‌ها و مجموعه‌هایی که به آن‌ها دسترسی دارید؛ دسترسی از سامانه‌ی مبدأ به ارث می‌رسد."
         action={<>

@@ -35,7 +35,7 @@ export function BenchmarkPageContent() {
   const estimates = useMemo(() => {
     const t = estimateTokens(prompt, complexity.tier);
     const factor = mode === "multi" ? 2.6 : 1;
-    return Object.fromEntries(enabled.map((m) => [m.id, costOf((t.input + t.output) * factor, m.selfHosted)]));
+    return Object.fromEntries(enabled.map((m) => [m.id, costOf(t.input * factor, t.output * factor, m)]));
   }, [enabled, prompt, complexity.tier, mode]);
 
   useEffect(() => {

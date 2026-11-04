@@ -29,9 +29,10 @@ export function CalendarMonthBar({ anchor, today, onPrevious, onNext, onGo, onTo
           <FilterPill label="ماه" value={String(month)} options={monthNames.map((name, index) => ({ value: String(index + 1), label: name }))} onChange={(value) => onGo(year, Number(value))} />
           <FilterPill label="سال" value={String(year)} options={years.map((y) => ({ value: String(y), label: y.toLocaleString("fa-IR", { useGrouping: false }) }))} onChange={(value) => onGo(Number(value), month)} />
         </div>
-        <p dir="ltr" className="text-body-sm">{rangeFormat("en-US-u-ca-gregory", first, last)}</p>
-        <p className="text-caption text-muted-foreground">{rangeFormat("fa-IR-u-ca-islamic", first, last)}</p>
-        <button type="button" onClick={onToday} className="rounded-full bg-accent px-3 py-1 text-caption text-accent-foreground outline-none hover:bg-accent/70 focus-visible:ring-3 focus-visible:ring-ring/50">امروز: {formatDate(today, { weekday: "long", day: "numeric", month: "long" })}</button>
+        <p className="text-body-sm font-medium">{monthNames[month - 1]} {year.toLocaleString("fa-IR", { useGrouping: false })}</p>
+        <p className="text-caption text-muted-foreground">{rangeFormat("fa-IR-u-ca-gregory", first, last).replace(/\s-\s/, " ـ ")}</p>
+        <p className="text-caption text-muted-foreground">{rangeFormat("fa-IR-u-ca-islamic", first, last).replace(/\s-\s/, " ـ ")}</p>
+        <button type="button" onClick={onToday} className="rounded-full bg-accent px-3 py-1 text-caption text-accent-foreground outline-none hover:bg-accent/70 focus-visible:ring-3 focus-visible:ring-ring/50">امروز: {formatDate(today, { weekday: "long", day: "numeric", month: "long" }).replace(/[,،]\s*/g, " ")}</button>
       </div>
       <button type="button" onClick={onNext} className="flex h-10 items-center gap-2 rounded-lg px-3 text-body-sm outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50">ماه بعد<ArrowLeftIcon className="size-4" aria-hidden /></button>
     </section>

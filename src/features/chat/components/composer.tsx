@@ -135,7 +135,7 @@ export function Composer({ conversationId }: { conversationId: string | null }) 
             <p className="text-caption text-muted-foreground">پیوست‌ها فقط در همین گفتگو استفاده می‌شوند.</p>
           </div>
         ) : null}
-        <PromptInputTextarea aria-label="پیام شما" placeholder={exhausted ? "سهمیه‌ی شما تمام شده است" : messages.length === 0 ? "تایپ/@ برای انتخاب عامل" : "هر چیزی بپرسید..."} />
+        <PromptInputTextarea aria-label="پیام شما" placeholder={exhausted ? "سهمیه‌ی شما تمام شده است" : messages.length === 0 ? "پیام خود را بنویسید؛ با @ عامل و با / اسکیل را انتخاب کنید" : "پیام خود را بنویسید؛ با @ عامل و با / اسکیل را انتخاب کنید"} />
         <PromptInputActions className="mt-1 items-center justify-between">
           <div className="flex min-w-0 flex-1 flex-wrap items-center gap-1.5" onClick={(event) => event.stopPropagation()}>
             <ComposerToolbar

@@ -7,6 +7,7 @@ import { posts as seed, type Post } from "../data/blogs";
 import { currentUserId } from "../lib/people";
 import { useListView } from "../lib/use-list-view";
 import { AuthorLine } from "./author-line";
+import { CodeText } from "@/components/shared/code-text";
 import { Cover, TagChip } from "./cover";
 import { FormDialog, InfoDialog } from "./form-dialog";
 import { AiNote } from "./use-ai-answer";
@@ -32,8 +33,8 @@ export function BlogsPageContent() {
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {list.rows.map((post) => (
             <MotoCard key={post.id}>
-              <Cover />
-              <h2 className="text-h4">{post.title}</h2>
+              <Cover kind="blog" id={post.id} category={post.tags[0]} />
+              <h2 className="text-h4"><CodeText>{post.title}</CodeText></h2>
               <p className="text-body-sm text-muted-foreground">{post.excerpt}</p>
               <div className="flex flex-wrap gap-2">{post.tags.map((t) => <TagChip key={t}>{t}</TagChip>)}</div>
               <AuthorLine id={post.authorId} note={`${formatDate(post.date, { dateStyle: "medium" })} · ${formatNumber(post.minutes)} دقیقه`} />

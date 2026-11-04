@@ -14,8 +14,8 @@ export function getOrgTree(): OrgUnit {
         { id: "u-sales", name: "فروش", manager: "نرگس حسینی", members: 19, adGroup: "PP-Sales", groupId: "group-001" },
       ] },
       { id: "vp-fin", name: "معاونت مالی و پشتیبانی", manager: "علی رضایی", members: 2, adGroup: "PP-Support", groupId: "group-002", children: [
-        { id: "u-fin", name: "مالی", manager: "فاطمه حیدری", members: 16, adGroup: "PP-Finance", groupId: "group-002" },
-        { id: "u-it", name: "فناوری اطلاعات", manager: "امیر صادقی", members: 11, adGroup: "PP-IT", groupId: "group-003" },
+        { id: "u-fin", name: "مالی", manager: "زهرا موسوی", members: 16, adGroup: "PP-Finance", groupId: "group-002" },
+        { id: "u-it", name: "فناوری اطلاعات", manager: "مهدی صادقی", members: 11, adGroup: "PP-IT", groupId: "group-003" },
       ] },
     ],
   };
@@ -45,8 +45,8 @@ export type RoleAssignment = { id: string; person: string; role: AdminRole; unit
 
 export function getAssignments(): RoleAssignment[] {
   return [
-    { id: "ra-1", person: "مهدی رضایی", role: "super", unitId: null },
-    { id: "ra-2", person: "امیر صادقی", role: "super", unitId: null },
+    { id: "ra-1", person: "مریم احمدی", role: "super", unitId: null },
+    { id: "ra-2", person: "مهدی صادقی", role: "super", unitId: null },
     { id: "ra-3", person: "مریم احمدی", role: "unit", unitId: "u-qc" },
     { id: "ra-4", person: "نرگس حسینی", role: "unit", unitId: "u-sales" },
     { id: "ra-5", person: "حمید شریفی", role: "unit", unitId: "u-prod" },

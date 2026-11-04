@@ -65,8 +65,8 @@ export function DataTable<T>({
     ) : null;
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border bg-card">
-      <div className={cn(renderCard && "hidden md:block")}>
+    <div className="min-w-0 max-w-full overflow-hidden rounded-xl border border-border bg-card">
+      <div className={cn("min-w-0 overflow-x-auto", renderCard && "hidden md:block")}>
         <Table aria-label={label}>
           <TableHeader>
             <TableRow className="hover:bg-transparent">

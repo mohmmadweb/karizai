@@ -52,6 +52,9 @@ const INITIAL_COMPONENTS: Partial<Components> = {
       </CodeBlock>
     )
   },
+  table: function TableComponent({ children }) {
+    return <div className="my-2 max-w-full overflow-x-auto"><table className="w-max min-w-full border-collapse text-start">{children}</table></div>
+  },
   pre: function PreComponent({ children }) {
     return <>{children}</>
   },

@@ -9,6 +9,7 @@ const memberships: Membership[] = [
   { userId: "user-006", groupId: "group-003" },
   { userId: "user-006", groupId: "group-002" },
   { userId: "user-007", groupId: "group-003" },
+  { userId: "user-008", groupId: "group-005" },
 ];
 
 export function getMemberships(): Membership[] {

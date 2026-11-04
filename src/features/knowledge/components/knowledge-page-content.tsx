@@ -26,7 +26,7 @@ export function KnowledgePageContent({ documents }: KnowledgePageContentProps) {
   if (documents.length === 0) {
     return (
       <MotoPage>
-        <MotoPageHeader title="مدیریت فایل‌ها" icon={FolderIcon} action={<Button data-ai type="button" className="h-10" onClick={askAll}>✦ پرسش از کل دانش</Button>} />
+        <MotoPageHeader title="مدیریت فایل‌های من" icon={FolderIcon} action={<Button data-ai type="button" className="h-10" onClick={askAll}>✦ پرسش از کل دانش</Button>} />
         <EmptyState icon={<BookOpenIcon />} title="سندی در دسترس نیست" description="هنوز به سندی دسترسی ندارید. با ادمین تماس بگیرید." />
       </MotoPage>
     );

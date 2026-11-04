@@ -19,7 +19,11 @@ export type Planned = {
 
 const rate = (internal: boolean) => (internal ? tomanPer1kTokens.internal : tomanPer1kTokens.external);
 
-export const costOf = (tokens: number, internal: boolean) => (tokens / 1000) * rate(internal);
+/** Toman cost from the model's own per-million prices; the organization rate when none is recorded. */
+export function costOf(inputTokens: number, outputTokens: number, model: Pick<AiModel, "selfHosted" | "costInputPerMillion" | "costOutputPerMillion">) {
+  if (model.costInputPerMillion === null) return ((inputTokens + outputTokens) / 1000) * rate(model.selfHosted);
+  return (inputTokens / 1e6) * model.costInputPerMillion + (outputTokens / 1e6) * (model.costOutputPerMillion ?? model.costInputPerMillion);
+}
 
 /** Stable small variation per model and question, so runs look measured but repeat. */
 function jitter(a: string, b: string) {
@@ -40,7 +44,7 @@ export function planRun(model: AiModel, preset: BenchmarkPreset, prompt: string,
   const ttftMs = Math.round(p.ttftMs * j * (multi ? 2.4 : 1));
   const e2eMs = Math.round(ttftMs + (outputTokens / p.tokensPerSecond) * 1000 + (multi ? 2600 : 0));
   const score = Math.min(99, Math.round(p.quality - preset.difficulty * (100 - p.quality) / 40 + (multi ? 6 : 0) + (j - 1) * 20));
-  return { modelId: model.id, name: model.displayName, internal: model.selfHosted, ttftMs, e2eMs, inputTokens, outputTokens, cost: costOf(inputTokens + outputTokens, model.selfHosted), score };
+  return { modelId: model.id, name: model.displayName, internal: model.selfHosted, ttftMs, e2eMs, inputTokens, outputTokens, cost: costOf(inputTokens, outputTokens, model), score };
 }
 
 /** Same weights as the default router: half quality, a quarter each speed and cost. */

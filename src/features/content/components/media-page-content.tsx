@@ -28,7 +28,7 @@ export function MediaPageContent() {
           {list.rows.map((item) => (
             <button key={item.id} type="button" onClick={() => setOpen(item)} className="min-w-0 rounded-2xl text-start outline-none focus-visible:ring-3 focus-visible:ring-ring/50">
               <MotoCard className="h-full gap-2 p-3">
-                <Cover kind={item.type} />
+                <Cover kind={item.type} id={item.id} category={typeLabels[item.type]} />
                 <span className="truncate text-body-sm font-medium">{item.title}</span>
                 <span className="text-caption text-muted-foreground">{typeLabels[item.type]} · {item.size}</span>
               </MotoCard>
@@ -42,7 +42,7 @@ export function MediaPageContent() {
         { name: "type", label: "نوع", kind: "select", options: (Object.keys(typeLabels) as MediaType[]).map((t) => ({ value: t, label: typeLabels[t] })) },
       ]} onSubmit={(v) => setItems((l) => [{ id: `md-new-${l.length}`, title: v.title, type: v.type as MediaType, size: "۱٫۰ مگابایت", date: "2026-11-04T09:00:00.000Z", authorId: currentUserId() }, ...l])} />
       <InfoDialog open={open !== null} onOpenChange={(o) => !o && setOpen(null)} title={open?.title ?? ""} description={open ? `${typeLabels[open.type]} · ${open.size} · ${formatDate(open.date, { dateStyle: "medium" })}` : undefined}>
-        {open ? <><Cover kind={open.type} /><AuthorLine id={open.authorId} /></> : null}
+        {open ? <><Cover kind={open.type} id={open.id} category={typeLabels[open.type]} /><AuthorLine id={open.authorId} /></> : null}
       </InfoDialog>
     </MotoPage>
   );

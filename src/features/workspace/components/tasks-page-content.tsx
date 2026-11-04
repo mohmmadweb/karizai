@@ -60,9 +60,13 @@ export function TasksPageContent() {
         </Select>
         <Button type="submit" disabled={!title.trim()}><PlusIcon data-icon="inline-start" aria-hidden />افزودن</Button>
       </form>
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-wrap items-center gap-3"><span className="w-16 text-caption text-muted-foreground">نمایش</span>
         <StatusTabs label="نمایش وظایف" value={scope} onChange={setScope} options={[{ value: "mine", label: "وظایف من" }, { value: "all", label: "همه‌ی وظایف" }]} />
+        </div>
+        <div className="flex flex-wrap items-center gap-3"><span className="w-16 text-caption text-muted-foreground">وضعیت</span>
         <StatusTabs label="وضعیت وظیفه" value={status} onChange={setStatus} options={[{ value: "all", label: "همه" }, { value: "todo", label: "انجام‌نشده" }, { value: "doing", label: "در حال انجام" }, { value: "done", label: "انجام‌شده" }]} />
+        </div>
       </div>
       <TaskList tasks={shown} projects={projects} />
       <p className="text-body-sm text-muted-foreground"><span aria-hidden className="text-primary">✦ </span>وظایفی که عامل‌ها می‌سازند در همین بخش و با همان دسترسی‌ها مدیریت می‌شوند؛ اگر سازمان از GitLab یا MS Project استفاده کند، از درگاه «کار و وظایف» به همان‌جا می‌روند.</p>

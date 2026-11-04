@@ -62,7 +62,7 @@ export function SkillsPageContent() {
                 </div>
                 <Badge variant={skill.status === "published" ? "success" : "secondary"}>{skill.status === "published" ? "منتشرشده" : "پیش‌نویس"}</Badge>
               </div>
-              <pre dir="rtl" className="max-h-40 overflow-y-auto whitespace-pre-wrap rounded-lg bg-muted p-3 font-sans text-body-sm">{skill.instructions || "بدون دستورالعمل متنی؛ محتوا در فایل پیوست است."}</pre>
+              <pre dir="rtl" className="max-h-40 overflow-y-auto whitespace-pre-wrap rounded-lg bg-muted p-3 font-sans text-body-sm">{skill.instructions.replace(/^\s{0,3}#{1,6}\s*/gm, "").replace(/(\*\*|`)/g, "") || "بدون دستورالعمل متنی؛ محتوا در فایل پیوست است."}</pre>
               {skill.files.length > 0 ? (
                 <ul className="flex flex-wrap gap-2">
                   {skill.files.map((f) => (

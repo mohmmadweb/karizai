@@ -24,7 +24,7 @@ import {
 import type { DataTableAction, DataTableActionGroup } from "./types";
 
 type RowActionsProps = {
-  /** Names the row for assistive technology, for example «کاربر سارا احمدی». */
+  /** Names the row for assistive technology, for example «کاربر سارا کریمی». */
   rowLabel: string;
   groups: DataTableActionGroup[];
 };

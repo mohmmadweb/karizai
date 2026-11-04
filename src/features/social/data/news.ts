@@ -17,8 +17,8 @@ const news: NewsItem[] = [
   },
   {
     id: "news-3", title: "حضور در نمایشگاه صنایع پلیمر", category: "events", publishedAt: "2026-10-29T06:00:00.000Z",
-    body: "پارسا پلیمر شریف ۱۴ آبان در نمایشگاه صنایع پلیمر تهران با گریدهای تازه‌ی PP-T20 حضور دارد. همکاران فروش در غرفه‌ی ۱۲ سالن ۵ میزبان مشتریان‌اند.",
-    summary: ["۱۴ آبان، نمایشگاه صنایع پلیمر تهران.", "معرفی گریدهای PP-T20 در غرفه‌ی ۱۲ سالن ۵."],
+    body: "پارسا پلیمر شریف ۱۶ آبان در نمایشگاه صنایع پلیمر تهران با گریدهای تازه‌ی PP-T20 حضور دارد. همکاران فروش در غرفه‌ی ۱۲ سالن ۵ میزبان مشتریان‌اند.",
+    summary: ["۱۶ آبان، نمایشگاه صنایع پلیمر تهران.", "معرفی گریدهای PP-T20 در غرفه‌ی ۱۲ سالن ۵."],
     english: { title: "At the Polymer Industry Expo", body: "Parsa Polymer Sharif will attend the Tehran Polymer Industry Expo on 14 Aban with the new PP-T20 grades. The sales team hosts customers at booth 12, hall 5." },
   },
   {

@@ -46,13 +46,23 @@ export function DocumentTable({ documents, sortKey, direction, onSort, showFolde
           <TableHead className="hidden sm:table-cell">نوع</TableHead>
           <TableHead className="hidden lg:table-cell">برچسب‌های هوشمند</TableHead>
           <SortHead label="آخرین به‌روزرسانی" sortKey="updatedAt" {...sort} className="hidden md:table-cell" />
-          <TableHead>عملیات</TableHead>
+          <TableHead className="hidden sm:table-cell">عملیات</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {documents.map((doc) => {
           const Icon = doc.kind === "excel" ? FileSpreadsheetIcon : FileTextIcon;
           const score = scores?.[doc.id];
+          const actions = (
+                <div className="flex items-center gap-1 whitespace-nowrap">
+                  <div data-ai className="flex gap-1">
+                    {aiActions.map((action) => (
+                      <Button key={action.key} type="button" size="xs" variant="soft" aria-label={`${action.label} ${doc.title}`} onClick={() => onAi(doc, action.key)}>{action.label}</Button>
+                    ))}
+                  </div>
+                  <Button variant="ghost" size="icon-sm" aria-label={`دانلود ${doc.title}`} title="دانلود" onClick={() => { downloadDocument(doc); toast.success("دانلود شروع شد."); }}><DownloadIcon aria-hidden /></Button>
+                </div>
+          );
           return (
             <TableRow key={doc.id}>
               <TableCell className="whitespace-normal">
@@ -65,6 +75,7 @@ export function DocumentTable({ documents, sortKey, direction, onSort, showFolde
                     </span>
                     <span className="text-caption text-muted-foreground">{showFolder ? `${doc.source} · ` : ""}{sizeText(doc.sizeKb)}</span>
                     {score !== undefined ? <span className="text-caption text-primary">✦ ارتباط {formatNumber(score)}٪ · {doc.summary}</span> : null}
+                    <div className="mt-2 sm:hidden">{actions}</div>
                   </div>
                 </div>
               </TableCell>
@@ -73,15 +84,8 @@ export function DocumentTable({ documents, sortKey, direction, onSort, showFolde
                 <div data-ai className="flex max-w-56 flex-wrap gap-1">{(doc.tags ?? []).map((tag) => <Badge key={tag} variant="info">{tag}</Badge>)}</div>
               </TableCell>
               <TableCell className="hidden text-muted-foreground md:table-cell">{doc.updatedAt ? formatDate(doc.updatedAt) : "—"}</TableCell>
-              <TableCell>
-                <div className="flex items-center gap-1 whitespace-nowrap">
-                  <div data-ai className="flex gap-1">
-                    {aiActions.map((action) => (
-                      <Button key={action.key} type="button" size="xs" variant="soft" aria-label={`${action.label} ${doc.title}`} onClick={() => onAi(doc, action.key)}>{action.label}</Button>
-                    ))}
-                  </div>
-                  <Button variant="ghost" size="icon-sm" aria-label={`دانلود ${doc.title}`} title="دانلود" onClick={() => { downloadDocument(doc); toast.success("دانلود شروع شد."); }}><DownloadIcon aria-hidden /></Button>
-                </div>
+              <TableCell className="hidden sm:table-cell">
+                {actions}
               </TableCell>
             </TableRow>
           );

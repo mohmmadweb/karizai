@@ -53,7 +53,7 @@ export function ModelPicker({ value, onChange, lockedLabel }: ModelPickerProps) 
         render={<Button type="button" variant="ghost" className="rounded-full text-h4" aria-label={`مدل: ${label}`} />}
       >
         {current ? <ProviderLogo name={`${current.provider} ${current.name}`} /> : null}
-        <span className="max-w-56 truncate sm:max-w-72" title={label}>{label}</span>
+        <span className="whitespace-nowrap" title={label}>{label}</span>
         <ChevronDownIcon aria-hidden />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="min-w-72">

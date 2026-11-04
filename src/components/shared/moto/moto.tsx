@@ -12,7 +12,7 @@ const fa = (value: number) => value.toLocaleString("fa-IR");
 /** The search box of the template: white, thin border, icon at the start. */
 export function MotoSearch({ value, onChange, placeholder, className }: { value: string; onChange: (value: string) => void; placeholder: string; className?: string }) {
   return (
-    <label className={cn("flex h-10 min-w-0 flex-1 items-center gap-2 rounded-lg border bg-card px-3 focus-within:ring-3 focus-within:ring-ring/50 sm:max-w-xs", className)}>
+    <label className={cn("flex h-10 min-w-0 basis-full items-center sm:basis-auto sm:flex-1 gap-2 rounded-lg border bg-card px-3 focus-within:ring-3 focus-within:ring-ring/50 sm:max-w-xs", className)}>
       <SearchIcon className="size-4 shrink-0 text-muted-foreground" aria-hidden />
       <input type="search" value={value} onChange={(event) => onChange(event.target.value)} placeholder={placeholder} aria-label={placeholder} className="min-w-0 flex-1 bg-transparent text-body-sm outline-none placeholder:text-muted-foreground" />
     </label>

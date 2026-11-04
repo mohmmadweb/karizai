@@ -39,7 +39,7 @@ export function ComparePageContent() {
         <p className="rounded-lg bg-muted px-3 py-2 text-body-sm text-muted-foreground">{task.prompt}</p>
         <fieldset className="flex flex-col gap-2">
           <legend className="text-label">مدل‌ها (تا {formatCount(maxModels)} مدل)</legend>
-          <div className="flex flex-wrap gap-x-5 gap-y-2">
+          <div className="grid grid-cols-2 gap-x-5 gap-y-2 md:grid-cols-4">
             {available.map((model) => (
               <div key={model.id} className="flex items-center gap-2">
                 <Checkbox id={`cmp-${model.id}`} checked={chosen.includes(model.id)} onCheckedChange={(on) => toggle(model.id, Boolean(on))} />

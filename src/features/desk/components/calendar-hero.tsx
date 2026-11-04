@@ -4,12 +4,20 @@ import { useEffect, useState } from "react";
 
 const zone = "Asia/Tehran";
 const clockFormat = new Intl.DateTimeFormat("fa-IR", { timeZone: zone, hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false });
-const solarLong = new Intl.DateTimeFormat("fa-IR-u-ca-persian", { timeZone: zone, weekday: "long", day: "numeric", month: "long", year: "numeric" });
+const solarLongFormat = new Intl.DateTimeFormat("fa-IR-u-ca-persian", { timeZone: zone, weekday: "long", day: "numeric", month: "long", year: "numeric" });
+/** Weekday first, no commas: «چهارشنبه ۱۳ آبان ۱۴۰۵». */
+const longDate = (format: Intl.DateTimeFormat, date: Date) => {
+  const parts = Object.fromEntries(format.formatToParts(date).map((part) => [part.type, part.value]));
+  return [parts.weekday, parts.day, parts.month, parts.year].filter(Boolean).join(" ");
+};
+const solarLong = { format: (date: Date) => longDate(solarLongFormat, date) };
 const solarNumeric = new Intl.DateTimeFormat("fa-IR-u-ca-persian", { timeZone: zone, year: "numeric", month: "2-digit", day: "2-digit" });
 const gregoryNumeric = new Intl.DateTimeFormat("fa-IR-u-ca-gregory", { timeZone: zone, year: "numeric", month: "2-digit", day: "2-digit" });
-const gregoryLong = new Intl.DateTimeFormat("en-US-u-ca-gregory", { timeZone: zone, weekday: "long", year: "numeric", month: "long", day: "numeric" });
+const gregoryLongFormat = new Intl.DateTimeFormat("fa-IR-u-ca-gregory", { timeZone: zone, weekday: "long", day: "numeric", month: "long", year: "numeric" });
+const gregoryLong = { format: (date: Date) => longDate(gregoryLongFormat, date) };
 const lunarNumeric = new Intl.DateTimeFormat("fa-IR-u-ca-islamic", { timeZone: zone, year: "numeric", month: "2-digit", day: "2-digit" });
-const lunarLong = new Intl.DateTimeFormat("fa-IR-u-ca-islamic", { timeZone: zone, weekday: "long", day: "numeric", month: "long", year: "numeric" });
+const lunarLongFormat = new Intl.DateTimeFormat("fa-IR-u-ca-islamic", { timeZone: zone, weekday: "long", day: "numeric", month: "long", year: "numeric" });
+const lunarLong = { format: (date: Date) => longDate(lunarLongFormat, date) };
 
 /** The navy hero of the calendar: the live Tehran clock and today's Solar, Gregorian and Lunar dates. */
 export function CalendarHero() {
@@ -20,7 +28,7 @@ export function CalendarHero() {
   }, []);
   const dates = [
     { label: "تاریخ خورشیدی", main: solarNumeric.format(now), sub: solarLong.format(now), ltr: false },
-    { label: "تاریخ میلادی", main: gregoryNumeric.format(now), sub: gregoryLong.format(now), ltr: true },
+    { label: "تاریخ میلادی", main: gregoryNumeric.format(now), sub: gregoryLong.format(now), ltr: false },
     { label: "تاریخ قمری", main: lunarNumeric.format(now), sub: lunarLong.format(now), ltr: false },
   ];
   return (

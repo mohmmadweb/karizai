@@ -17,7 +17,7 @@ export function SettingsPageContent({ account }: { account: Account }) {
 
   return (
     <MotoPage className="gap-8">
-      <PageHeader title="تنظیمات" description="اطلاعات حساب، ظاهر پنل و ترجیح‌های شما." />
+      <PageHeader title="تنظیمات سامانه" description="اطلاعات حساب، ظاهر پنل و ترجیح‌های شما." />
       <FormSection title="حساب کاربری" description="این اطلاعات را مدیر سازمان تعیین می‌کند.">
         <dl className="grid gap-3 text-body md:col-span-2">
           <div className="flex gap-2"><dt className="text-muted-foreground">نام:</dt><dd>{account.name}</dd></div>

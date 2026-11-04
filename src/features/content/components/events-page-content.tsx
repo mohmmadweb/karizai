@@ -63,8 +63,8 @@ export function EventsPageContent() {
             const end = new Date(new Date(event.start).getTime() + event.durationMinutes * 60000);
             return (
               <article key={event.id} className="relative flex min-w-0 flex-col gap-3 rounded-2xl border bg-card p-5">
-                {extra.pinned ? <PinIcon className="absolute -top-2 -end-2 size-5 rotate-45 text-primary" aria-label="سنجاق‌شده" /> : null}
-                <Cover />
+                {extra.pinned ? <PinIcon className="absolute top-3 end-3 z-10 size-6 rotate-45 rounded-full bg-white/90 p-1 text-primary shadow-sm" aria-label="سنجاق‌شده" /> : null}
+                <Cover kind="event" id={event.id} category={kindLabels[extra.kind]} />
                 <h2 className="text-h4">{event.title}</h2>
                 <div className="flex flex-wrap gap-2">
                   <span className={cn(chip, statusStyle[st])}>{statusLabels[st]}</span>

@@ -4,6 +4,9 @@ import { getUptimeHistory, SLA_TARGET } from "../data/status";
 
 const pct = (v: number) => `${formatNumber(v, { maximumFractionDigits: 2 })}٪`;
 
+const shortMonths: Record<string, string> = { فروردین: "فرو", اردیبهشت: "ارد", خرداد: "خرد", تیر: "تیر", مرداد: "مرد", شهریور: "شهر", مهر: "مهر", آبان: "آبا", آذر: "آذر", دی: "دی", بهمن: "بهم", اسفند: "اسف" };
+const shortMonth = (month: string) => shortMonths[month.split(" ")[0] ?? ""] ?? month;
+
 /**
  * Twelve monthly bars on a 99–100٪ scale, with the SLA target line.
  * The list is oldest first, so in RTL the oldest month sits at the right and the newest at the left.
@@ -30,7 +33,7 @@ export function UptimeHistory() {
           <div className="flex gap-1.5 text-caption text-muted-foreground">
             {history.map((h) => (
               <span key={h.month} className="flex min-w-0 flex-1 flex-col items-center text-center leading-tight">
-                <span>{h.month}</span>
+                <span title={h.month} className="whitespace-nowrap">{shortMonth(h.month)}</span>
                 <span className="tabular-nums text-foreground">{formatNumber(h.uptime, { maximumFractionDigits: 2 })}</span>
               </span>
             ))}

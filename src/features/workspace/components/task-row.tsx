@@ -1,4 +1,5 @@
 "use client";
+import { CodeText } from "@/components/shared/code-text";
 
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -20,7 +21,7 @@ export function TaskRow({ task, projectName }: { task: Task; projectName?: strin
     <TableRow className="h-[60px]">
       <TableCell className="whitespace-normal">
         <span className="flex flex-col gap-0.5">
-          <span className={cn("font-medium", done && "text-muted-foreground line-through")}>{task.title}</span>
+          <span className={cn("font-medium", done && "text-muted-foreground line-through")}><CodeText>{task.title}</CodeText></span>
           {projectName ? <span className="text-caption text-muted-foreground">{projectName}</span> : null}
           {task.createdAt ? <span className="text-caption text-muted-foreground">ثبت‌شده: <time dateTime={task.createdAt} className="tabular-nums">{formatDate(task.createdAt, { dateStyle: "medium", timeStyle: "medium" })}</time></span> : null}
         </span>

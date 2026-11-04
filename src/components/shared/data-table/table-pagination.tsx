@@ -70,7 +70,7 @@ export function TablePagination({
           variant="outline"
           size="icon-sm"
           aria-label="صفحه اول"
-          disabled={page <= 1}
+          disabled={page <= 1 || pageCount <= 1}
           onClick={() => onPageChange(1)}
         >
           <ChevronsRightIcon aria-hidden />
@@ -79,7 +79,7 @@ export function TablePagination({
           variant="outline"
           size="icon-sm"
           aria-label="صفحه قبل"
-          disabled={page <= 1}
+          disabled={page <= 1 || pageCount <= 1}
           onClick={() => onPageChange(page - 1)}
         >
           <ChevronRightIcon aria-hidden />
@@ -88,7 +88,7 @@ export function TablePagination({
           variant="outline"
           size="icon-sm"
           aria-label="صفحه بعد"
-          disabled={page >= pageCount}
+          disabled={page >= pageCount || pageCount <= 1}
           onClick={() => onPageChange(page + 1)}
         >
           <ChevronLeftIcon aria-hidden />
@@ -97,7 +97,7 @@ export function TablePagination({
           variant="outline"
           size="icon-sm"
           aria-label="صفحه آخر"
-          disabled={page >= pageCount}
+          disabled={page >= pageCount || pageCount <= 1}
           onClick={() => onPageChange(pageCount)}
         >
           <ChevronsLeftIcon aria-hidden />

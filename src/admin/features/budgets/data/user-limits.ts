@@ -13,12 +13,12 @@ export type UserLimit = {
 };
 
 const users: UserLimit[] = [
-  { id: "user-002", name: "سارا احمدی", groupId: "group-001", monthlyToman: 1_500_000, internalTokens: 1_200_000, externalTokens: 791_000 },
-  { id: "user-003", name: "علی کریمی", groupId: "group-001", monthlyToman: 1_200_000, internalTokens: 700_000, externalTokens: 1_358_000 },
-  { id: "user-004", name: "نرگس موسوی", groupId: "group-002", monthlyToman: 1_000_000, internalTokens: 2_000_000, externalTokens: 240_000 },
-  { id: "user-006", name: "زهرا نوری", groupId: "group-003", monthlyToman: 2_500_000, internalTokens: 4_000_000, externalTokens: 600_000 },
-  { id: "user-007", name: "امیر صادقی", groupId: "group-003", monthlyToman: 2_000_000, internalTokens: 2_500_000, externalTokens: 1_000_000 },
-  { id: "user-008", name: "فاطمه حیدری", groupId: "group-005", monthlyToman: 600_000, internalTokens: 600_000, externalTokens: 106_000 },
+  { id: "user-002", name: "سارا کریمی", groupId: "group-001", monthlyToman: 1_500_000, internalTokens: 1_200_000, externalTokens: 791_000 },
+  { id: "user-003", name: "علی رضایی", groupId: "group-001", monthlyToman: 1_200_000, internalTokens: 700_000, externalTokens: 1_358_000 },
+  { id: "user-004", name: "نرگس حسینی", groupId: "group-002", monthlyToman: 1_000_000, internalTokens: 2_000_000, externalTokens: 240_000 },
+  { id: "user-006", name: "محمد کاظمی", groupId: "group-003", monthlyToman: 2_500_000, internalTokens: 4_000_000, externalTokens: 600_000 },
+  { id: "user-007", name: "مهدی صادقی", groupId: "group-003", monthlyToman: 2_000_000, internalTokens: 2_500_000, externalTokens: 1_000_000 },
+  { id: "user-008", name: "زهرا موسوی", groupId: "group-005", monthlyToman: 600_000, internalTokens: 600_000, externalTokens: 106_000 },
 ];
 
 export type ExhaustAction = "lock" | "internal-light" | "notify";

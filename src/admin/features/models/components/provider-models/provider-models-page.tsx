@@ -26,7 +26,7 @@ export function ProviderModelsPage({ providerId }: { providerId: string }) {
   const fetching = fetchStatus[provider.id] === "fetching";
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex min-w-0 flex-col gap-8">
       <BackLink href="/admin/models">بازگشت به ارائه‌دهنده‌ها</BackLink>
       <PageHeader
         title={provider.name}
@@ -47,7 +47,7 @@ export function ProviderModelsPage({ providerId }: { providerId: string }) {
       {all.length === 0 ? (
         <EmptyState icon={<BotIcon />} title="هنوز مدلی دریافت نشده" description="فهرست مدل‌ها را از این ارائه‌دهنده به‌روز کنید." />
       ) : (
-        <div className="flex flex-col gap-4">
+        <div className="flex min-w-0 flex-col gap-4">
           <SearchField label="جست‌وجوی مدل‌ها" placeholder="جست‌وجو بر اساس نام مدل" value={query} onValueChange={setQuery} />
           {visible.length === 0 ? (
             <EmptyState

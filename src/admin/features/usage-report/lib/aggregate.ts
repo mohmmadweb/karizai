@@ -20,8 +20,11 @@ export const emptyTotals = (): Totals => ({
   cost: null,
 });
 
+/** Each sample record stands for a batch of requests, so token totals look plausible per request. */
+export const REQUESTS_PER_RECORD = 120;
+
 function addTo(total: Totals, record: UsageRecord, cost: number | null) {
-  total.requests += 1;
+  total.requests += REQUESTS_PER_RECORD;
   total.inputTokens += record.inputTokens;
   total.outputTokens += record.outputTokens;
   total.cost = addCost(total.cost, cost);

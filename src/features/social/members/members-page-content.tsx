@@ -95,7 +95,7 @@ export function MembersPageContent() {
             </TableBody>
           </Table>
         </div>
-        <p className="border-t px-5 py-3 text-caption text-muted-foreground">نمایش {formatNumber(visible.length)} آیتم</p>
+        <p className="border-t px-5 py-3 text-caption text-muted-foreground">نمایش {formatNumber(visible.length)} از {formatNumber(214)} نفر · نمونه: فقط ردیف‌های نخست نمایش داده می‌شود</p>
       </MotoCard>
       <MotoPagination page={current} pageCount={pageCount} onPageChange={setPage} />
       <p className="text-caption text-muted-foreground">عامل‌ها را در گروه‌ها و گفتگوها با نامشان صدا بزنید، مثلاً «@دستیار کیفیت».</p>

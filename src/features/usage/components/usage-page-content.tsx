@@ -14,7 +14,7 @@ import { usePolicies } from "@/features/policies/components/policies-provider";
 import { tomanPer1kTokens } from "@/lib/pricing";
 import { getUsageReport } from "../data/usage";
 import type { UsagePeriod } from "../types";
-import { UsageTable } from "./usage-table";
+import { UsageTable, rowCosts } from "./usage-table";
 
 const periods: { value: UsagePeriod; label: string }[] = [
   { value: "daily", label: "روزانه" },
@@ -32,6 +32,10 @@ export function UsagePageContent() {
   const quota = getQuota();
   const [period, setPeriod] = useState<UsagePeriod>("daily");
   const report = getUsageReport(period);
+  const modelCosts = rowCosts(report.byModel);
+  const modelTotal = modelCosts.reduce((a, b) => a + b, 0);
+  const agentCosts = rowCosts(report.byAgent, modelTotal);
+  const periodLabel = periods.find((item) => item.value === period)?.label ?? "";
   const max = Math.max(...report.series.map((point) => point.tokens), 1);
   const nearLimit = state.used / quota.limit >= 0.8;
   const empty = report.series.every((point) => point.requests === 0);
@@ -48,7 +52,7 @@ export function UsagePageContent() {
       ) : null}
       <section aria-label="سهمیه" className="flex flex-col gap-3">
         <div className="flex flex-col gap-1">
-          <p className="text-body-sm text-muted-foreground">باقی‌مانده‌ی سهمیه</p>
+          <p className="text-body-sm text-muted-foreground">باقی‌مانده‌ی سهمیه · این ماه</p>
           <p className="flex flex-wrap items-baseline gap-x-2 text-h2 tabular-nums">
             {formatNumber(Math.max(quota.limit - state.used, 0))}
             <span className="text-body-sm text-muted-foreground">توکن از {formatNumber(quota.limit)}</span>
@@ -67,7 +71,7 @@ export function UsagePageContent() {
       ) : (
         <>
           <section className="flex flex-col gap-3" aria-label="روند مصرف">
-            <h2 className="text-h4">روند مصرف</h2>
+            <h2 className="text-h4">روند مصرف ({periodLabel})</h2>
             <ul className="flex flex-col gap-2">
               {report.series.map((point) => (
                 <li key={point.label} className="grid grid-cols-[4.5rem_1fr] sm:grid-cols-[5rem_1fr] items-center gap-3 text-body-sm">
@@ -82,8 +86,8 @@ export function UsagePageContent() {
             </ul>
           </section>
           <div className="grid min-w-0 gap-8 lg:grid-cols-2">
-            <UsageTable title="به تفکیک مدل" rows={report.byModel} />
-            <UsageTable title="به تفکیک عامل" rows={report.byAgent} />
+            <UsageTable title={`به تفکیک مدل (${periodLabel})`} rows={report.byModel} costs={modelCosts} />
+            <UsageTable title={`به تفکیک عامل (${periodLabel})`} rows={report.byAgent} costs={agentCosts} />
           </div>
         </>
       )}

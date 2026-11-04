@@ -62,7 +62,7 @@ export function RouterDetail({ routerId }: { routerId: string }) {
             <Input id="router-detail-name" value={draftName} disabled={router.isDefault} onChange={(event) => { setName(event.target.value); setError(null); }} aria-invalid={Boolean(error)} />
             {router.isDefault ? null : <Button type="button" disabled={name === null || name.trim() === router.name} onClick={saveName}>ذخیره</Button>}
           </div>
-          {error ? <FieldError>{error}</FieldError> : router.isDefault ? <FieldDescription>نام مسیریاب پیش‌فرض همیشه «خودکار» است.</FieldDescription> : null}
+          {error ? <FieldError>{error}</FieldError> : router.isDefault ? <FieldDescription>نام مسیریاب پیش‌فرض قابل تغییر نیست.</FieldDescription> : null}
         </Field>
         <Field>
           <FieldLabel htmlFor="router-groups">برای چه کسانی</FieldLabel>
