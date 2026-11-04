@@ -30,7 +30,7 @@ export function SidebarSocial({ pathname, collapsed, onNavigate }: SidebarSocial
     <div className={cn("flex flex-col gap-3 border-t border-sidebar-border pt-3")}>
       <section aria-label="شبکه اجتماعی" className="flex flex-col gap-0.5">
         <Title collapsed={collapsed}>شبکه اجتماعی</Title>
-        <Row {...common} label="گفتگوها" href="/messenger" current={inChats} count={unreadTotal} icon={icon(MessagesSquareIcon)} />
+        <Row {...common} label="گفتگوها" emphasis href="/messenger" current={inChats} count={unreadTotal} icon={icon(MessagesSquareIcon)} />
       </section>
       <section aria-label="پروژه‌ها و فعالیت‌ها" className="flex flex-col gap-0.5">
         <Title collapsed={collapsed}>پروژه‌ها و فعالیت‌ها</Title>

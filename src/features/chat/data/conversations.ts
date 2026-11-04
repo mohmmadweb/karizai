@@ -11,7 +11,7 @@ const base = { model: "model-3", webSearch: false, supervisor: false } as const;
 
 const conversations: Conversation[] = [
   { id: "conv-12", title: "وضعیت شاخص‌های خط ۲", updatedAt: "2026-10-30T11:05:00.000Z", settings: { ...base, connectionIds: [], agentId: "agent-indicators", knowledge: false } },
-  { id: "conv-11", title: "قیمت و پیش‌فاکتور برای آریاپلاست", updatedAt: "2026-10-29T13:20:00.000Z", settings: { ...base, connectionIds: [], agentId: "agent-pricing", knowledge: false } },
+  { id: "conv-11", title: "قیمت و پیش‌فاکتور فروش", updatedAt: "2026-10-29T13:20:00.000Z", settings: { ...base, connectionIds: [], agentId: "agent-pricing", knowledge: false } },
   { id: "conv-10", title: "آلارم E-217 اکسترودر خط ۲", updatedAt: "2026-10-28T07:50:00.000Z", settings: { ...base, connectionIds: [], agentId: "agent-maint", knowledge: false } },
   { id: "conv-9", title: "شرایط خشک‌کردن و نگهداری مستربچ", updatedAt: "2026-10-27T10:15:00.000Z", settings: { ...base, connectionIds: [], agentId: null, knowledge: true } },
   { id: "conv-8", title: "علت لکه‌ی تیره و فرمول جایگزین", updatedAt: "2026-10-26T14:30:00.000Z", settings: { ...base, connectionIds: [], agentId: "agent-quality", knowledge: false } },

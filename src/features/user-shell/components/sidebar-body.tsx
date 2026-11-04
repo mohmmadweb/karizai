@@ -78,13 +78,13 @@ export function SidebarBody({ pathname, query = "", onQueryChange, collapsed = f
           </SidebarSection>
         )}
         {collapsed ? null : (
-          <SidebarSection title="گفتگوهای اخیر" icon={HistoryIcon} classic={classic} openClassName="min-h-40 flex-1">
+          <SidebarSection title="گفتگوهای اخیر" icon={HistoryIcon} classic={classic} defaultOpen={false} openClassName="min-h-40 flex-1">
             {classic ? <SearchField value={query} onValueChange={(value) => onQueryChange?.(value)} label="جست‌وجو در گفتگوها" placeholder="جست‌وجو در گفتگوها" className="sm:max-w-none" /> : null}
             <div className="min-h-0 flex-1 overflow-y-auto"><ConversationList activeId={activeId} onNavigate={onNavigate} query={query} /></div>
           </SidebarSection>
         )}
         {collapsed ? null : (
-          <SidebarSection title="جریان‌های فعال" icon={ActivityIcon} classic={classic} openClassName="max-h-48 shrink-0">
+          <SidebarSection title="جریان‌های فعال" icon={ActivityIcon} classic={classic} defaultOpen={false} openClassName="max-h-48 shrink-0">
             <div className="min-h-0 flex-1 overflow-y-auto"><ActiveWorkflowsList activeId={activeFlowId} onNavigate={onNavigate} /></div>
           </SidebarSection>
         )}

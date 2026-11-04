@@ -1,10 +1,10 @@
-import { BellRingIcon, BookOpenIcon, CalendarDaysIcon, LayoutDashboardIcon, ScaleIcon, BotMessageSquareIcon, LibraryIcon, UserRoundIcon, ZapIcon, BotIcon, ChartNoAxesColumnIcon, LibraryBigIcon, PlugIcon, SparklesIcon, SquarePenIcon, WorkflowIcon } from "lucide-react";
+import { BellRingIcon, BookOpenIcon, CalendarDaysIcon, LayoutDashboardIcon, ScaleIcon, BotMessageSquareIcon, UserRoundIcon, ZapIcon, BotIcon, ChartNoAxesColumnIcon, LibraryBigIcon, PlugIcon, SparklesIcon, SquarePenIcon, WorkflowIcon } from "lucide-react";
 import type { UserSection, UserSectionGroup } from "../types";
 
 const sections: UserSection[] = [
   { id: "new-chat", title: "گفتگوی تازه", href: "/chat", icon: SquarePenIcon, exact: true },
   { id: "desk", title: "میز کار", href: "/desk", icon: LayoutDashboardIcon },
-  { id: "calendar", title: "تقویم کاری", href: "/calendar", icon: CalendarDaysIcon },
+  { id: "calendar", title: "تقویم کاری من", href: "/calendar", icon: CalendarDaysIcon },
   { id: "agents", title: "عامل‌های من", href: "/agents", icon: BotIcon },
   { id: "agent-repository", title: "مخزن عامل‌ها", href: "/agent-repository", icon: LibraryBigIcon },
   { id: "skills", title: "اسکیل‌های من", href: "/skills", icon: SparklesIcon },
@@ -12,17 +12,16 @@ const sections: UserSection[] = [
   { id: "workflows", title: "جریان‌ها", href: "/workflows", icon: WorkflowIcon },
   { id: "connections", title: "اتصال‌ها", href: "/connections", icon: PlugIcon },
   { id: "alerts", title: "هشدارها و گزارش‌ها", href: "/alerts", icon: BellRingIcon },
-  { id: "knowledge", title: "مدیریت فایل‌ها", href: "/knowledge", icon: BookOpenIcon },
+  { id: "knowledge", title: "مدیریت فایل‌های من", href: "/knowledge", icon: BookOpenIcon },
   { id: "usage", title: "مصرف من", href: "/usage", icon: ChartNoAxesColumnIcon },
 ];
 
 const byId = (ids: string[]) => ids.map((id) => sections.find((section) => section.id === id)!);
 
 const groups: UserSectionGroup[] = [
-  { id: "start", title: "", icon: LayoutDashboardIcon, bare: true, sections: byId(["desk", "calendar"]) },
-  { id: "agents", title: "عامل‌ها", icon: BotMessageSquareIcon, sections: byId(["agents", "agent-repository", "skills", "compare"]) },
+  { id: "start", title: "", icon: LayoutDashboardIcon, bare: true, sections: byId(["desk", "calendar", "knowledge"]) },
+  { id: "agents", title: "عامل‌ها", heading: "Kariz AI", icon: BotMessageSquareIcon, sections: byId(["agents", "agent-repository", "skills", "compare"]) },
   { id: "automation", title: "اتوماسیون", icon: ZapIcon, sections: byId(["workflows", "connections", "alerts"]) },
-  { id: "files", title: "", icon: LibraryIcon, bare: true, sections: byId(["knowledge"]) },
   { id: "account", title: "حساب", icon: UserRoundIcon, sections: byId(["usage"]) },
 ];
 

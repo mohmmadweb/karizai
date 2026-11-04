@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronDownIcon } from "lucide-react";
+import { ChevronDownIcon, SparklesIcon } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { isSectionPath } from "../data/user-sections";
@@ -58,7 +58,8 @@ export function SidebarNav({ groups, pathname, collapsed = false, flat = false, 
       {groups.map((group, index) => {
         const open = collapsed || group.bare || !closed.includes(group.id);
         return (
-          <section key={group.id} aria-label={group.title} className={cn("flex flex-col gap-1", collapsed && index > 0 && "border-t border-sidebar-border pt-3")}>
+          <section key={group.id} aria-label={group.heading ?? group.title} className={cn("flex flex-col gap-1", collapsed && index > 0 && "border-t border-sidebar-border pt-3")}>
+            {group.heading && !collapsed ? <h2 className="flex items-center gap-2 px-3 pt-1 text-label text-sidebar-foreground/60"><SparklesIcon className="size-4" aria-hidden />{group.heading}</h2> : null}
             {collapsed || group.bare ? null : (
               <button
                 type="button"

@@ -11,12 +11,14 @@ type SidebarSectionProps = {
   classic?: boolean;
   /** Extra classes for the section while it is open, for example its share of the height. */
   openClassName?: string;
+  /** Whether the list starts open; the person can still open or fold it. */
+  defaultOpen?: boolean;
   children: ReactNode;
 };
 
 /** A quiet list under the navigation; its title is a button that folds the whole list away. */
-export function SidebarSection({ title, icon: Icon, classic = false, openClassName, children }: SidebarSectionProps) {
-  const [open, setOpen] = useState(true);
+export function SidebarSection({ title, icon: Icon, classic = false, openClassName, defaultOpen = true, children }: SidebarSectionProps) {
+  const [open, setOpen] = useState(defaultOpen);
   return (
     <div className={cn("flex flex-col gap-1", !classic && "border-t border-sidebar-border pt-3", open && openClassName)}>
       <button
