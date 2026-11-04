@@ -18,7 +18,7 @@ export function BrandLogoGrid() {
               <BrandLogo
                 key={size}
                 variant={variant.id}
-                alt={`لوگوی موشکاف، ${variant.label}`}
+                alt={`لوگوی کاریز، ${variant.label}`}
                 className={size}
               />
             ))}

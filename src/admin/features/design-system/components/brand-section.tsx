@@ -19,7 +19,7 @@ export function BrandSection() {
               className="flex items-center justify-between gap-4 bg-card px-4 py-3"
             >
               <span className={`text-body-lg ${item.className}`}>
-                موشکاف ۱۲۳۴۵۶۷۸۹۰
+                کاریز ۱۲۳۴۵۶۷۸۹۰
               </span>
               <span dir="ltr" className="text-caption text-muted-foreground">
                 {item.weight} {item.name}

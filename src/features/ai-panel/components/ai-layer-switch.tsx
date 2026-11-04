@@ -18,6 +18,7 @@ export function AiLayerSwitch() {
         <span className="size-4 rounded-full bg-card shadow-sm" />
       </span>
       <span className="hidden 2xl:inline">نمایش لایه AI</span>
+      <span aria-hidden title="نمایش لایه AI" className="2xl:hidden">✦ لایه AI</span>
       <span className="sr-only 2xl:hidden">نمایش لایه AI</span>
     </button>
   );

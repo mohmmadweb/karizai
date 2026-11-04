@@ -42,7 +42,7 @@ export function DeskPageContent() {
     <div className="mx-auto flex w-full max-w-page flex-col gap-6 page-gutter py-8">
       <header className="flex flex-col gap-1">
         <h1 className="text-h1">نمای کلی فعالیت‌های من</h1>
-        <p className="text-body text-muted-foreground">{formatDate(new Date(), { dateStyle: "full" })}</p>
+        <p className="text-body text-muted-foreground">{formatDate(new Date(), { weekday: "long", day: "numeric", month: "long", year: "numeric" })}</p>
       </header>
       <DeskStats stats={[
         { label: "منتظر تأیید شما", value: pendingApprovalCount, icon: PackageCheckIcon, tone: "warning", href: "/desk" },
