@@ -2,19 +2,11 @@
 
 import { useEffect } from "react";
 
-/**
- * Registers `public/sw.js` on the static site. GitHub Pages lets browsers keep files only for ten
- * minutes; the worker keeps the files whose names change with every build, so repeat visits are instant.
- */
+/** Removes the service worker of earlier versions from visitors' browsers. The site no longer installs one. */
 export function ServiceWorkerRegister() {
   useEffect(() => {
-    if (process.env.NEXT_PUBLIC_STATIC_EXPORT !== "1" || !("serviceWorker" in navigator)) return;
-    const register = () => void navigator.serviceWorker.register("/sw.js").catch(() => undefined);
-    if (document.readyState === "complete") register();
-    else {
-      window.addEventListener("load", register, { once: true });
-      return () => window.removeEventListener("load", register);
-    }
+    if (!("serviceWorker" in navigator)) return;
+    void navigator.serviceWorker.getRegistrations().then((list) => Promise.all(list.map((item) => item.update().catch(() => undefined))));
   }, []);
   return null;
 }
