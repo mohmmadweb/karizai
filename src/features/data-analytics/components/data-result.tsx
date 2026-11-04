@@ -25,9 +25,9 @@ export function DataResult({ answer, dashboards, onAddToDashboard }: Props) {
       <section className="flex min-w-0 flex-col gap-3" aria-label="کوئری تولیدشده">
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="text-h4">کوئری تولیدشده</h2>
-          <Badge variant="success">فقط SELECT · محدود به خط‌های مجاز شما</Badge>
+          <Badge variant="success">فقط SELECT · محدود به خطوط مجاز شما</Badge>
         </div>
-        <pre dir="ltr" className="overflow-x-auto rounded-lg bg-muted p-3 text-caption">{answer.result.query}</pre>
+        <pre dir="ltr" className="max-w-full overflow-x-auto whitespace-pre-wrap break-words rounded-lg bg-muted p-3 text-left font-mono text-caption">{answer.result.query}</pre>
         <div className="flex flex-wrap gap-2">
           <Button type="button" size="sm" variant="soft" onClick={() => { onAddToDashboard(answer.dashboardId); toast.success(`به داشبورد «${dashboard?.name ?? ""}» افزوده شد.`); }}><LayoutDashboardIcon aria-hidden />افزودن به داشبورد</Button>
           <Button type="button" size="sm" variant="soft" onClick={() => { downloadExcel(answer.result); toast.success("خروجی Excel ساخته شد."); }}><DownloadIcon aria-hidden />خروجی Excel</Button>

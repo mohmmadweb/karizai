@@ -1,5 +1,6 @@
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import type { LucideIcon } from "lucide-react";
+import { formatNumber } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { toneClasses, type DeskTone } from "./desk-tones";
 
@@ -14,7 +15,7 @@ export function DeskStats({ stats }: { stats: DeskStat[] }) {
           <Link href={stat.href} className={cn("flex items-center gap-3 rounded-2xl border p-4 outline-none transition-shadow hover:shadow-md focus-visible:ring-3 focus-visible:ring-ring/50", toneClasses[stat.tone].tile)}>
             <span className={cn("flex size-11 shrink-0 items-center justify-center rounded-xl", toneClasses[stat.tone].chip)}><stat.icon className="size-5" aria-hidden /></span>
             <span className="flex flex-col">
-              <span className="text-h2 leading-none">{stat.value.toLocaleString("fa-IR")}</span>
+              <span className="text-h2 leading-none">{formatNumber(stat.value)}</span>
               <span className="text-body-sm text-muted-foreground">{stat.label}</span>
             </span>
           </Link>

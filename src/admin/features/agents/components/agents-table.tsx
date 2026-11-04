@@ -55,7 +55,7 @@ export function AgentsTable({ agents, onOpen }: { agents: OrgAgent[]; onOpen: (a
       id: "data",
       header: "دامنه‌ی داده",
       hideBelow: "xl",
-      className: "max-w-64 text-body-sm text-muted-foreground",
+      className: "max-w-64 whitespace-normal text-body-sm text-muted-foreground",
       cell: (a) => (a.dataIds.length ? a.dataIds.map((id) => sourceName.get(id) ?? id).join("، ") : "—"),
     },
   ];

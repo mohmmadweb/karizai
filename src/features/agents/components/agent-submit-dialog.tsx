@@ -28,7 +28,7 @@ export function AgentSubmitDialog({ open, onOpenChange, busy, onSubmit }: AgentS
       <DialogContent>
         <DialogHeader>
           <DialogTitle>ارسال برای تأیید</DialogTitle>
-          <DialogDescription>Agent همین حالا برای خود شما کار می‌کند. پس از تأیید ادمین، برای گروهی که انتخاب می‌کنید هم در دسترس قرار می‌گیرد.</DialogDescription>
+          <DialogDescription>عامل همین حالا برای خود شما کار می‌کند. پس از تأیید ادمین، برای گروهی که انتخاب می‌کنید هم در دسترس قرار می‌گیرد.</DialogDescription>
         </DialogHeader>
         <RadioGroup value={chosen} onValueChange={(value) => setChosen(String(value))} aria-label="دسترسی">
           {groups.map((item) => (

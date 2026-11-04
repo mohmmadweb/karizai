@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { LogOutIcon } from "lucide-react";
 import { ThemeToggle } from "@/components/shared/theme-toggle";
 import { buttonVariants } from "@/components/ui/button";

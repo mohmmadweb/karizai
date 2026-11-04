@@ -60,13 +60,13 @@ export function DesktopTab() {
       </Card>
       <div className="grid gap-4 md:grid-cols-3">
         {platforms.map((item) => (
-          <Card key={item.id}>
+          <Card key={item.id} className="h-full">
             <CardHeader>
               <CardTitle className="flex items-center gap-2"><item.icon className="size-5" aria-hidden />{item.name}<Badge variant="outline">به‌زودی</Badge></CardTitle>
               <CardDescription>{item.detail}</CardDescription>
             </CardHeader>
-            <CardContent>
-              <Button variant="outline" size="sm" onClick={() => toast.info(`اپ ${item.name} به‌زودی منتشر می‌شود.`, { description: "تا آن زمان از «نصب به‌عنوان اپ» استفاده کنید." })}><DownloadIcon aria-hidden />دریافت</Button>
+            <CardContent className="mt-auto">
+              <Button variant="outline" size="sm" disabled title="به‌زودی"><DownloadIcon aria-hidden />دریافت (به‌زودی)</Button>
             </CardContent>
           </Card>
         ))}

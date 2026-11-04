@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { PencilIcon, Share2Icon, UsersRoundIcon } from "lucide-react";
@@ -45,13 +45,13 @@ export function AgentCard({ agent, readOnly = false }: { agent: Agent; readOnly?
   function addToGroup() {
     const group = groupFor(agent);
     toast.success(`«${agent.name}» به گروه «${group}» در کاریز اضافه شد.`, {
-      description: "اعضای گروه با @نام Agent صدایش می‌زنند.",
+      description: "اعضای گروه با @نام عامل صدایش می‌زنند.",
       action: { label: "رفتن به گروه‌ها", onClick: () => router.push("/messenger/groups") },
     });
   }
 
   return (
-    <Card className="transition-shadow hover:shadow-md">
+    <Card className="h-full transition-shadow hover:shadow-md">
       <CardHeader className="grid-cols-[auto_1fr] items-start gap-x-3">
         <AgentIcon name={agent.name} purpose={agent.purpose} className="row-span-2" />
         <CardTitle className="flex flex-wrap items-center gap-2">
@@ -72,7 +72,7 @@ export function AgentCard({ agent, readOnly = false }: { agent: Agent; readOnly?
         </div>
         <div className="flex flex-wrap items-center justify-end gap-2">
           <Button type="button" variant="ghost" size="sm" onClick={addToGroup}><UsersRoundIcon aria-hidden />افزودن به گروه کاریز</Button>
-          {readOnly ? null : (
+          {readOnly ? <Link href={`/agents/${agent.id}`} className={buttonVariants({ variant: "outline", size: "sm" })}>مشاهده</Link> : (
             <>
               <Tooltip>
                 <TooltipTrigger render={<Button type="button" variant="ghost" size="icon-sm" aria-label={`اشتراک‌گذاری ${agent.name}`} onClick={() => setSharing(true)} />}><Share2Icon aria-hidden /></TooltipTrigger>

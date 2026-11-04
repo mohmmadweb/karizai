@@ -1,7 +1,8 @@
 "use client";
 
+import { hasMessageBox } from "@/features/ai-panel/lib/page-layout";
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { usePathname } from "next/navigation";
 import { ActivityIcon, CheckCircle2Icon, ChevronDownIcon, ChevronUpIcon, HandIcon, XCircleIcon, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -49,7 +50,7 @@ export function LiveDock() {
       <span className="relative inline-flex size-2.5 rounded-full bg-info" />
     </span>
   ) : <StatusIcon aria-hidden className={cn("size-4 shrink-0", run.status === "failed" ? "text-destructive" : "text-success")} />;
-  const position = pathname.startsWith("/admin") ? "bottom-5" : "bottom-24";
+  const position = pathname.startsWith("/admin") ? "bottom-5" : hasMessageBox(pathname) ? "bottom-48" : "bottom-24";
 
   if (collapsed) {
     return (

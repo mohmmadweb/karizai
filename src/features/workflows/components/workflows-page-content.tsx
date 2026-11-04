@@ -20,7 +20,7 @@ export function WorkflowsPageContent() {
 
   return (
     <div className="mx-auto flex w-full max-w-page flex-col gap-8 page-gutter py-8">
-      <PageHeader title="جریان‌ها" description="جریان، چند گام پشت‌سرهم است که Agentها و ابزارها انجام می‌دهند؛ دستی، زمان‌بندی‌شده یا با یک رویداد شروع می‌شود." action={<div className="flex flex-wrap items-center gap-2"><LiveSwitch />{workflows.length > 0 ? createButton : null}</div>} />
+      <PageHeader title="جریان‌ها" description="جریان، چند گام پشت‌سرهم است که عامل‌ها و ابزارها انجام می‌دهند؛ دستی، زمان‌بندی‌شده یا با یک رویداد شروع می‌شود." action={<div className="flex flex-wrap items-center gap-2"><LiveSwitch className="lg:hidden" />{workflows.length > 0 ? createButton : null}</div>} />
       {workflows.length === 0 ? (
         <EmptyState icon={<WorkflowIcon />} title="هنوز جریانی نساخته‌اید" description="از یک قالب آماده یا با یک جمله شروع کنید." action={createButton} />
       ) : (

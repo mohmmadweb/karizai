@@ -25,7 +25,7 @@ export function StructuredResultView({ result }: { result: StructuredResult }) {
   const kinds = allowedKinds(result);
 
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border bg-card p-4">
+    <div className="flex min-w-0 max-w-full flex-col gap-3 rounded-2xl border bg-card p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div role="group" aria-label="نوع نمایش" className="flex flex-wrap gap-1">
           {kinds.map((item) => (

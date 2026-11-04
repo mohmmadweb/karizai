@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { ArrowUpLeftIcon, CheckCircle2Icon, FileTextIcon } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { SearchField } from "@/components/shared/search-field";

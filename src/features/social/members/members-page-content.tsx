@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { DownloadIcon, UploadIcon } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -55,7 +55,7 @@ export function MembersPageContent() {
             {shownPeople.map((m) => (
               <TableRow key={m.id}>
                 <TableCell><span className="flex items-center gap-2"><PersonAvatar seed={m.id} name={m.name} className="size-8" />{m.name}</span></TableCell>
-                <TableCell>{m.role}</TableCell>
+                <TableCell className="whitespace-normal">{m.role}</TableCell>
                 <TableCell className="hidden md:table-cell">{m.unit}</TableCell>
                 <TableCell className="hidden text-body-sm text-muted-foreground sm:table-cell">{m.lastActive}</TableCell>
                 <TableCell className="text-end">

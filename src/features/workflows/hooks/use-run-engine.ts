@@ -9,12 +9,12 @@ import { taskFromStep } from "../lib/task-step";
 import type { NodeKind, Run, RunStep, Workflow, WorkflowNode } from "../types";
 
 const outputs: Record<NodeKind, string> = {
-  agent: "Agent کار را انجام داد و نتیجه را برگرداند.",
+  agent: "عامل کار را انجام داد و نتیجه را برگرداند.",
   skill: "اسکیل اجرا شد و نتیجه را برگرداند.",
   tool: "ابزار با موفقیت اجرا شد.",
   condition: "شرط بررسی شد.",
   approval: "تأیید شد.",
-  orchestrator: "هماهنگ‌کننده کار را بین Agentها تقسیم کرد و نتیجه‌ها را جمع کرد.",
+  orchestrator: "هماهنگ‌کننده کار را بین عامل‌ها تقسیم کرد و نتیجه‌ها را جمع کرد.",
   code: "اسکریپت اجرا شد.",
   "ml-model": "مدل اجرا شد.",
   "prompt-optimizer": "✦ پرامپت بهینه شد: نقش، قالب خروجی و ارجاع به رویه‌ی QC-SOP-07 اضافه شد و ۳۸٪ توکن کمتر مصرف می‌کند.",
@@ -99,7 +99,7 @@ function outputOf(node: WorkflowNode, nodes: WorkflowNode[], names: Names, plan:
     case "ml-model": return describeMl(node);
     case "code": return `اسکریپت ${c.language === "javascript" ? "JavaScript" : "Python"} در محیط ایزوله اجرا شد · خروجی: ${c.language === "javascript" ? "{ lateOrders: 2 }" : "{\"cpk\": 1.12, \"batches\": 6}"}`;
     case "condition": return `شرط «${c.condition ?? node.label}» بررسی شد: مسیر «${choose(node, nodes)}».`;
-    case "router": return `✦ مسیریاب درخواست را به «${names.agent(c.childAgentIds?.[0] ?? "") ?? "Agent مناسب"}» سپرد (اطمینان ۸۷٪)؛ چون داده حساس است، مدل داخلی انتخاب شد.`;
+    case "router": return `✦ مسیریاب درخواست را به «${names.agent(c.childAgentIds?.[0] ?? "") ?? "عامل مناسب"}» سپرد (اطمینان ۸۷٪)؛ چون داده حساس است، مدل داخلی انتخاب شد.`;
     case "supervisor": {
       const count = formatNumber(c.checks?.length ?? 0);
       return `✦ ناظر ${count} معیار را بررسی کرد: ${count} از ${count} برقرار است؛ خروجی تأیید شد.`;

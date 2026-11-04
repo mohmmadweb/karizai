@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { BellRingIcon, CircleCheckIcon, FlaskConicalIcon, TriangleAlertIcon } from "lucide-react";
 import { useMessenger } from "@/features/messenger/components/messenger-provider";
 import { AiAction } from "@/features/social/components/ai-dialog";

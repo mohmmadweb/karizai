@@ -5,7 +5,7 @@ import type { UsageRecord } from "../types";
  * output equal; it is replaced by the real clock with real data.
  */
 export function getReportNow(): string {
-  return "2026-10-18T14:30:00.000Z";
+  return "2026-11-04T14:30:00.000Z";
 }
 
 const DAY = 86_400_000;

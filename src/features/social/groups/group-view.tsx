@@ -29,9 +29,9 @@ export function GroupView({ group, messages, onSend, onAddAgent }: GroupViewProp
     <section aria-label={group.name} className="flex min-w-0 flex-col gap-4 rounded-2xl border bg-card p-4">
       <header className="flex flex-wrap items-center gap-3 border-b pb-3">
         <span aria-hidden className="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-h4 text-primary">{group.name[0]}</span>
-        <div className="min-w-0 flex-1">
+        <div className="min-w-40 flex-1 basis-[calc(100%-3.5rem)] sm:basis-0">
           <h2 className="text-h4">{group.name}</h2>
-          <p className="text-caption text-muted-foreground">{formatNumber(group.memberCount)} عضو · {formatNumber(group.agentIds.length)} عامل هوشمند{agentNames ? ` (${agentNames})` : ""}</p>
+          <p className="text-caption text-muted-foreground">{formatNumber(group.memberCount)} عضو · {formatNumber(group.agentIds.length)} عامل هوشمند{agentNames ? ` (` : ""}{agentNames ? <bdi>{agentNames}</bdi> : null}{agentNames ? ")" : ""}</p>
         </div>
         <Button variant="outline" size="sm" onClick={onAddAgent}><BotIcon aria-hidden />افزودن عامل به گروه</Button>
         <AiButton label="خلاصه‌ی خوانده‌نشده‌ها" onClick={() => setSummaryKey(Date.now())} />

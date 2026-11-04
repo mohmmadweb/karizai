@@ -14,7 +14,7 @@ const tasks: Task[] = [
   { id: "task-3", projectId: "proj-1", title: "نصب حسگر دمای دوم روی قالب", assigneeId: "col-reza", status: "done", priority: "normal", dueDate: "2026-10-28T00:00:00.000Z", source: "manual" },
   { id: "task-4", projectId: "proj-2", title: "آزمون ضربه‌ی آیزود روی سه نمونه", assigneeId: "col-narges", status: "doing", priority: "high", dueDate: "2026-11-10T00:00:00.000Z", source: "manual" },
   { id: "task-5", projectId: "proj-2", title: "بازبینی پیش‌فاکتور فروش", assigneeId: "user-1", status: "todo", priority: "high", dueDate: "2026-11-04T00:00:00.000Z", source: "manual" },
-  { id: "task-6", projectId: "proj-3", title: "تأیید سفارش ۸۰ تن PE سنگین HD5502", assigneeId: "user-1", status: "todo", priority: "high", dueDate: "2026-11-02T00:00:00.000Z", source: "reorder-flow" },
+  { id: "task-6", projectId: "proj-3", title: "تأیید سفارش ۸۰ تن PE سنگین HD5502", assigneeId: "user-1", status: "todo", priority: "high", dueDate: "2026-11-06T00:00:00.000Z", source: "reorder-flow" },
   { id: "task-7", projectId: "proj-3", title: "استعلام قیمت از دو تأمین‌کننده‌ی داخلی", assigneeId: "col-ali", status: "doing", priority: "normal", dueDate: "2026-11-06T00:00:00.000Z", source: "minutes" },
   { id: "task-8", projectId: "proj-3", title: "شمارش موجودی مستربچ مشکی", assigneeId: "col-sara", status: "done", priority: "low", dueDate: "2026-11-01T00:00:00.000Z", source: "manual" },
   { id: "task-9", projectId: "proj-4", title: "تعیین گیرندگان گزارش فروش هفتگی", assigneeId: "user-1", status: "doing", priority: "normal", dueDate: "2026-11-07T00:00:00.000Z", source: "manual" },

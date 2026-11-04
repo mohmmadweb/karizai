@@ -13,7 +13,7 @@ export const nodeKindLabels: Record<NodeKind, string> = {
   tool: "ابزار",
   condition: "شرط",
   approval: "تأیید انسانی",
-  orchestrator: "هماهنگ‌کننده‌ی چند Agent",
+  orchestrator: "هماهنگ‌کننده‌ی چند عامل",
   code: "کد یا اسکریپت",
   "ml-model": "مدل ML",
   "prompt-optimizer": "بهینه‌ساز پرامپت",
@@ -24,7 +24,7 @@ export const nodeKindLabels: Record<NodeKind, string> = {
 };
 
 const defaultLabels: Record<NodeKind, string> = {
-  agent: "گام Agent",
+  agent: "گام عامل",
   skill: "گام اسکیل",
   tool: "گام ابزار",
   condition: "شرط تازه",

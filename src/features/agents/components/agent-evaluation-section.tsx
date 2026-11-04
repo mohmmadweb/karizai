@@ -51,7 +51,7 @@ export function AgentEvaluationSection({ version, score, onScore }: AgentEvaluat
   const correct = cases.length - Object.keys(evalMisses).length;
 
   return (
-    <FormSection title="نسخه و ارزیابی" description="هر ذخیره یک نسخه‌ی تازه می‌سازد. پیش از ارسال برای تأیید، Agent را با مجموعه‌ی ارزیابی بسنجید.">
+    <FormSection title="نسخه و ارزیابی" description="هر ذخیره یک نسخه‌ی تازه می‌سازد. پیش از ارسال برای تأیید، عامل را با مجموعه‌ی ارزیابی بسنجید.">
       <div className="flex flex-wrap items-center gap-2 md:col-span-2">
         <Badge variant="outline">{version ? `نسخه ${formatVersion(version)}` : "نسخه ۱.۰ پس از ذخیره"}</Badge>
         <Badge variant="secondary">مجموعه ارزیابی: {formatNumber(cases.length)} نمونه</Badge>
@@ -78,10 +78,10 @@ export function AgentEvaluationSection({ version, score, onScore }: AgentEvaluat
             <AlertDescription>
               <ul className="flex flex-col gap-1">
                 {cases.filter((item) => evalMisses[item.id]).map((item) => (
-                  <li key={item.id} className="flex gap-2"><CircleXIcon className="mt-1 size-4 shrink-0 text-destructive" aria-hidden /><span>«{item.question}» — پاسخ Agent: {evalMisses[item.id]}</span></li>
+                  <li key={item.id} className="flex gap-2"><CircleXIcon className="mt-1 size-4 shrink-0 text-destructive" aria-hidden /><span>«{item.question}» — پاسخ عامل: {evalMisses[item.id]}</span></li>
                 ))}
               </ul>
-              <span className="mt-1 block">نتیجه با ذخیره‌ی Agent روی کارت آن ثبت می‌شود.</span>
+              <span className="mt-1 block">نتیجه با ذخیره‌ی عامل روی کارت آن ثبت می‌شود.</span>
             </AlertDescription>
           </Alert>
         ) : null}

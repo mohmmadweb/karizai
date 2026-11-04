@@ -18,7 +18,7 @@ export function AgentSkillsSection({ skillIds, onChange }: AgentSkillsSectionPro
   const hasPending = skills.some((skill) => skillIds.includes(skill.id) && skill.approval !== "approved");
 
   return (
-    <FormSection title="مهارت‌ها" description="مهارت‌ها به Agent توانایی‌های آماده می‌دهند.">
+    <FormSection title="مهارت‌ها" description="مهارت‌ها به عامل توانایی‌های آماده می‌دهند.">
       <div className="flex flex-col gap-3 md:col-span-2">
         {skills.map((skill) => (
           <div key={skill.id} className="flex items-start gap-2">

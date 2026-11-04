@@ -74,8 +74,8 @@ export function DocumentTable({ documents, sortKey, direction, onSort, showFolde
               </TableCell>
               <TableCell className="hidden text-muted-foreground md:table-cell">{doc.updatedAt ? formatDate(doc.updatedAt) : "—"}</TableCell>
               <TableCell>
-                <div className="flex flex-wrap items-center gap-1">
-                  <div data-ai className="flex flex-wrap gap-1">
+                <div className="flex items-center gap-1 whitespace-nowrap">
+                  <div data-ai className="flex gap-1">
                     {aiActions.map((action) => (
                       <Button key={action.key} type="button" size="xs" variant="soft" aria-label={`${action.label} ${doc.title}`} onClick={() => onAi(doc, action.key)}>{action.label}</Button>
                     ))}

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { useRouter } from "next/navigation";
 import { PauseIcon, PencilIcon, PlayIcon, Trash2Icon } from "lucide-react";
 import { useState } from "react";

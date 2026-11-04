@@ -19,7 +19,7 @@ export function SkillsPageContent() {
 
   return (
     <div className="mx-auto flex w-full max-w-page flex-col gap-8 page-gutter py-8">
-      <PageHeader title="اسکیل‌های من" description="اسکیل، دستورالعمل آماده‌ای است که به Agent توانایی تازه می‌دهد. اسکیل تازه یا ویرایش‌شده باید ادمین تأیید کند." action={<Button onClick={() => setCreating(true)}><PlusIcon aria-hidden />اسکیل تازه</Button>} />
+      <PageHeader title="اسکیل‌های من" description="اسکیل، دستورالعمل آماده‌ای است که به عامل توانایی تازه می‌دهد. اسکیل تازه یا ویرایش‌شده باید ادمین تأیید کند." action={<Button onClick={() => setCreating(true)}><PlusIcon aria-hidden />اسکیل تازه</Button>} />
       <SearchField value={query} onValueChange={setQuery} label="جست‌وجو در اسکیل‌ها" placeholder="جست‌وجو در اسکیل‌ها" />
       {skills.length === 0 ? (
         <EmptyState icon={<SparklesIcon />} title="هنوز اسکیلی ندارید" description="اولین اسکیل را بسازید یا از فایل وارد کنید." />

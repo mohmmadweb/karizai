@@ -30,8 +30,8 @@ export function validateWorkflow(workflow: Workflow, { agents, skills, connectio
     const c = node.config;
     if (node.kind === "agent") {
       const agent = agents.find((a) => a.id === c.agentId);
-      if (!agent) problems.push(`برای گام «${node.label}» یک Agent انتخاب کنید.`);
-      else if (!agent.isEnabled) problems.push(`Agent «${agent.name}» غیرفعال است: ${agent.disabledReason ?? "در دسترس نیست."}`);
+      if (!agent) problems.push(`برای گام «${node.label}» یک عامل انتخاب کنید.`);
+      else if (!agent.isEnabled) problems.push(`عامل «${agent.name}» غیرفعال است: ${agent.disabledReason ?? "در دسترس نیست."}`);
       for (const param of agentParams) {
         const problem = paramProblem(param, c.params?.[param.key] ?? param.defaultValue);
         if (problem) problems.push(`گام «${node.label}»: ${problem}`);
@@ -40,20 +40,20 @@ export function validateWorkflow(workflow: Workflow, { agents, skills, connectio
     if (node.kind === "skill") {
       const skill = skills.find((item) => item.id === c.skillId);
       const owner = agents.find((a) => a.id === c.agentId);
-      if (!owner) problems.push(`اسکیل گام «${node.label}» باید زیرمجموعه‌ی یک Agent باشد؛ Agent را انتخاب کنید.`);
-      else if (skill && !owner.skillIds.includes(skill.id)) problems.push(`اسکیل «${skill.name}» به Agent «${owner.name}» تعلق ندارد.`);
+      if (!owner) problems.push(`اسکیل گام «${node.label}» باید زیرمجموعه‌ی یک عامل باشد؛ عامل را انتخاب کنید.`);
+      else if (skill && !owner.skillIds.includes(skill.id)) problems.push(`اسکیل «${skill.name}» به عامل «${owner.name}» تعلق ندارد.`);
       if (!skill) problems.push(`برای گام «${node.label}» یک اسکیل انتخاب کنید.`);
       else if (skill.approval !== "approved") problems.push(`اسکیل «${skill.name}» هنوز تأیید ادمین را نگرفته و قابل استفاده نیست.`);
     }
     if (node.kind === "code" && !c.code?.trim()) problems.push(`کد گام «${node.label}» را بنویسید.`);
     if (node.kind === "ml-model" && !getMlModel(c.mlModelId)) problems.push(`برای گام «${node.label}» یک مدل ML ثبت‌شده انتخاب کنید.`);
-    if (node.kind === "router" && !c.childAgentIds?.length) problems.push(`برای مسیریاب «${node.label}» دست‌کم یک Agent انتخاب کنید.`);
+    if (node.kind === "router" && !c.childAgentIds?.length) problems.push(`برای مسیریاب «${node.label}» دست‌کم یک عامل انتخاب کنید.`);
     if (node.kind === "supervisor" && !c.checks?.some((item) => item.trim())) problems.push(`برای ناظر «${node.label}» دست‌کم یک معیار بنویسید.`);
     if (node.kind === "fork" && edges.filter((e) => e.source === node.id).length < 2) problems.push(`از «${node.label}» دست‌کم دو شاخه بیرون بکشید.`);
     if (node.kind === "join" && edges.filter((e) => e.target === node.id).length < 2) problems.push(`«${node.label}» باید دست‌کم دو شاخه را به هم برساند.`);
     if (c.onError === "branch" && !edges.some((e) => e.source === node.id && e.label === "خطا")) problems.push(`برای گام «${node.label}» گام مسیر «خطا» را انتخاب کنید.`);
     if (node.kind === "orchestrator") {
-      if (!c.childAgentIds?.length) problems.push(`برای هماهنگ‌کننده‌ی «${node.label}» دست‌کم یک Agent زیرمجموعه انتخاب کنید.`);
+      if (!c.childAgentIds?.length) problems.push(`برای هماهنگ‌کننده‌ی «${node.label}» دست‌کم یک عامل زیرمجموعه انتخاب کنید.`);
       if (!c.maxSteps || c.maxSteps < 1) problems.push(`سقف گام‌های «${node.label}» را تعیین کنید.`);
     }
     if (node.kind === "condition") {

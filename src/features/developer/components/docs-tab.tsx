@@ -16,7 +16,7 @@ export function DocsTab() {
         <p className="text-muted-foreground">هر درخواست سرآیند <bdi dir="ltr" className="font-mono">Authorization: Bearer &lt;کلید&gt;</bdi> دارد. دسترسی کلید از دسترسی سازنده‌اش بیشتر نیست، مصرف آن در «مصرف من» حساب می‌شود و همه‌ی فراخوانی‌ها در گزارش ممیزی ادمین ثبت می‌شوند. تیم داخلی یا پیمانکار می‌تواند با همین API روی کاریز توسعه دهد.</p>
       </div>
       {endpoints.map((endpoint) => (
-        <section key={endpoint.id} id={`api-${endpoint.id}`} className="flex flex-col gap-3 rounded-xl border p-4" aria-labelledby={`api-title-${endpoint.id}`}>
+        <section key={endpoint.id} id={`api-${endpoint.id}`} className="flex min-w-0 flex-col gap-3 rounded-xl border p-4" aria-labelledby={`api-title-${endpoint.id}`}>
           <h3 id={`api-title-${endpoint.id}`} className="flex flex-wrap items-center gap-2 text-h4">
             {endpoint.title}
             <Badge variant="outline"><bdi dir="ltr" className="font-mono">{endpoint.method} {endpoint.path}</bdi></Badge>
@@ -27,14 +27,14 @@ export function DocsTab() {
             {endpoint.request ? <div className="flex min-w-0 flex-col gap-1"><span className="text-label">درخواست</span><CodeBlock code={JSON.stringify(endpoint.request, null, 2)} label="درخواست" /></div> : null}
             <div className="flex min-w-0 flex-col gap-1"><span className="text-label">پاسخ</span><CodeBlock code={JSON.stringify(endpoint.response, null, 2)} label="پاسخ" /></div>
           </div>
-          <Tabs defaultValue="curl">
+          <Tabs defaultValue="curl" className="min-w-0">
             <TabsList>
               <TabsTrigger value="curl">curl</TabsTrigger>
               <TabsTrigger value="python">Python</TabsTrigger>
               <TabsTrigger value="javascript">JavaScript</TabsTrigger>
             </TabsList>
             {(["curl", "python", "javascript"] as const).map((language) => (
-              <TabsContent key={language} value={language} className="pt-2"><CodeBlock code={snippet(endpoint, language)} label={`نمونه‌ی ${language}`} /></TabsContent>
+              <TabsContent key={language} value={language} className="min-w-0 pt-2"><CodeBlock code={snippet(endpoint, language)} label={`نمونه‌ی ${language}`} /></TabsContent>
             ))}
           </Tabs>
         </section>

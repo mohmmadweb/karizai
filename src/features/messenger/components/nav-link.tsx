@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { itemClass } from "@/features/user-shell/components/sidebar-nav";
 import { cn } from "@/lib/utils";

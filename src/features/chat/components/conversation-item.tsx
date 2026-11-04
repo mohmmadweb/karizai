@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { CheckIcon, FolderIcon, FolderInputIcon, MoreVerticalIcon, PencilIcon, Trash2Icon } from "lucide-react";
 import {
   AlertDialog,

@@ -38,8 +38,8 @@ const templates: WorkflowTemplate[] = [
   },
   {
     id: "tpl-multi-agent",
-    name: "آماده‌سازی جلسه (چند Agent)",
-    description: "یک Agent هماهنگ‌کننده کار را بین Agent هوش تجاری، Agent سند و Agent نگارش تقسیم می‌کند.",
+    name: "آماده‌سازی جلسه (چند عامل)",
+    description: "یک عامل هماهنگ‌کننده کار را بین عامل هوش تجاری، عامل سند و عامل نگارش تقسیم می‌کند.",
     triggers: [{ kind: "manual" }],
     nodes: [
       { id: "n1", kind: "orchestrator", label: "هماهنگ‌کننده‌ی جلسه", position: { x: 0, y: 0 }, config: { childAgentIds: ["agent-bi", "agent-doc", "agent-2"], maxSteps: 8, instruction: "برای جلسه‌ی فردا آمار فروش، خلاصه‌ی قرارداد و دستور جلسه را آماده کن." } },
@@ -139,11 +139,11 @@ const templates: WorkflowTemplate[] = [
   {
     id: "tpl-supervised-answer",
     name: "تحلیل بچ مردود با ناظر",
-    description: "پرسش کیفیت را بهینه می‌کند، مسیریاب آن را به Agent مناسب می‌سپارد، Agent علت را تحلیل می‌کند، اسکریپت شاخص Cpk را حساب می‌کند و ناظر پیش از ارسال خروجی را با معیارها می‌سنجد.",
+    description: "پرسش کیفیت را بهینه می‌کند، مسیریاب آن را به عامل مناسب می‌سپارد، عامل علت را تحلیل می‌کند، اسکریپت شاخص Cpk را حساب می‌کند و ناظر پیش از ارسال خروجی را با معیارها می‌سنجد.",
     triggers: [{ kind: "manual" }],
     nodes: [
       { id: "s1", kind: "prompt-optimizer", label: "✦ بهینه‌ساز پرامپت", position: { x: 0, y: 0 }, config: { instruction: "پرسش «چرا بچ B-1405-212 مردود شد؟» را با شماره‌ی بچ، آزمون‌ها و قالب خروجی کامل کن." } },
-      { id: "s2", kind: "router", label: "✦ مسیریاب هوشمند", position: { x: 0, y: 117 }, config: { childAgentIds: ["agent-quality", "agent-maint", "agent-doc"], instruction: "درخواست را به Agent مناسب بسپار." } },
+      { id: "s2", kind: "router", label: "✦ مسیریاب هوشمند", position: { x: 0, y: 117 }, config: { childAgentIds: ["agent-quality", "agent-maint", "agent-doc"], instruction: "درخواست را به عامل مناسب بسپار." } },
       { id: "s3", kind: "agent", label: "اجرا: تحلیل علت مردودی", position: { x: 0, y: 234 }, config: { agentId: "agent-quality", params: { inputFrom: "previous", maxOutputTokens: "1500" }, instruction: "علت مردودی را با شواهد LIMS و MES به ترتیب احتمال بنویس.", retries: 1, timeoutSec: 60 } },
       { id: "s4", kind: "code", label: "کد: محاسبه‌ی Cpk", position: { x: 0, y: 351 }, config: { language: "python", code: sampleCode.python, retries: 1 } },
       { id: "s5", kind: "supervisor", label: "✦ ناظر کیفیت پاسخ", position: { x: 0, y: 468 }, config: { checks: defaultChecks } },

@@ -27,8 +27,8 @@ export function UsagePageContent() {
   const { weeklyLimits } = usePolicies();
   // The weekly toman ceiling the admin set for the user's group (the first group that has one).
   const weeklyLimit = getCurrentUser().groupIds.map((id) => weeklyLimits[id]).find((limit): limit is number => typeof limit === "number");
-  // The remaining tokens priced at the external rate, in rial, rounded to ten thousand.
-  const rial = (tokens: number) => Math.round(((tokens / 1000) * tomanPer1kTokens.external * 10) / 10000) * 10000;
+  // The remaining tokens priced at the external rate, in toman, rounded to a thousand.
+  const toman = (tokens: number) => Math.round(((tokens / 1000) * tomanPer1kTokens.external) / 1000) * 1000;
   const quota = getQuota();
   const [period, setPeriod] = useState<UsagePeriod>("daily");
   const report = getUsageReport(period);
@@ -56,11 +56,11 @@ export function UsagePageContent() {
         </div>
         <QuotaBar quota={quota} used={state.used} />
         <p data-ai className="text-caption text-muted-foreground">
-          معادل حدود {formatNumber(rial(Math.max(quota.limit - state.used, 0)))} ریال · بازنشانی: {formatDate(quota.resetsAt)} · سقف هفتگی گروه: {weeklyLimit === undefined ? "بدون سقف" : `${formatNumber(weeklyLimit)} تومان`}
+          معادل حدود {formatNumber(toman(Math.max(quota.limit - state.used, 0)))} تومان · بازنشانی: {formatDate(quota.resetsAt)} · سقف هفتگی گروه: {weeklyLimit === undefined ? "بدون سقف" : `${formatNumber(weeklyLimit)} تومان`}
         </p>
       </section>
       <Tabs value={period} onValueChange={(value) => setPeriod(value as UsagePeriod)}>
-        <TabsList>{periods.map((item) => <TabsTrigger key={item.value} value={item.value}>{item.label}</TabsTrigger>)}</TabsList>
+        <TabsList className="max-w-full">{periods.map((item) => <TabsTrigger key={item.value} value={item.value}>{item.label}</TabsTrigger>)}</TabsList>
       </Tabs>
       {empty ? (
         <EmptyState icon={<ChartNoAxesColumnIcon />} title="در این بازه مصرفی نداشته‌اید" />
@@ -70,18 +70,18 @@ export function UsagePageContent() {
             <h2 className="text-h4">روند مصرف</h2>
             <ul className="flex flex-col gap-2">
               {report.series.map((point) => (
-                <li key={point.label} className="grid grid-cols-[5rem_1fr] items-center gap-3 text-body-sm">
+                <li key={point.label} className="grid grid-cols-[4.5rem_1fr] sm:grid-cols-[5rem_1fr] items-center gap-3 text-body-sm">
                   <span>{point.label}</span>
                   {/* The value sits right after the end of its bar; the longest bar takes 65 % of the row so the value always fits. */}
                   <span className="flex min-w-0 items-center gap-2">
                     <span className="h-3 shrink-0 rounded-full bg-primary" style={{ width: `${Math.max((point.tokens / max) * 65, point.tokens > 0 ? 1 : 0)}%` }} role="presentation" />
-                    <span className="whitespace-nowrap tabular-nums text-muted-foreground">{formatNumber(point.requests)} درخواست · {formatNumber(point.tokens)} توکن</span>
+                    <span className="min-w-0 tabular-nums text-muted-foreground sm:whitespace-nowrap">{formatNumber(point.requests)} درخواست · {formatNumber(point.tokens)} توکن</span>
                   </span>
                 </li>
               ))}
             </ul>
           </section>
-          <div className="grid gap-8 lg:grid-cols-2">
+          <div className="grid min-w-0 gap-8 lg:grid-cols-2">
             <UsageTable title="به تفکیک مدل" rows={report.byModel} />
             <UsageTable title="به تفکیک عامل" rows={report.byAgent} />
           </div>

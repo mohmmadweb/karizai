@@ -37,7 +37,7 @@ function ConnectionCard({ item }: { item: Connection }) {
       <CardContent className="flex flex-col gap-3 text-body-sm">
         <p className="text-muted-foreground">{item.description}</p>
         <p>ابزارها: {item.tools.length ? item.tools.map((tool) => tool.name).join("، ") : "بعد از تأیید ادمین فهرست می‌شود"}</p>
-        {item.endpoint ? <p className="flex flex-col gap-0.5">نشانی نقطه‌ی پایانی (غیرمحرمانه):<bdi dir="ltr" className="break-all text-start font-mono text-caption text-muted-foreground">{item.endpoint}</bdi></p> : null}
+        {item.endpoint ? <p className="flex flex-col gap-0.5">نشانی نقطه‌ی پایانی (غیرمحرمانه):<bdi dir="ltr" className="break-words text-start font-mono text-caption text-muted-foreground">{item.endpoint.replace(/\//g, "/\u200b")}</bdi></p> : null}
         {item.status === "needs-auth" ? <Button size="sm" className="w-fit" loading={busy} onClick={() => void login()}>ورود به {item.name}</Button> : null}
       </CardContent>
     </Card>

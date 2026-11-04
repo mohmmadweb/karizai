@@ -4,14 +4,14 @@ export class FetchModelsError extends Error {}
 const knownLists: Record<string, string[]> = {
   "openrouter.ai": ["openai/gpt-4o", "anthropic/claude-sonnet", "meta/llama-3-70b"],
   "10.0.0.15": ["qwen2.5-72b-instruct", "llama3.1-8b"],
-  "api.example-provider.com": ["mistral-large", "mistral-small"],
+  "api.mistral.ai": ["mistral-large", "mistral-small"],
 };
 
 /** Newer versions a provider publishes later; they appear from the second fetch on. */
 const newerModels: Record<string, string> = {
   "openrouter.ai": "anthropic/claude-sonnet-4.5",
   "10.0.0.15": "qwen3-coder-30b",
-  "api.example-provider.com": "mistral-medium-3",
+  "api.mistral.ai": "mistral-medium-3",
 };
 
 const genericList = ["general/model-a", "general/model-b", "general/model-c"];

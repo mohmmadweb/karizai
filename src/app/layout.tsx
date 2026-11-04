@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { DirectionProvider } from "@/components/ui/direction";
 import { themeInitScript } from "@/lib/use-theme";
 import { fontSans } from "@/styles/fonts";
+import { ServiceWorkerRegister } from "@/lib/service-worker-register";
 import { SharedProviders } from "./shared-providers";
 import "./globals.css";
 
@@ -25,6 +26,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <DirectionProvider direction="rtl">
           <SharedProviders>{children}</SharedProviders>
+          <ServiceWorkerRegister />
           <Toaster dir="rtl" position="bottom-center" />
         </DirectionProvider>
       </body>

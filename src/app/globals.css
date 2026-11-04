@@ -318,8 +318,16 @@
   direction: ltr;
   unicode-bidi: plaintext;
 }
+.chat-markdown {
+  min-width: 0;
+  max-width: 100%;
+}
 .chat-markdown table {
-  width: 100%;
+  display: block;
+  width: max-content;
+  min-width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
   border-collapse: collapse;
 }
 .chat-markdown th,

@@ -28,11 +28,11 @@ export function AgentBasicSection({ draft, errors, sensitive, internalOnly = fal
     .map((model) => ({ value: model.id, label: model.name, hint: model.description }));
 
   return (
-    <FormSection title="اطلاعات Agent" description="Agent با این نام، هدف و دستورالعمل در گفتگو صدا زده می‌شود.">
+    <FormSection title="اطلاعات عامل" description="عامل با این نام، هدف و دستورالعمل در گفتگو صدا زده می‌شود.">
       {sensitive ? (
         <Alert variant="warning" className="md:col-span-2">
           <LockIcon aria-hidden />
-          <AlertDescription>این Agent «حساس» است و فقط با مدل داخلی اجرا می‌شود. این وضعیت را فقط ادمین می‌تواند تغییر دهد.</AlertDescription>
+          <AlertDescription>این عامل «حساس» است و فقط با مدل داخلی اجرا می‌شود. این وضعیت را فقط ادمین می‌تواند تغییر دهد.</AlertDescription>
         </Alert>
       ) : null}
       <Field data-invalid={errors.name ? true : undefined}>
@@ -48,7 +48,7 @@ export function AgentBasicSection({ draft, errors, sensitive, internalOnly = fal
       <Field className="md:col-span-2">
         <FieldLabel htmlFor="agent-purpose">هدف</FieldLabel>
         <Input id="agent-purpose" value={draft.purpose} onChange={(event) => onChange("purpose", event.target.value)} />
-        <FieldDescription>در یک جمله بنویسید این Agent چه کاری انجام می‌دهد.</FieldDescription>
+        <FieldDescription>در یک جمله بنویسید این عامل چه کاری انجام می‌دهد.</FieldDescription>
       </Field>
       <Field className="md:col-span-2" data-invalid={errors.instructions ? true : undefined}>
         <FieldLabel htmlFor="agent-instructions">دستورالعمل (اجباری)</FieldLabel>

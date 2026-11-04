@@ -21,7 +21,7 @@ export function GroupAllowance({ lines }: { lines: AllowanceLine[] }) {
         <li key={line.groupId} className="flex flex-col gap-3 p-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="text-label text-foreground">{line.name}</span>
-            <Badge variant={variant[line.state]}>{stateLabels[line.state]}</Badge>
+            <Badge variant={variant[line.state]}>{stateLabels[line.state]}{line.limit !== null && line.used !== null ? ` · ${formatNumber(Math.round(line.percent))}٪` : ""}</Badge>
           </div>
           {line.limit === null ? (
             <p className="text-body-sm text-muted-foreground">مصرف این هفته: {toman(line.used)}</p>

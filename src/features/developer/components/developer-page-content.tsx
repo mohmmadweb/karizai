@@ -17,13 +17,13 @@ export function DeveloperPageContent() {
     <div className="mx-auto flex w-full max-w-page flex-col gap-8 page-gutter py-8">
       <PageHeader title="توسعه‌دهندگان و API" description="با کلید شخصی، مدل‌ها، عامل‌ها، دانش سازمانی و جریان‌ها را از برنامه‌های خودتان صدا بزنید. دسترسی هر کلید از دسترسی شما بیشتر نیست." />
       <Tabs defaultValue="keys">
-        <div className="overflow-x-auto">
-          <TabsList>
-            <TabsTrigger value="keys" className="px-3">کلیدهای من</TabsTrigger>
-            <TabsTrigger value="docs" className="px-3">مستندات</TabsTrigger>
-            <TabsTrigger value="playground" className="px-3">آزمایشگاه (Playground)</TabsTrigger>
-            <TabsTrigger value="sdk" className="px-3">SDK و نمونه‌کد</TabsTrigger>
-            <TabsTrigger value="desktop" className="px-3">اپ دسکتاپ</TabsTrigger>
+        <div className="max-w-full overflow-x-auto">
+          <TabsList className="w-max">
+            <TabsTrigger value="keys" className="shrink-0 px-3">کلیدهای من</TabsTrigger>
+            <TabsTrigger value="docs" className="shrink-0 px-3">مستندات</TabsTrigger>
+            <TabsTrigger value="playground" className="shrink-0 px-3">آزمایشگاه (Playground)</TabsTrigger>
+            <TabsTrigger value="sdk" className="shrink-0 px-3">SDK و نمونه‌کد</TabsTrigger>
+            <TabsTrigger value="desktop" className="shrink-0 px-3">اپ دسکتاپ</TabsTrigger>
           </TabsList>
         </div>
         <TabsContent value="keys" className="pt-4"><ApiKeysTab keys={keys} onKeysChange={setKeys} /></TabsContent>

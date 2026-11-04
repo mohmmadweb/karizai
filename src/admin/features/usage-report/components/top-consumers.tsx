@@ -19,9 +19,9 @@ function RankList({ title, rows }: { title: string; rows: UsageRow[] }) {
           <ol className="flex flex-col gap-3">
             {rows.map((r) => (
               <li key={r.id} className="flex flex-col gap-1">
-                <div className="flex items-baseline justify-between gap-3 text-body-sm">
-                  <span className="min-w-0 truncate text-foreground">{r.name}</span>
-                  <span className="shrink-0 tabular-nums text-muted-foreground">
+                <div className="flex flex-col gap-0.5 text-body-sm">
+                  <span className="text-foreground">{r.name}</span>
+                  <span className="tabular-nums text-muted-foreground">
                     {formatNumber(tokensOf(r))} توکن · {formatCost(r.cost)}
                   </span>
                 </div>

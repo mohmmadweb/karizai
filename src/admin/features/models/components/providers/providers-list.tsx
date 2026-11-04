@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { EyeIcon, PencilIcon, RefreshCwIcon, Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
 import { DataTable } from "@/admin/components/shared/data-table/data-table";
@@ -39,7 +39,7 @@ export function ProvidersList({ onEdit }: ProvidersListProps) {
       hideBelow: "xl",
       className: "text-muted-foreground",
       cell: (p) => (
-        <bdi dir="ltr" title={p.baseUrl} className="block max-w-52 truncate">
+        <bdi dir="ltr" title={p.baseUrl} className="block max-w-52 truncate font-mono">
           {p.baseUrl}
         </bdi>
       ),
@@ -115,7 +115,7 @@ export function ProvidersList({ onEdit }: ProvidersListProps) {
             </div>
           </div>
           <p className="truncate text-body-sm text-muted-foreground">
-            <bdi dir="ltr">{p.baseUrl}</bdi>
+            <bdi dir="ltr" className="font-mono">{p.baseUrl}</bdi>
           </p>
           <ProviderModelsCell provider={p} count={countOf(p)} />
         </>

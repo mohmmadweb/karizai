@@ -114,7 +114,7 @@ export function useSendFlow({ settings, agent, connections, onSend }: FlowInput)
 
   function attempt(text: string, attachments: Attachment[]) {
     if (agent && !agent.isEnabled) {
-      setNotice({ tone: "destructive", title: "این Agent اجرا نمی‌شود", text: agent.disabledReason ?? "این Agent در دسترس نیست." });
+      setNotice({ tone: "destructive", title: "این عامل اجرا نمی‌شود", text: agent.disabledReason ?? "این عامل در دسترس نیست." });
       return;
     }
     const forbidden = checkForbidden(text);

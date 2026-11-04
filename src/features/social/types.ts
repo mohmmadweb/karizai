@@ -78,7 +78,7 @@ export type ChannelPost = {
   automatic?: { href: string; label: string };
 };
 
-export type Channel = { id: string; name: string; description: string; memberCount: number; /** Who may post, for example «هشدارها و Agentها». */ publisher?: string; automatic?: boolean };
+export type Channel = { id: string; name: string; description: string; memberCount: number; /** Who may post, for example «هشدارها و عامل‌ها». */ publisher?: string; automatic?: boolean };
 
 export type NewsCategory = "quality" | "production" | "events" | "culture";
 

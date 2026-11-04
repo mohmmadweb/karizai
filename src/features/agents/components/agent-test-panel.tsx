@@ -37,7 +37,7 @@ export function AgentTestPanel({ draft, name }: { draft: AgentDraft; name: strin
     setMessages((list) => [
       ...list,
       { id, role: "user", text },
-      { id: id + 1, role: "assistant", text: `(آزمایش ${name || "Agent"}) با دستورالعمل فعلی‌ام به «${text.slice(0, 40)}» چنین پاسخ می‌دهم.`, run },
+      { id: id + 1, role: "assistant", text: `(آزمایش ${name || "عامل"}) با دستورالعمل فعلی‌ام به «${text.slice(0, 40)}» چنین پاسخ می‌دهم.`, run },
     ]);
     setText("");
   }
@@ -50,7 +50,7 @@ export function AgentTestPanel({ draft, name }: { draft: AgentDraft; name: strin
       {exhausted ? <Alert variant="destructive"><AlertDescription>سهمیه‌ی شما تمام شده است؛ تا {formatDate(quota.resetsAt)} آزمایش ممکن نیست.</AlertDescription></Alert> : null}
       {pending.length > 0 ? <Alert variant="warning"><AlertDescription>مهارت‌های در انتظار تأیید در آزمایش استفاده نمی‌شوند.</AlertDescription></Alert> : null}
       <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto" aria-live="polite">
-        {messages.length === 0 ? <p className="py-6 text-center text-body text-muted-foreground">پیامی بفرستید تا Agent را با تنظیمات فعلی فرم آزمایش کنید.</p> : null}
+        {messages.length === 0 ? <p className="py-6 text-center text-body text-muted-foreground">پیامی بفرستید تا عامل را با تنظیمات فعلی فرم آزمایش کنید.</p> : null}
         {messages.map((item) => (
           <div key={item.id} className="flex flex-col gap-2">
             {item.run ? <ToolRunCard run={item.run} onApprove={() => setRun(item.id, "succeeded")} onReject={() => setRun(item.id, "rejected")} /> : null}

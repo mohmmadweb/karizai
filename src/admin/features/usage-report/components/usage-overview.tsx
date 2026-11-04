@@ -52,7 +52,7 @@ export function UsageOverview() {
   const { policies } = usePolicies();
   const [period, setPeriod] = useState<PeriodId>("month");
   const [view, setView] = useState<ReportView>("system");
-  const [range, setRange] = useState<CustomRange>({ from: "", to: "" });
+  const [range, setRange] = useState<CustomRange>({ from: new Date(Date.parse(now) - 6 * 86_400_000).toISOString().slice(0, 10), to: now.slice(0, 10) });
   const [touched, setTouched] = useState(false);
   const [query, setQuery] = useState("");
   const [detail, setDetail] = useState<{ view: ReportView; row: UsageRow } | null>(null);

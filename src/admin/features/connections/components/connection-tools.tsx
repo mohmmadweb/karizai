@@ -34,7 +34,7 @@ export function ConnectionTools({ tools, onChange }: ConnectionToolsProps) {
           {error ? <FieldError>{error}</FieldError> : null}
         </Field>
         <Field>
-          <FieldLabel htmlFor="tool-description">کار ابزار</FieldLabel>
+          <FieldLabel htmlFor="tool-description">کاربرد ابزار</FieldLabel>
           <Input id="tool-description" value={description} onChange={(event) => setDescription(event.target.value)} placeholder="این ابزار چه کاری می‌کند؟" />
         </Field>
         <Button type="submit" variant="outline"><PlusIcon aria-hidden />افزودن ابزار</Button>

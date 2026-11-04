@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { SearchField } from "@/components/shared/search-field";
 import { cn } from "@/lib/utils";
 import { getBots } from "../data/bots";

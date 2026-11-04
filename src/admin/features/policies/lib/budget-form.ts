@@ -12,4 +12,4 @@ export function parseBudget(value: string): number | null | undefined {
   return n > 0 && Number.isSafeInteger(n) ? n : undefined;
 }
 
-export const budgetText = (limit: number | null | undefined) => (limit == null ? "" : String(limit));
+export const budgetText = (limit: number | null | undefined) => (limit == null ? "" : limit.toLocaleString("fa-IR"));

@@ -65,7 +65,7 @@ export function PlaygroundTab({ keys }: { keys: ApiKeyRecord[] }) {
   }
 
   const endpointItems = endpoints.map((item) => ({ value: item.id, label: `${item.method} ${item.path}` }));
-  const keyItems = usable.map((key) => ({ value: key.id, label: `${key.name} (…${key.last4})` }));
+  const keyItems = usable.map((key) => ({ value: key.id, label: `${key.name} (kz_live_…${key.last4})` }));
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">

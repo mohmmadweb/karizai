@@ -44,7 +44,7 @@ export function RouterMembers({ router, onChange }: RouterMembersProps) {
           {router.members.map((member) => {
             const model = models.find((m) => m.id === member.modelId);
             return (
-              <li key={member.modelId} className="flex flex-wrap items-center justify-between gap-2 px-3 py-2">
+              <li key={member.modelId} className="flex flex-col gap-2 px-3 py-2 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-0.5">
                   <span className="flex flex-wrap items-center gap-2 font-medium">
                     {model?.displayName ?? "مدل حذف‌شده"}

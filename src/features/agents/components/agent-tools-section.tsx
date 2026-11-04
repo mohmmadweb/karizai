@@ -26,7 +26,7 @@ export function AgentToolsSection({ tools, error, onChange }: AgentToolsSectionP
   }
 
   return (
-    <FormSection title="اتصال‌ها و ابزارها" description="از هر اتصال فقط ابزارهایی را انتخاب کنید که Agent لازم دارد.">
+    <FormSection title="اتصال‌ها و ابزارها" description="از هر اتصال فقط ابزارهایی را انتخاب کنید که عامل لازم دارد.">
       <div className="flex flex-col gap-4 md:col-span-2">
         {connections.length === 0 ? <p className="text-body text-muted-foreground">اتصالی در دسترس شما نیست.</p> : null}
         {connections.map((connection) => (

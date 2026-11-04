@@ -35,7 +35,7 @@ export const roleScopes: Record<AdminRole, string> = {
 export const permissionMatrix: { capability: string; super: string; unit: string; auditor: string }[] = [
   { capability: "مدل‌ها، مسیریاب و محدودیت نرخ", super: "کامل", unit: "—", auditor: "خواندن" },
   { capability: "کاربران و گروه‌ها", super: "کامل", unit: "واحد", auditor: "خواندن" },
-  { capability: "بودجه و سهمیه", super: "کامل", unit: "واحد", auditor: "خواندن" },
+  { capability: "سهمیه‌ی کاربران", super: "کامل", unit: "واحد", auditor: "خواندن" },
   { capability: "صف تأیید عامل‌ها و جریان‌ها", super: "کامل", unit: "واحد", auditor: "—" },
   { capability: "ممیزی و گزارش مصرف", super: "کامل", unit: "واحد", auditor: "خواندن" },
   { capability: "اتصال‌ها، وب‌هوک‌ها و AD", super: "کامل", unit: "—", auditor: "خواندن" },

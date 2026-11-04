@@ -37,8 +37,8 @@ export function CostSummary({ runs, quotaLimit }: { runs: Run[]; quotaLimit: num
         <h4 className="text-label">سهم هر گام</h4>
         <ul className="flex flex-col gap-2">
           {steps.map((step) => (
-            <li key={step.label} className="grid grid-cols-[minmax(0,10rem)_1fr_auto] items-center gap-3 text-body-sm">
-              <span className="truncate">{step.label}{step.modelName ? <span className="text-muted-foreground"> · {step.modelName}</span> : null}</span>
+            <li key={step.label} className="grid grid-cols-[minmax(0,12rem)_1fr_auto] items-center gap-3 text-body-sm">
+              <span className="line-clamp-2 break-words" title={step.modelName ? `${step.label} · ${step.modelName}` : step.label}><bdi>{step.label}</bdi>{step.modelName ? <span className="text-muted-foreground"> · <bdi>{step.modelName}</bdi></span> : null}</span>
               <span className="h-2 rounded-full bg-muted"><span className="block h-full rounded-full bg-primary" style={{ width: `${(step.tokens.total / top) * 100}%` }} /></span>
               <span className="text-muted-foreground">{formatNumber(step.tokens.total)}</span>
             </li>

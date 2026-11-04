@@ -32,6 +32,8 @@ import { AgentSkillsSection } from "./agent-skills-section";
 import { AgentTestPanel } from "./agent-test-panel";
 import { AgentToolsSection } from "./agent-tools-section";
 import { useAgents } from "./agents-provider";
+import { AgentReadOnlyView } from "./agent-read-only-view";
+import { EntityNotFound } from "@/components/shared/entity-not-found";
 
 /** Create (no agentId) or edit one personal Agent. */
 export function AgentForm({ agentId }: { agentId?: string }) {
@@ -39,6 +41,7 @@ export function AgentForm({ agentId }: { agentId?: string }) {
   const { agents, saveAgent, skills, requestShare } = useAgents();
   const { models } = useModels();
   const agent = agents.find((item) => item.id === agentId && item.kind === "personal");
+  const otherAgent = agentId && !agent ? agents.find((item) => item.id === agentId) : undefined;
   const form = useAgentForm(agent);
   const guard = useUnsavedGuard(form.dirty);
   const [saving, setSaving] = useState(false);
@@ -87,24 +90,32 @@ export function AgentForm({ agentId }: { agentId?: string }) {
     const id = saveAgent(agent?.id ?? null, form.draft);
     form.markSaved();
     setSaving(false);
-    toast.success(agent ? "تغییرها ذخیره شد" : "Agent ساخته شد", {
+    toast.success(agent ? "تغییرها ذخیره شد" : "عامل ساخته شد", {
       description: pendingSkills.length ? "مهارت‌های در انتظار تأیید ادمین تا آن زمان کار نمی‌کنند." : "همین حالا می‌توانید در گفتگو از آن استفاده کنید.",
     });
     if (!agent) setTimeout(() => router.push(`/agents/${id}`), 0);
   }
 
+  if (agentId && !agent) {
+    return otherAgent ? (
+      <AgentReadOnlyView agent={otherAgent} models={models} />
+    ) : (
+      <EntityNotFound title="این عامل پیدا نشد" backHref="/agents" backLabel="بازگشت به عامل‌ها" />
+    );
+  }
+
   return (
     <div className="mx-auto flex w-full max-w-page flex-col gap-8 page-gutter py-8">
-      <BackLink href="/agents">بازگشت به Agentهای من</BackLink>
+      <BackLink href="/agents">بازگشت به عامل‌های من</BackLink>
       <PageHeader
-        title={agent ? `ویرایش ${agent.name}` : "ساخت Agent"}
-        description="Agent دستیاری است با دستورالعمل، مدل و ابزارهای خودش. دسترسی آن هرگز از دسترسی خود شما بیشتر نیست."
+        title={agent ? `ویرایش ${agent.name}` : "ساخت عامل"}
+        description="عامل دستیاری است با دستورالعمل، مدل و ابزارهای خودش. دسترسی آن هرگز از دسترسی خود شما بیشتر نیست."
         action={
           <Sheet>
-            <SheetTrigger render={<Button variant="outline" />}><FlaskConicalIcon aria-hidden />آزمایش Agent</SheetTrigger>
+            <SheetTrigger render={<Button variant="outline" />}><FlaskConicalIcon aria-hidden />آزمایش عامل</SheetTrigger>
             <SheetContent className="sm:max-w-md">
               <SheetHeader>
-                <SheetTitle>آزمایش Agent</SheetTitle>
+                <SheetTitle>آزمایش عامل</SheetTitle>
                 <SheetDescription>با تنظیمات فعلی فرم، حتی بدون ذخیره.</SheetDescription>
               </SheetHeader>
               <AgentTestPanel draft={form.draft} name={form.draft.name} />
@@ -119,7 +130,7 @@ export function AgentForm({ agentId }: { agentId?: string }) {
         <AgentSkillsSection skillIds={form.draft.skillIds} onChange={(ids) => form.setField("skillIds", ids)} />
         <AgentEvaluationSection version={agent?.version} score={form.draft.evalScore} onScore={(score) => form.setField("evalScore", score)} />
         <div className="flex flex-wrap gap-3">
-          <Button type="submit" loading={saving}>{agent ? "ذخیره‌ی تغییرها" : "ذخیره و ساخت Agent"}</Button>
+          <Button type="submit" loading={saving}>{agent ? "ذخیره‌ی تغییرها" : "ذخیره و ساخت عامل"}</Button>
           <Button type="button" variant="soft" onClick={() => setSubmitOpen(true)}><SendIcon aria-hidden className="rtl:-scale-x-100" />ارسال برای تأیید</Button>
           <Button type="button" variant="outline" onClick={() => router.push("/agents")}>انصراف</Button>
         </div>

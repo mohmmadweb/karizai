@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { ActivityIcon, CalendarClockIcon, HistoryIcon, ListChecksIcon, MessagesSquareIcon, PackageCheckIcon } from "lucide-react";
 import { useCalendar } from "@/features/social/components/calendar-provider";
 import { useChat } from "@/features/chat/components/chat-provider";

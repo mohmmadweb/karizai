@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { SparklesIcon } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { AiAction } from "@/features/social/components/ai-dialog";

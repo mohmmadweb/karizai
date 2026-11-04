@@ -55,13 +55,13 @@ export function CalendarPageContent() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <TabsList><TabsTrigger value="month">تقویم ماهانه</TabsTrigger><TabsTrigger value="list">فهرست موعدها</TabsTrigger></TabsList>
           <div className="flex items-center gap-1">
-            <Button variant="outline" size="icon-sm" aria-label="ماه قبل" onClick={() => setAnchor(shiftedMonth(anchor, -1))}><ChevronRightIcon className="rtl:-scale-x-100" aria-hidden /></Button>
+            <Button variant="outline" size="icon-sm" aria-label="ماه قبل" onClick={() => setAnchor(shiftedMonth(anchor, -1))}><ChevronRightIcon aria-hidden /></Button>
             <Button variant="ghost" size="sm" onClick={() => setAnchor(today)}>امروز</Button>
-            <Button variant="outline" size="icon-sm" aria-label="ماه بعد" onClick={() => setAnchor(shiftedMonth(anchor, 1))}><ChevronLeftIcon className="rtl:-scale-x-100" aria-hidden /></Button>
+            <Button variant="outline" size="icon-sm" aria-label="ماه بعد" onClick={() => setAnchor(shiftedMonth(anchor, 1))}><ChevronLeftIcon aria-hidden /></Button>
           </div>
         </div>
         <TabsContent value="month" className="pt-4"><CalendarMonth entries={entries} anchor={anchor} today={today} onOpen={openEvent} /></TabsContent>
-        <TabsContent value="list" className="pt-4"><CalendarList entries={entries} onOpen={openEvent} /></TabsContent>
+        <TabsContent value="list" className="pt-4"><CalendarList entries={entries} onOpen={openEvent} today={today} /></TabsContent>
       </Tabs>
       <EventDetailsDialog event={open} onClose={() => setOpen(null)} />
       <SuggestTimeDialog open={suggesting} onOpenChange={setSuggesting} days={days} events={events} todayKey={dayKey(today)} onBook={add} />

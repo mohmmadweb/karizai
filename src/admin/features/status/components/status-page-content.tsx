@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { MeterBar } from "@/admin/features/budgets/components/meter-bar";
-import { formatNumber } from "@/admin/lib/format";
+import { formatDate, formatNumber } from "@/admin/lib/format";
 import { useDemoFlags } from "@/lib/demo-flags";
 import { getComponents, getIncidents, SLA_TARGET, type ComponentState } from "../data/status";
 import { UptimeHistory } from "./uptime-history";
@@ -113,7 +113,7 @@ export function StatusPageContent() {
             <ul className="flex flex-col divide-y divide-border">
               {getIncidents().map((i) => (
                 <li key={i.id} className="flex flex-col gap-1 py-3 first:pt-0">
-                  <span className="flex flex-wrap items-center gap-2"><span className="tabular-nums text-caption text-muted-foreground">{i.date}</span><span className="font-medium">{i.title}</span></span>
+                  <span className="flex flex-wrap items-center gap-2"><span className="tabular-nums text-caption text-muted-foreground">{formatDate(i.date)}</span><span className="font-medium">{i.title}</span></span>
                   <span className="text-body-sm text-muted-foreground">مدت: {i.duration} · {i.impact} · <Badge variant="secondary">رفع شد</Badge></span>
                 </li>
               ))}

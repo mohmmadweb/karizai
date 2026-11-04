@@ -30,7 +30,7 @@ export function AgentShareDialog({ agent, open, onOpenChange }: AgentShareDialog
       <DialogContent>
         <DialogHeader>
           <DialogTitle>درخواست اشتراک‌گذاری</DialogTitle>
-          <DialogDescription>افراد یا گروه‌هایی را که باید به این Agent دسترسی داشته باشند انتخاب کنید. تا تأیید ادمین، Agent برای آن‌ها دیده نمی‌شود.</DialogDescription>
+          <DialogDescription>افراد یا گروه‌هایی را که باید به این عامل دسترسی داشته باشند انتخاب کنید. تا تأیید ادمین، عامل برای آن‌ها دیده نمی‌شود.</DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-2">
           {options.map((item) => (

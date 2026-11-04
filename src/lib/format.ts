@@ -16,12 +16,16 @@ export function formatPercent(fraction: number) {
   return formatNumber(fraction, { style: "percent", maximumFractionDigits: 1 });
 }
 
-/** Persian (Solar Hijri) calendar. Accepts ISO strings. */
+/** Persian (Solar Hijri) calendar in Tehran time, so the built page and the browser agree. Accepts ISO strings. */
 export function formatDate(
   value: DateInput,
   options: Intl.DateTimeFormatOptions = { dateStyle: "long" },
 ) {
-  return new Intl.DateTimeFormat(locale, options).format(new Date(value));
+  return new Intl.DateTimeFormat(locale, { timeZone: "Asia/Tehran", ...options })
+    .format(new Date(value))
+    // Persian comma, and times always as ۰۸:۲۰ (two-digit hour).
+    .replace(/,/g, "،")
+    .replace(/(^|[^۰-۹])([۰-۹]):/g, "$1۰$2:");
 }
 
 export function formatDateTime(value: DateInput) {

@@ -56,7 +56,7 @@ export function ProviderFields({
           dir="ltr"
           autoComplete="off"
           placeholder="https://api.example.com/v1"
-          className="text-start"
+          className="font-mono text-start"
           value={values.baseUrl}
           disabled={disabled}
           aria-invalid={errors.baseUrl ? true : undefined}

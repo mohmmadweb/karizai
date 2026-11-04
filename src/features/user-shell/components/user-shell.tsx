@@ -1,10 +1,13 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import { AiFab } from "@/features/ai-panel/components/ai-fab";
 import { AiLayerStyle } from "@/features/ai-panel/components/ai-layer-style";
 import { AiPanelProvider } from "@/features/ai-panel/components/ai-panel-provider";
-import { AiPanelSheet } from "@/features/ai-panel/components/ai-panel-sheet";
+import { AiPanelLazy } from "@/features/ai-panel/components/ai-panel-lazy";
+import { fillsWindow } from "@/features/ai-panel/lib/page-layout";
+import { cn } from "@/lib/utils";
 import { TopBar } from "./top-bar";
 import { UserSidebar } from "./user-sidebar";
 
@@ -15,17 +18,19 @@ import { UserSidebar } from "./user-sidebar";
 export function UserShell({ children }: { children: ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [query, setQuery] = useState("");
+  const pathname = usePathname();
   return (
     <AiPanelProvider>
       <div className="flex h-dvh bg-background">
         <UserSidebar collapsed={collapsed} onToggleCollapse={() => setCollapsed((value) => !value)} query={query} onQueryChange={setQuery} />
         <div className="flex min-w-0 flex-1 flex-col">
           <TopBar query={query} onQueryChange={setQuery} />
-          <main className="flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-y-auto">{children}</main>
+          {/* The extra room at the end keeps the assistant button from covering the last line of a page. */}
+          <main className={cn("flex min-h-0 w-full min-w-0 flex-1 flex-col overflow-y-auto", !fillsWindow(pathname) && "pb-24")}>{children}</main>
         </div>
       </div>
       <AiFab />
-      <AiPanelSheet />
+      <AiPanelLazy />
       <AiLayerStyle />
     </AiPanelProvider>
   );

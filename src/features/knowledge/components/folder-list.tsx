@@ -10,7 +10,7 @@ const itemClass = "flex min-h-10 shrink-0 items-center gap-2 rounded-lg px-3 tex
 export function FolderList({ folders, total, selected, onSelect }: Props) {
   const entries = [{ name: null, label: "همه‌ی اسناد", count: total }, ...folders.map((f) => ({ name: f.name, label: f.name, count: f.count }))];
   return (
-    <nav aria-label="پوشه‌ها" className="flex gap-1 overflow-x-auto md:flex-col md:overflow-visible">
+    <nav aria-label="پوشه‌ها" className="flex min-w-0 gap-1 overflow-x-auto md:flex-col md:overflow-visible">
       {entries.map((entry) => {
         const active = entry.name === selected;
         const Icon = entry.name === null ? LibraryIcon : active ? FolderOpenIcon : FolderIcon;

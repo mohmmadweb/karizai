@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { useRouter } from "next/navigation";
 import { Trash2Icon } from "lucide-react";
 import { toast } from "sonner";
@@ -70,7 +70,7 @@ export function ConnectionDetail({ connectionId }: { connectionId: string }) {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>اتصال «{connection.name}» حذف شود؟</AlertDialogTitle>
-            <AlertDialogDescription>کاربران دیگر این اتصال و ابزارهایش را نمی‌بینند و کارها و Agentهایی که از آن استفاده می‌کنند دیگر اجرا نمی‌شوند.</AlertDialogDescription>
+            <AlertDialogDescription>کاربران دیگر این اتصال و ابزارهایش را نمی‌بینند و کارها و عامل‌هایی که از آن استفاده می‌کنند دیگر اجرا نمی‌شوند.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>انصراف</AlertDialogCancel>

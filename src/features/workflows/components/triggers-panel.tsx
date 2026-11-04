@@ -33,18 +33,18 @@ export function TriggersPanel({ triggers, onChange }: TriggersPanelProps) {
       <ul className="flex flex-col gap-2">
         {triggers.map((trigger, index) => (
           <li key={index} className="flex flex-wrap items-end gap-3 rounded-lg border p-3">
-            <span className="min-w-40 flex-1 text-label">{describeTrigger(trigger)}</span>
+            <span className="min-w-40 flex-1 basis-0 text-label">{describeTrigger(trigger)}</span>
+            <Button type="button" variant="ghost" size="icon-sm" aria-label="حذف راه‌انداز" onClick={() => onChange(triggers.filter((_, i) => i !== index))}><XIcon aria-hidden /></Button>
             {trigger.kind === "schedule" ? (
               <>
                 <Pick label="تکرار" items={everyItems} value={trigger.every} onChange={(every) => replace(index, { ...trigger, every: every as "hourly" | "daily" | "weekly", weekday: every === "weekly" ? (trigger.weekday ?? "sat") : undefined })} />
                 {trigger.every === "weekly" ? <Pick label="روز هفته" items={weekdayItems} value={trigger.weekday ?? "sat"} onChange={(weekday) => replace(index, { ...trigger, weekday: weekday as Weekday })} /> : null}
                 {trigger.every !== "hourly" ? (
-                  <Field className="w-32"><FieldLabel htmlFor={`time-${index}`} className="sr-only">ساعت</FieldLabel><Input id={`time-${index}`} type="time" dir="ltr" value={trigger.time} onChange={(event) => replace(index, { ...trigger, time: event.target.value })} /></Field>
+                  <Field className="w-32"><FieldLabel htmlFor={`time-${index}`} className="sr-only">ساعت</FieldLabel><Input id={`time-${index}`} type="text" inputMode="numeric" placeholder="08:00" maxLength={5} pattern="([01][0-9]|2[0-3]):[0-5][0-9]" dir="ltr" className="text-center tabular-nums" value={trigger.time} onChange={(event) => replace(index, { ...trigger, time: event.target.value.replace(/[^0-9:]/g, "") })} /></Field>
                 ) : null}
               </>
             ) : null}
             {trigger.kind === "event" ? <Pick wide label="رویداد" items={eventItems} value={trigger.event} onChange={(event) => replace(index, { kind: "event", event: event as EventKind })} /> : null}
-            <Button type="button" variant="ghost" size="icon-sm" aria-label="حذف راه‌انداز" onClick={() => onChange(triggers.filter((_, i) => i !== index))}><XIcon aria-hidden /></Button>
           </li>
         ))}
       </ul>

@@ -79,9 +79,9 @@ export function AuditPageContent() {
   const columns: DataTableColumn<AuditEvent>[] = [
     { id: "at", header: "زمان", className: "whitespace-nowrap text-body-sm text-muted-foreground", cell: (e) => formatDateTime(e.at) },
     { id: "user", header: "کاربر", cell: (e) => <span className="flex flex-col"><span className="flex flex-wrap items-center gap-1.5 font-medium">{e.user}{isLive(e) ? <Badge variant="info">همین حالا</Badge> : null}</span><span className="text-caption text-muted-foreground">{channelLabels[e.channel]} · واحد {e.unit}</span></span> },
-    { id: "agent", header: "عامل", hideBelow: "lg", cell: (e) => e.agent },
-    { id: "source", header: "ابزار / منبع", hideBelow: "lg", className: "text-body-sm", cell: (e) => e.source },
-    { id: "model", header: "مدل", hideBelow: "xl", className: "text-body-sm", cell: (e) => e.model },
+    { id: "agent", header: "عامل", hideBelow: "lg", className: "max-w-48 whitespace-normal", cell: (e) => e.agent },
+    { id: "source", header: "ابزار / منبع", hideBelow: "lg", className: "max-w-56 whitespace-normal text-body-sm", cell: (e) => e.source },
+    { id: "model", header: "مدل", hideBelow: "xl", className: "whitespace-normal text-body-sm", cell: (e) => e.model },
     { id: "result", header: "نتیجه", cell: (e) => <ResultBadge result={e.result} event={e} /> },
   ];
 

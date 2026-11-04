@@ -11,7 +11,7 @@ export function rowCost(row: UsageRow): number {
 
 export function UsageTable({ title, rows }: { title: string; rows: UsageRow[] }) {
   return (
-    <section className="flex flex-col gap-3">
+    <section className="flex min-w-0 flex-col gap-3">
       <h2 className="text-h4">{title}</h2>
       <Table>
         <TableHeader>

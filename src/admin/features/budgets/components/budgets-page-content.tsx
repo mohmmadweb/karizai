@@ -42,7 +42,7 @@ export function BudgetsPageContent() {
       { header: "پیش‌بینی پایان ماه (تومان)", value: (r) => r.monthEnd },
       { header: "رفتار پس از اتمام", value: (r) => r.policy },
     ]);
-    downloadCsv(csv, `بودجه-و-سهمیه-${budgetMonth.label.replace(/\s+/g, "-")}.csv`);
+    downloadCsv(csv, `سهمیه-کاربران-${budgetMonth.label.replace(/\s+/g, "-")}.csv`);
     toast.success("خروجی Excel ساخته شد.");
   }
 
@@ -65,7 +65,7 @@ export function BudgetsPageContent() {
       cell: (r) => (
         <span className="flex flex-col items-start gap-1">
           <span className="tabular-nums">{toman(r.monthEnd)}</span>
-          {r.exhaustDay !== null ? <Badge variant="warning">تمام می‌شود حدود روز {formatNumber(r.exhaustDay)}</Badge> : <Badge variant="success">کافی است</Badge>}
+          {r.spent >= r.monthlyToman ? <Badge variant="destructive">سقف تمام شده</Badge> : r.exhaustDay !== null ? <Badge variant="warning">تمام می‌شود حدود روز {formatNumber(r.exhaustDay)}</Badge> : <Badge variant="success">کافی است</Badge>}
         </span>
       ),
     },
@@ -75,7 +75,7 @@ export function BudgetsPageContent() {
   return (
     <div className="flex flex-col gap-8">
       <PageHeader
-        title="بودجه و سهمیه"
+        title="سهمیه‌ی کاربران"
         description={`سقف ماهانه‌ی هر نفر به تومان و پیش‌بینی پایان ماه (${budgetMonth.label}، ${formatNumber(budgetMonth.daysPassed)} روز از ${formatNumber(budgetMonth.daysInMonth)} روز گذشته).`}
         action={<Button variant="outline" onClick={exportCsv}><DownloadIcon aria-hidden />خروجی Excel</Button>}
       />

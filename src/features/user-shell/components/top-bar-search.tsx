@@ -74,7 +74,7 @@ export function TopBarSearch({ query, onQueryChange }: TopBarSearchProps) {
         onChange={(event) => (mode === "ai" ? setQuestion(event.target.value) : onQueryChange(event.target.value))}
         className="h-full min-w-0 border-0 bg-transparent ps-9 shadow-none focus-visible:ring-0"
       />
-      <kbd dir="ltr" className="hidden shrink-0 rounded-md border bg-muted px-1.5 text-caption text-muted-foreground xl:inline">Ctrl K</kbd>
+      <kbd dir="ltr" className="hidden shrink-0 rounded-md border bg-muted px-1.5 text-caption text-muted-foreground 2xl:inline">Ctrl K</kbd>
       <div role="group" aria-label="نوع جستجو" className="flex shrink-0 items-center gap-1">
         <button type="button" aria-pressed={mode === "search"} onClick={() => choose("search")} className={cn(modeClass, mode === "search" ? "bg-muted text-foreground" : "text-muted-foreground hover:bg-muted")}>جستجو</button>
         <button type="button" data-ai aria-pressed={mode === "ai"} onClick={() => choose("ai")} className={cn(modeClass, mode === "ai" ? "bg-primary text-primary-foreground" : "bg-primary/10 text-primary hover:bg-primary/15")}>✦ پرسش از AI</button>

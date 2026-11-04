@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { useState } from "react";
 import { EyeIcon, PlusIcon } from "lucide-react";
 import { DataTable } from "@/admin/components/shared/data-table/data-table";

@@ -36,7 +36,7 @@ function TestForm({ model }: { model: MlModel }) {
     <>
       <DialogHeader>
         <DialogTitle>آزمون «{model.name}»</DialogTitle>
-        <DialogDescription><bdi dir="ltr">POST {model.endpoint}</bdi></DialogDescription>
+        <DialogDescription><bdi dir="ltr" className="font-mono">POST {model.endpoint}</bdi></DialogDescription>
       </DialogHeader>
       <form noValidate onSubmit={(e) => { e.preventDefault(); void run(); }} className="grid gap-3 sm:grid-cols-2">
         {model.input.map((f) => (

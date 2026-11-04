@@ -14,7 +14,7 @@ export function ChatHeader({ conversationId }: { conversationId: string | null }
   const agent = agents.find((item) => item.id === settings.agentId);
   const { models } = useModels();
   const internal = models.find((model) => model.isInternal);
-  const lockedLabel = agent ? (agent.isSensitive ? `${internal?.name ?? "مدل داخلی"} (الزامی)` : "مدل پیش‌فرض Agent") : undefined;
+  const lockedLabel = agent ? (agent.isSensitive ? `${internal?.name ?? "مدل داخلی"} (الزامی)` : `${models.find((model) => model.id === agent.defaultModelId)?.name ?? "مدل پیش‌فرض"} (پیش‌فرض عامل)`) : undefined;
 
   return (
     <div className="flex flex-wrap items-center gap-2">

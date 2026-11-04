@@ -32,10 +32,10 @@ export function SkillCard({ skill }: { skill: Skill }) {
         <p className="line-clamp-3 text-muted-foreground">{skill.instructions}</p>
         {skill.approval === "rejected" && skill.rejectionReason ? <p className="text-destructive">دلیل رد: {skill.rejectionReason}</p> : null}
         {skill.pendingEdit ? <p className="text-warning-foreground dark:text-warning">نسخه‌ی جدید در انتظار تأیید است؛ نسخه‌ی فعلی همچنان فعال است.</p> : null}
-        <p className="text-muted-foreground">Agentها: {used.length ? used.map((agent) => agent.name).join("، ") : "هیچ Agentی"}</p>
+        <p className="text-muted-foreground">عامل‌ها: {used.length ? used.map((agent) => agent.name).join("، ") : "هیچ عاملی"}</p>
         <div className="flex flex-wrap gap-2">
           <Button size="sm" variant="outline" onClick={() => setEditing(true)}><PencilIcon aria-hidden />ویرایش</Button>
-          <Button size="sm" variant="outline" onClick={() => setAttaching(true)}><BotIcon aria-hidden />Agentها</Button>
+          <Button size="sm" variant="outline" onClick={() => setAttaching(true)}><BotIcon aria-hidden />عامل‌ها</Button>
         </div>
       </CardContent>
       {editing ? <SkillFormDialog key={`${skill.id}-edit`} open onOpenChange={setEditing} skill={skill} onSave={(content: SkillContent) => editSkill(skill.id, content)} /> : null}

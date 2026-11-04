@@ -42,8 +42,8 @@ export function ComposerStatus(props: ComposerStatusProps) {
       {agent && !agent.isEnabled ? (
         <Alert variant="destructive">
           <TriangleAlertIcon aria-hidden />
-          <AlertTitle>این Agent اجرا نمی‌شود</AlertTitle>
-          <AlertDescription>{agent.disabledReason ?? "این Agent در دسترس نیست."} می‌توانید به گفتگوی معمولی برگردید.</AlertDescription>
+          <AlertTitle>این عامل اجرا نمی‌شود</AlertTitle>
+          <AlertDescription>{agent.disabledReason ?? "این عامل در دسترس نیست."} می‌توانید به گفتگوی معمولی برگردید.</AlertDescription>
         </Alert>
       ) : null}
       {notice ? (

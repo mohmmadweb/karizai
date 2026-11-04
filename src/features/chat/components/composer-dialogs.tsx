@@ -46,7 +46,7 @@ export function ComposerDialogs(props: ComposerDialogsProps) {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>شروع «{props.agentChoice}» در گفتگوی جدید؟</AlertDialogTitle>
-            <AlertDialogDescription>این گفتگو پیام‌هایی دارد. Agent فقط پیام‌های بعد از انتخابش را می‌بیند؛ برای نتیجه‌ی بهتر پیشنهاد می‌کنیم گفتگوی جدا شروع کنید.</AlertDialogDescription>
+            <AlertDialogDescription>این گفتگو پیام‌هایی دارد. عامل فقط پیام‌های بعد از انتخابش را می‌بیند؛ برای نتیجه‌ی بهتر پیشنهاد می‌کنیم گفتگوی جدا شروع کنید.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={props.onAgentContinue}>ادامه در همین گفتگو</AlertDialogCancel>

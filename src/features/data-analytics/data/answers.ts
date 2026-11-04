@@ -3,7 +3,7 @@ import type { Dashboard, DataAnswer } from "../types";
 const answers: DataAnswer[] = [
   {
     id: "scrap", question: "ضایعات خط ۲ در ۶ ماه گذشته به تفکیک ماه چقدر بوده؟", match: /ضایعات/, chartTitle: "ضایعات خط ۲ (درصد)", dashboardId: "dash-quality", groupName: "تولید خط ۲",
-    insight: "ضایعات از شهریور ۳۳٪ کاهش یافته و هم‌زمان با تنظیم دمای ناحیه‌ی ۴ اکسترودر است.",
+    insight: "ضایعات از مرداد ۳۳٪ کاهش یافته و هم‌زمان با تنظیم دمای ناحیه‌ی ۴ اکسترودر است.",
     result: {
       query: "SELECT month, ROUND(SUM(scrap_kg)*100.0/SUM(output_kg),1) AS scrap_pct\nFROM prod.line_daily\nWHERE line_id = 2 AND date >= DATEADD(month,-6,GETDATE())\nGROUP BY month ORDER BY month;",
       columns: ["ماه", "ضایعات (٪)"], rows: [["اردیبهشت", 3.4], ["خرداد", 3.6], ["تیر", 3.1], ["مرداد", 3.3], ["شهریور", 2.8], ["مهر", 2.2]], suggested: "bar",

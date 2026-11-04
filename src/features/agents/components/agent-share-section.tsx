@@ -12,7 +12,7 @@ import { ShareRequestRow } from "./share-status";
 export function AgentShareSection({ agent }: { agent: Agent }) {
   const [open, setOpen] = useState(false);
   return (
-    <FormSection title="اشتراک‌گذاری" description="این Agent همین حالا برای خود شما قابل استفاده است. برای دیگران باید ادمین تأیید کند.">
+    <FormSection title="اشتراک‌گذاری" description="این عامل همین حالا برای خود شما قابل استفاده است. برای دیگران باید ادمین تأیید کند.">
       <div className="flex flex-col gap-3 md:col-span-2">
         {agent.shareRequests.length === 0 ? <p className="text-body text-muted-foreground">هنوز درخواستی نداده‌اید.</p> : <ul className="flex flex-col gap-2">{agent.shareRequests.map((item) => <ShareRequestRow key={item.id} request={item} />)}</ul>}
         <Button type="button" variant="outline" className="w-fit" onClick={() => setOpen(true)}><Share2Icon aria-hidden />درخواست اشتراک‌گذاری</Button>

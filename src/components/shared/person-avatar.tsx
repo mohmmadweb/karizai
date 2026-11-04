@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 /** People who have a photo in `public/people`, by id; everyone else gets the drawn picture. */
@@ -20,19 +19,12 @@ const pick = <T,>(list: T[], seed: number, shift: number): T => list[(seed >>> s
 
 /** A profile picture drawn from the person's id, so the same person always looks the same. Photos in `public/people` replace it for the demo users. */
 export function PersonAvatar({ seed, name, className }: { seed: string; name: string; className?: string }) {
-  if (photos.has(seed)) {
-    return (
-      <span className={cn("inline-flex size-8 shrink-0 overflow-hidden rounded-full", className)}>
-        <Image src={`/people/${seed}.jpg`} alt={`تصویر ${name}`} width={256} height={256} className="size-full object-cover" />
-      </span>
-    );
-  }
   const h = hash(seed);
   const skin = pick(skins, h, 3);
   const hair = pick(hairs, h, 7);
   const style = (h >>> 11) % 4;
   return (
-    <span className={cn("inline-flex size-8 shrink-0 overflow-hidden rounded-full", className)}>
+    <span className={cn("relative inline-flex size-8 shrink-0 overflow-hidden rounded-full", className)}>
       <svg viewBox="0 0 64 64" role="img" aria-label={`تصویر ${name}`} className="size-full">
         <rect width="64" height="64" fill={pick(backgrounds, h, 0)} />
         {style === 1 ? <path d="M17 30c0-14 6-20 15-20s15 6 15 20v16H17z" fill={hair} /> : null}
@@ -47,6 +39,8 @@ export function PersonAvatar({ seed, name, className }: { seed: string; name: st
         <circle cx="36.5" cy="27.5" r="1.1" fill="#2b2b2b" />
         <path d="M28.5 33c1.2 1.2 5.8 1.2 7 0" stroke="#7a4a3a" strokeWidth="1.2" fill="none" strokeLinecap="round" />
       </svg>
+      {/* The drawing stays underneath, so a slow or failed photo never leaves an empty circle. */}
+      {photos.has(seed) ? <img src={`/people/${seed}.jpg`} alt="" width={256} height={256} decoding="async" className="absolute inset-0 size-full object-cover" /> : null}
     </span>
   );
 }

@@ -62,10 +62,10 @@ export function GroupShareChart({ slices, all, multiGroupNote }: Props) {
           {all.map((s) => (
             <li key={s.id} className="flex flex-wrap items-center gap-x-3 gap-y-1 text-body-sm">
               <span aria-hidden className="size-3 shrink-0 rounded-sm" style={{ background: slices.some((x) => x.id === s.id) ? s.color : "var(--muted-foreground)" }} />
-              <span className="font-medium text-foreground">{s.name}</span>
+              <span className="min-w-24 font-medium text-foreground">{s.name}</span>
+              <span className="w-14 tabular-nums text-foreground">{percentText(s.percent)}</span>
               <span className="tabular-nums text-muted-foreground">{formatNumber(s.tokens)} توکن</span>
               <span className="tabular-nums text-muted-foreground">{formatCost(s.cost)}</span>
-              <span className="ms-auto tabular-nums text-foreground">{percentText(s.percent)}</span>
             </li>
           ))}
         </ul>

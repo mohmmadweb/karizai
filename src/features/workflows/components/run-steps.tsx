@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { CheckCircle2Icon, CircleDashedIcon, CircleXIcon, ClockIcon, HandIcon, MinusCircleIcon, RotateCcwIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";

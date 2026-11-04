@@ -60,9 +60,9 @@ export function StepKindFields({ node, draft }: { node: WorkflowNode; draft: Wor
     const items = agents.filter((a) => a.isEnabled).map((a) => ({ value: a.id, label: a.name, hint: a.purpose }));
     return (
       <Field>
-        <FieldLabel htmlFor="node-routes">Agentهایی که مسیریاب از میانشان انتخاب می‌کند</FieldLabel>
-        <SearchableMultiSelect id="node-routes" items={items} value={c.childAgentIds ?? []} onValueChange={(ids) => set({ childAgentIds: ids })} placeholder="انتخاب Agentها" searchPlaceholder="جست‌وجوی Agent" emptyText="Agentی پیدا نشد" />
-        <FieldDescription>برای هر درخواست، مناسب‌ترین Agent و مدل (داخلی برای داده‌ی حساس) انتخاب می‌شود.</FieldDescription>
+        <FieldLabel htmlFor="node-routes">عامل‌هایی که مسیریاب از میانشان انتخاب می‌کند</FieldLabel>
+        <SearchableMultiSelect id="node-routes" items={items} value={c.childAgentIds ?? []} onValueChange={(ids) => set({ childAgentIds: ids })} placeholder="انتخاب عامل‌ها" searchPlaceholder="جست‌وجوی عامل" emptyText="عاملی پیدا نشد" />
+        <FieldDescription>برای هر درخواست، مناسب‌ترین عامل و مدل (داخلی برای داده‌ی حساس) انتخاب می‌شود.</FieldDescription>
       </Field>
     );
   }

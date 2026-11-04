@@ -29,7 +29,7 @@ const messages: MessengerMessage[] = [
     alert: { title: "گزارش فروش هفتگی ارسال شد", tone: "info", workflowId: "wf-1", fields: [{ label: "گام‌های انجام‌شده", value: "۳ از ۳" }] },
   },
   {
-    id: "msg-f3", threadId: "flows", from: "system", read: true, createdAt: "2026-10-31T05:00:00.000Z",
+    id: "msg-f3", threadId: "flows", from: "system", read: true, createdAt: "2026-10-31T04:31:00.000Z",
     text: "اجرای جریان «گزارش فروش هفتگی» به خطا خورد؛ اتصال به پایگاه فروش پاسخ نداد.",
     alert: { title: "اجرای جریان ناموفق بود", tone: "warning", workflowId: "wf-1", fields: [{ label: "گام ناموفق", value: "خواندن فروش هفته" }, { label: "اقدام پیشنهادی", value: "اتصال را بررسی کنید و جریان را دوباره اجرا کنید" }] },
   },

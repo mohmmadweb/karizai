@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { ExternalLinkIcon, MousePointerClickIcon } from "lucide-react";
 import { EmptyState } from "@/components/shared/empty-state";
 import { buttonVariants } from "@/components/ui/button";
@@ -39,7 +39,7 @@ export function GroupMembersPanel({ group }: { group: Group | undefined }) {
           className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
         >
           جزئیات گروه
-          <ExternalLinkIcon aria-hidden />
+          <ExternalLinkIcon aria-hidden className="rtl:-scale-x-100" />
         </Link>
       </header>
       <GroupMembersManager key={group.id} group={group} idPrefix="group-panel" />

@@ -42,8 +42,8 @@ function SkillForm({ skill, onSave, onClose }: { skill: OrgSkill | null; onSave:
   function submit(event: FormEvent) {
     event.preventDefault();
     const next = {
-      name: name.trim() ? undefined : "نام اسکیل را وارد کنید.",
-      instructions: instructions.trim() || files.length > 0 ? undefined : "دستورالعمل را بنویسید یا فایل اسکیل را بارگذاری کنید.",
+      name: name.trim() ? undefined : "نام مهارت را وارد کنید.",
+      instructions: instructions.trim() || files.length > 0 ? undefined : "دستورالعمل را بنویسید یا فایل مهارت را بارگذاری کنید.",
     };
     setErrors(next);
     if (next.name || next.instructions) return;
@@ -55,7 +55,7 @@ function SkillForm({ skill, onSave, onClose }: { skill: OrgSkill | null; onSave:
     <form onSubmit={submit} noValidate className="flex flex-col gap-6">
       <FieldGroup className="max-h-[60vh] overflow-y-auto pe-1">
         <Field data-invalid={errors.name ? true : undefined}>
-          <FieldLabel htmlFor="skill-name">نام اسکیل</FieldLabel>
+          <FieldLabel htmlFor="skill-name">نام مهارت</FieldLabel>
           <Input id="skill-name" value={name} aria-invalid={errors.name ? true : undefined} onChange={(e) => setName(e.target.value)} />
           {errors.name ? <FieldError>{errors.name}</FieldError> : null}
         </Field>
@@ -122,10 +122,10 @@ export function SkillDialog({ skill, open, onOpenChange, onSave }: Props) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{skill ? "ویرایش اسکیل" : "بارگذاری اسکیل"}</DialogTitle>
-          <DialogDescription>اسکیل سازمانی پس از انتشار برای کاربرانِ گروه‌های مجاز قابل افزودن به Agent است.</DialogDescription>
+          <DialogTitle>{skill ? "ویرایش مهارت" : "بارگذاری مهارت"}</DialogTitle>
+          <DialogDescription>مهارت سازمانی پس از انتشار برای کاربرانِ گروه‌های مجاز قابل افزودن به عامل است.</DialogDescription>
         </DialogHeader>
-        {open ? <SkillForm skill={skill} onSave={(d) => { onSave(d); toast.success(skill ? "اسکیل ذخیره شد." : "اسکیل بارگذاری شد؛ به‌صورت پیش‌نویس ذخیره شد."); }} onClose={() => onOpenChange(false)} /> : null}
+        {open ? <SkillForm skill={skill} onSave={(d) => { onSave(d); toast.success(skill ? "مهارت ذخیره شد." : "مهارت بارگذاری شد؛ به‌صورت پیش‌نویس ذخیره شد."); }} onClose={() => onOpenChange(false)} /> : null}
       </DialogContent>
     </Dialog>
   );

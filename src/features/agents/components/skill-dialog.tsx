@@ -37,7 +37,7 @@ export function SkillDialog({ open, onOpenChange, onAdd }: SkillDialogProps) {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>افزودن مهارت</DialogTitle>
-          <DialogDescription>مهارت تازه تا تأیید ادمین غیرفعال است و در آزمایش و اجرای Agent استفاده نمی‌شود.</DialogDescription>
+          <DialogDescription>مهارت تازه تا تأیید ادمین غیرفعال است و در آزمایش و اجرای عامل استفاده نمی‌شود.</DialogDescription>
         </DialogHeader>
         <Tabs defaultValue="library">
           <TabsList>

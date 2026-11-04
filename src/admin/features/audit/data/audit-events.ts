@@ -1,7 +1,7 @@
 import type { AuditChannel, AuditEvent, AuditResult } from "../types";
 
 /** Fixed "now" of the sample log (Tehran time). */
-export const auditNow = new Date("2026-11-03T12:00:00+03:30").getTime();
+export const auditNow = new Date("2026-11-04T12:00:00+03:30").getTime();
 
 type Tail = [user: string, unit: string, agent: string, source: string, model: string, channel: AuditChannel, result: AuditResult, action: string, reason?: string, masked?: number];
 type Row = [at: string, ...Tail];
@@ -55,7 +55,7 @@ const routine: Tail[] = [
 
 function toEvent([at, user, unit, agent, source, model, channel, result, action, reason, masked]: Row, index: number): AuditEvent {
   return {
-    id: `audit-${index + 1}`, at: `2026-${at}:00+03:30`, user, unit, agent, source, model, channel, result, action, reason,
+    id: `audit-${index + 1}`, at: new Date(new Date(`2026-${at}:00+03:30`).getTime() + 86_400_000).toISOString(), user, unit, agent, source, model, channel, result, action, reason,
     maskedCount: masked ?? 0, durationMs: 900 + ((index * 733) % 6200),
   };
 }

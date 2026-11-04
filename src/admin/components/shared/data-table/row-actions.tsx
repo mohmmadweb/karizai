@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useState } from "react";
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { MoreHorizontalIcon } from "lucide-react";
 import {
   AlertDialog,

@@ -31,9 +31,13 @@ const rows: Row[] = [
 ];
 
 export function getExternalRequests(): ExternalRequest[] {
-  return rows.map(([at, user, unit, agent, model, channel, masked, outcome], index) => ({
+  const day = 86_400_000;
+  return [...rows]
+    .map((row): Row => [new Date(new Date(`${row[0]}:00+03:30`).getTime() + day).toISOString(), ...row.slice(1)] as Row)
+    .sort((a, b) => b[0].localeCompare(a[0]))
+    .map(([at, user, unit, agent, model, channel, masked, outcome], index) => ({
     id: `ext-${index + 1}`,
-    at: `${at}:00+03:30`,
+    at,
     user,
     unit,
     agent,

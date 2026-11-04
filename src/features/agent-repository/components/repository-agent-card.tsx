@@ -20,7 +20,7 @@ type RepositoryAgentCardProps = { agent: RepositoryAgent; added: boolean; onAdd:
 
 export function RepositoryAgentCard({ agent, added, onAdd }: RepositoryAgentCardProps) {
   return (
-    <Card className="transition-shadow hover:shadow-md">
+    <Card className="h-full transition-shadow hover:shadow-md">
       <CardHeader className="grid-cols-[auto_1fr] items-start gap-x-3">
         <AgentIcon name={agent.name} purpose={agent.purpose} className="row-span-2" />
         <CardTitle className="flex flex-wrap items-center gap-2">{agent.name}<Badge variant="secondary">{agent.category}</Badge></CardTitle>

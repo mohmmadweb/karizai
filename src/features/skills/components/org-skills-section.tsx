@@ -44,7 +44,7 @@ export function OrgSkillsSection() {
               </CardHeader>
               {skill.files.length ? (
                 <CardContent className="flex flex-wrap gap-1.5">
-                  {skill.files.map((file) => <Badge key={file} variant="outline"><PaperclipIcon aria-hidden />{file}</Badge>)}
+                  {skill.files.map((file) => <Badge key={file} variant="outline"><PaperclipIcon aria-hidden /><bdi dir="ltr">{file}</bdi></Badge>)}
                 </CardContent>
               ) : null}
               <CardFooter>

@@ -31,7 +31,7 @@ export function AgentKnowledgeSection({ draft, sensitive, onChange, onPolicyChan
   const policy: ModelPolicy = sensitive ? "internal-only" : (draft.modelPolicy ?? "auto");
 
   return (
-    <FormSection title="دانش، مدل و محل اجرا" description="Agent فقط از دانشی پاسخ می‌دهد که انتخاب می‌کنید و دسترسی‌اش هرگز از دسترسی شما بیشتر نیست.">
+    <FormSection title="دانش، مدل و محل اجرا" description="عامل فقط از دانشی پاسخ می‌دهد که انتخاب می‌کنید و دسترسی‌اش هرگز از دسترسی شما بیشتر نیست.">
       <fieldset className="flex flex-col gap-2 md:col-span-2">
         <legend className="mb-2 text-label">دانش</legend>
         <div className="grid gap-2 sm:grid-cols-2">
@@ -48,7 +48,7 @@ export function AgentKnowledgeSection({ draft, sensitive, onChange, onPolicyChan
             );
           })}
         </div>
-        <FieldDescription>{knowledge.length ? `${formatNumber(knowledge.length)} مجموعه انتخاب شده است.` : "بدون دانش، Agent فقط از دستورالعمل و ابزارها پاسخ می‌دهد."}</FieldDescription>
+        <FieldDescription>{knowledge.length ? `${formatNumber(knowledge.length)} مجموعه انتخاب شده است.` : "بدون دانش، عامل فقط از دستورالعمل و ابزارها پاسخ می‌دهد."}</FieldDescription>
       </fieldset>
       <Field>
         <p className="text-label" id="agent-policy-label">سیاست مدل</p>
@@ -63,7 +63,7 @@ export function AgentKnowledgeSection({ draft, sensitive, onChange, onPolicyChan
             </div>
           ))}
         </RadioGroup>
-        {sensitive ? <FieldDescription>این Agent حساس است و ادمین آن را روی «فقط مدل داخلی» گذاشته است.</FieldDescription> : null}
+        {sensitive ? <FieldDescription>این عامل حساس است و ادمین آن را روی «فقط مدل داخلی» گذاشته است.</FieldDescription> : null}
       </Field>
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-2 text-label">اجرا در</legend>
@@ -73,7 +73,7 @@ export function AgentKnowledgeSection({ draft, sensitive, onChange, onPolicyChan
             <Label htmlFor={`surface-${item}`}>{surfaceLabels[item]}</Label>
           </div>
         ))}
-        <FieldDescription>در گروه‌های کاریز همکاران با @نام Agent صدایش می‌زنند؛ در جریان‌ها به‌صورت یک گام می‌آید.</FieldDescription>
+        <FieldDescription>در گروه‌های کاریز همکاران با @نام عامل صدایش می‌زنند؛ در جریان‌ها به‌صورت یک گام می‌آید.</FieldDescription>
       </fieldset>
     </FormSection>
   );

@@ -32,7 +32,7 @@ function LimitForm({ user, onClose, onSave }: { user: UserLimit; onClose: () => 
     <>
       <DialogHeader>
         <DialogTitle>سقف ماهانه‌ی {user.name}</DialogTitle>
-        <DialogDescription>وقتی سقف تمام شود، رفتاری که برای گروه او در «مرکز قواعد و سیاست‌ها» تعیین شده اجرا می‌شود.</DialogDescription>
+        <DialogDescription>وقتی سقف تمام شود، رفتاری که برای گروه او در «سیاست‌ها» تعیین شده اجرا می‌شود.</DialogDescription>
       </DialogHeader>
       <form noValidate onSubmit={(event) => { event.preventDefault(); submit(); }} className="grid gap-4">
         <Field data-invalid={error ? true : undefined}>

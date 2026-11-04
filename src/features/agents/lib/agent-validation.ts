@@ -11,15 +11,15 @@ export type AgentErrors = {
 /** Checks required fields and whether the chosen model fits the chosen tools. */
 export function validateAgent(draft: AgentDraft, sensitive: boolean, getModel: (id: string) => CatalogModel | undefined): AgentErrors {
   const errors: AgentErrors = {};
-  if (!draft.name.trim()) errors.name = "نام Agent را بنویسید.";
-  if (!draft.instructions.trim()) errors.instructions = "دستورالعمل Agent را بنویسید.";
+  if (!draft.name.trim()) errors.name = "نام عامل را بنویسید.";
+  if (!draft.instructions.trim()) errors.instructions = "دستورالعمل عامل را بنویسید.";
   const model = getModel(draft.defaultModelId);
   if (!draft.defaultModelId || !model) {
     errors.defaultModelId = "یک مدل پیش‌فرض انتخاب کنید.";
   } else if (sensitive && !model.isInternal) {
     errors.defaultModelId = draft.modelPolicy === "internal-only"
       ? "سیاست مدل «فقط مدل داخلی» است؛ یک مدل داخلی مثل Qwen انتخاب کنید یا سیاست را «خودکار» کنید."
-      : "این Agent حساس است و فقط مدل داخلی را می‌پذیرد.";
+      : "این عامل حساس است و فقط مدل داخلی را می‌پذیرد.";
   } else if (draft.tools.length > 0 && !model.supportsTools) {
     errors.tools = `مدل «${model.name}» ابزار را پشتیبانی نمی‌کند. مدل دیگری انتخاب کنید یا ابزارها را بردارید.`;
   }

@@ -37,15 +37,15 @@ export function BlockMenu({ trigger, heading, onPick, nativeTrigger = true }: { 
         <DropdownMenuGroup>
           <DropdownMenuLabel>{heading}</DropdownMenuLabel>
           <DropdownMenuSub>
-            <DropdownMenuSubTrigger>Agentها و اسکیل‌هایشان</DropdownMenuSubTrigger>
+            <DropdownMenuSubTrigger>عامل‌ها و اسکیل‌هایشان</DropdownMenuSubTrigger>
             <DropdownMenuSubContent className="max-h-72 overflow-y-auto">
               <DropdownMenuItem onClick={() => onPick({ kind: "orchestrator" })}>{nodeKindLabels.orchestrator}</DropdownMenuItem>
-              {agents.length === 0 ? <DropdownMenuItem disabled>Agentی نیست</DropdownMenuItem> : null}
+              {agents.length === 0 ? <DropdownMenuItem disabled>عاملی نیست</DropdownMenuItem> : null}
               {agents.map((agent) => (
                 <DropdownMenuSub key={agent.id}>
                   <DropdownMenuSubTrigger disabled={!agent.isEnabled}>{agent.name}{agent.isEnabled ? "" : " — غیرفعال"}</DropdownMenuSubTrigger>
                   <DropdownMenuSubContent>
-                    <DropdownMenuItem onClick={() => onPick({ kind: "agent", label: agent.name, config: { agentId: agent.id, params: defaultParams(agentParams) } })}>اجرای این Agent</DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onPick({ kind: "agent", label: agent.name, config: { agentId: agent.id, params: defaultParams(agentParams) } })}>اجرای این عامل</DropdownMenuItem>
                     {skills.filter((skill) => agent.skillIds.includes(skill.id)).map((skill) => (
                       <DropdownMenuItem key={skill.id} disabled={skill.approval !== "approved"} onClick={() => onPick({ kind: "skill", label: skill.name, config: { agentId: agent.id, skillId: skill.id } })}>
                         اسکیل: {skill.name}{skill.approval === "approved" ? "" : skill.approval === "pending" ? " — در انتظار تأیید" : " — ردشده"}

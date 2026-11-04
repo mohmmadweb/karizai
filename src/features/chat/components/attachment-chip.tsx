@@ -23,7 +23,7 @@ export function AttachmentChip({ attachment, onRemove }: AttachmentChipProps) {
     <div className={cn("flex max-w-full flex-col gap-0.5 rounded-lg border bg-card px-3 py-2 text-caption", attachment.status === "failed" && "border-destructive/50")}>
       <div className="flex items-center gap-2">
         {busy ? <Spinner /> : <Icon className="size-4 shrink-0" aria-hidden />}
-        <span className="truncate text-label">{attachment.name}</span>
+        <span dir="ltr" className="truncate text-label">{attachment.name}</span>
         <span className={cn("shrink-0 text-muted-foreground", attachment.status === "failed" && "text-destructive")}>
           {ocr ? "در حال خواندن متن فارسی تصویر" : statusText[attachment.status]}
         </span>

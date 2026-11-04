@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { ActivityIcon } from "lucide-react";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PageHeader } from "@/components/shared/page-header";
@@ -26,7 +26,7 @@ export function LivePageContent() {
   ];
   return (
     <div className="mx-auto flex w-full max-w-page flex-col gap-6 page-gutter py-8">
-      <PageHeader title="فعالیت زنده" description="هر گام جریان‌ها در بخش‌های دیگر سیستم چه کرد: پیام، وظیفه، جلسه، فایل، گفتگو، اعلان و ممیزی." action={<LiveSwitch />} />
+      <PageHeader title="فعالیت زنده" description="هر گام جریان‌ها در بخش‌های دیگر سیستم چه کرد: پیام، وظیفه، جلسه، فایل، گفتگو، اعلان و ممیزی." action={<LiveSwitch className="lg:hidden" />} />
       {visitRuns.length === 0 ? (
         <EmptyState icon={<ActivityIcon />} title="هنوز جریانی در این بازدید اجرا نشده است" description="یکی از جریان‌ها را اجرا کنید یا حالت زنده را روشن کنید تا اثرش را در سیستم ببینید." action={<Button nativeButton={false} render={<Link href="/workflows" />}>رفتن به جریان‌ها</Button>} />
       ) : (

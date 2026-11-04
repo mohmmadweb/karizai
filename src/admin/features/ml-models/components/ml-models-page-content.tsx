@@ -14,7 +14,7 @@ import { FineTuneTab } from "./fine-tune-tab";
 import { MlRegisterDialog } from "./ml-register-dialog";
 import { MlTestDialog } from "./ml-test-dialog";
 
-const schema = (fields: SchemaField[]) => <span className="flex flex-wrap gap-1">{fields.map((f) => <Badge key={f.name} variant="outline" title={f.label}><bdi dir="ltr">{f.name}: {f.type}</bdi></Badge>)}</span>;
+const schema = (fields: SchemaField[]) => <span className="flex flex-wrap gap-1">{fields.map((f) => <Badge key={f.name} variant="outline" title={f.label}><bdi dir="ltr" className="font-mono">{f.name}: {f.type}</bdi></Badge>)}</span>;
 
 /** Prediction and optimization models as endpoints, and the organization's own fine-tuned models. */
 export function MlModelsPageContent() {
@@ -22,7 +22,7 @@ export function MlModelsPageContent() {
   const [testing, setTesting] = useState<MlModel | null>(null);
   const [registering, setRegistering] = useState(false);
   const columns: DataTableColumn<MlModel>[] = [
-    { id: "name", header: "مدل", cell: (m) => <span className="flex flex-col gap-0.5"><span className="font-medium">{m.name}</span><bdi dir="ltr" className="max-w-64 truncate text-caption text-muted-foreground">{m.endpoint}</bdi></span> },
+    { id: "name", header: "مدل", cell: (m) => <span className="flex flex-col gap-0.5"><span className="font-medium">{m.name}</span><bdi dir="ltr" className="block max-w-64 truncate font-mono text-caption text-muted-foreground">{m.endpoint}</bdi></span> },
     { id: "owner", header: "واحد مالک", cell: (m) => <span className="flex flex-col"><span>{m.ownerUnit}</span><span className="text-caption text-muted-foreground">{m.framework}</span></span> },
     { id: "input", header: "ورودی", hideBelow: "lg", cell: (m) => schema(m.input) },
     { id: "output", header: "خروجی", hideBelow: "xl", cell: (m) => schema(m.output) },
@@ -34,12 +34,12 @@ export function MlModelsPageContent() {
         description="مدل‌های پیش‌بینی و بهینه‌سازی سازمان را با ورودی و خروجی مشخص ثبت کنید تا عامل‌ها و جریان‌ها از خروجی عددی‌شان استفاده کنند."
         action={<Button onClick={() => setRegistering(true)}><PlusIcon aria-hidden />ثبت مدل</Button>}
       />
-      <Tabs defaultValue="endpoints">
-        <TabsList>
-          <TabsTrigger value="endpoints">مدل‌های پیش‌بینی و بهینه‌سازی</TabsTrigger>
-          <TabsTrigger value="fine-tune">مدل‌های اختصاصی (Fine-tune)</TabsTrigger>
+      <Tabs defaultValue="endpoints" className="min-w-0">
+        <TabsList className="max-w-full justify-start overflow-x-auto">
+          <TabsTrigger value="endpoints" className="shrink-0 flex-none px-3">مدل‌های پیش‌بینی و بهینه‌سازی</TabsTrigger>
+          <TabsTrigger value="fine-tune" className="shrink-0 flex-none px-3">مدل‌های اختصاصی (Fine-tune)</TabsTrigger>
         </TabsList>
-        <TabsContent value="endpoints" className="pt-4">
+        <TabsContent value="endpoints" className="min-w-0 pt-4">
           <DataTable
             label="مدل‌های یادگیری ماشین"
             rows={models}
@@ -50,7 +50,7 @@ export function MlModelsPageContent() {
             hidePagerWhenSingle
           />
         </TabsContent>
-        <TabsContent value="fine-tune" className="pt-4"><FineTuneTab /></TabsContent>
+        <TabsContent value="fine-tune" className="min-w-0 pt-4"><FineTuneTab /></TabsContent>
       </Tabs>
       <MlTestDialog model={testing} onOpenChange={(open) => { if (!open) setTesting(null); }} />
       <MlRegisterDialog open={registering} onOpenChange={setRegistering} onCreate={(m) => { setModels((l) => [...l, m]); toast.success("مدل ثبت شد؛ آن را آزمون کنید."); }} />

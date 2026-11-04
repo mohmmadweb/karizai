@@ -15,7 +15,7 @@ export const gateways: Gateway[] = [
   { id: "messaging", name: "پیام و اعلان", description: "پیام، پیامک، ایمیل و اعلان به همکاران.", karizAdapter: "گفتگو و اعلان کاریز" },
   { id: "calendar", name: "تقویم", description: "جلسه‌ها و تقویم کاری (Exchange).", karizAdapter: "تقویم کاریز" },
   { id: "data", name: "داده‌ی سازمانی", description: "پایگاه‌های داده، ERP و حسابداری؛ بیشتر فقط‌خواندنی." },
-  { id: "plant", name: "سامانه‌های کارخانه", description: "MES، LIMS، CMMS، حسگرهای MQTT و SCADA/OPC-UA." },
+  { id: "plant", name: "سامانه‌های کارخانه", description: "MES، LIMS، CMMS، حسگرهای MQTT و SCADA/OPC-UA‏." },
   { id: "other", name: "سایر اتصال‌ها", description: "CRM، نقشه و جریان‌های وارد‌شده." },
 ];
 

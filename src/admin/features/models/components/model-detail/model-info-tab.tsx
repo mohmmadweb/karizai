@@ -30,7 +30,7 @@ type Values = FeatureValues & {
   selfHosted: boolean;
 };
 
-const text = (n: number | null) => (n === null ? "" : String(n));
+const text = (n: number | null) => (n === null ? "" : n.toLocaleString("fa-IR"));
 
 const initialValues = (m: AiModel): Values => ({
   displayName: m.displayName,
@@ -106,7 +106,7 @@ export function ModelInfoTab({ model }: { model: AiModel }) {
               id="model-remote-id"
               dir="ltr"
               readOnly
-              className="text-start"
+              className="text-start font-mono"
               value={model.remoteId}
             />
           </Field>

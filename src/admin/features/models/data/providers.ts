@@ -7,7 +7,7 @@ const providers: ModelProvider[] = [
     baseUrl: "https://openrouter.ai/api/v1",
     hasApiKey: true,
     status: "available",
-    lastFetchedAt: "2026-10-10T09:00:00.000Z",
+    lastFetchedAt: "2026-11-04T05:30:00.000Z",
     createdAt: "2026-09-20T08:00:00.000Z",
     syncEvery: "24h",
   },
@@ -24,7 +24,7 @@ const providers: ModelProvider[] = [
   {
     id: "provider-003",
     name: "ارائه‌دهنده‌ی آزمایشی",
-    baseUrl: "https://api.example-provider.com/v1",
+    baseUrl: "https://api.mistral.ai/v1",
     hasApiKey: true,
     status: "unavailable",
     lastFetchedAt: "2026-10-05T15:00:00.000Z",

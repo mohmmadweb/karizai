@@ -29,8 +29,8 @@ export type Incident = { id: string; date: string; title: string; duration: stri
 
 export function getIncidents(): Incident[] {
   return [
-    { id: "inc-3", date: "۱۴۰۵/۰۸/۰۹", title: "کندی DeepSeek؛ درخواست‌ها به Qwen داخلی منتقل شد", duration: "۴۲ دقیقه", impact: "بدون قطعی برای کاربران" },
-    { id: "inc-2", date: "۱۴۰۵/۰۶/۲۱", title: "قطع اینترنت بین‌الملل", duration: "۳ ساعت و ۱۰ دقیقه", impact: "فقط مدل‌های داخلی؛ سامانه در دسترس ماند" },
-    { id: "inc-1", date: "۱۴۰۵/۰۲/۱۴", title: "به‌روزرسانی درایور GPU", duration: "۴ ساعت و ۱۵ دقیقه", impact: "زیر هدف SLA در اردیبهشت" },
+    { id: "inc-3", date: "2026-10-31", title: "کندی DeepSeek؛ درخواست‌ها به Qwen داخلی منتقل شد", duration: "۴۲ دقیقه", impact: "بدون قطعی برای کاربران" },
+    { id: "inc-2", date: "2026-09-12", title: "قطع اینترنت بین‌الملل", duration: "۳ ساعت و ۱۰ دقیقه", impact: "فقط مدل‌های داخلی؛ سامانه در دسترس ماند" },
+    { id: "inc-1", date: "2026-05-04", title: "به‌روزرسانی درایور GPU", duration: "۴ ساعت و ۱۵ دقیقه", impact: "زیر هدف SLA در اردیبهشت" },
   ];
 }

@@ -20,11 +20,11 @@ export function SkillAgentsDialog({ skill, open, onOpenChange }: SkillAgentsDial
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Agentهای دارای «{skill.name}»</DialogTitle>
-          <DialogDescription>{skill.approval === "approved" ? "اسکیل را به Agentهای خود اضافه یا از آن‌ها جدا کنید." : "این اسکیل تا تأیید ادمین در Agentها کار نمی‌کند، ولی می‌توانید از حالا آن را اضافه کنید."}</DialogDescription>
+          <DialogTitle>عامل‌های دارای «{skill.name}»</DialogTitle>
+          <DialogDescription>{skill.approval === "approved" ? "اسکیل را به عامل‌های خود اضافه یا از آن‌ها جدا کنید." : "این اسکیل تا تأیید ادمین در عامل‌ها کار نمی‌کند، ولی می‌توانید از حالا آن را اضافه کنید."}</DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-3">
-          {mine.length === 0 ? <p className="text-body text-muted-foreground">هنوز Agentی ندارید.</p> : null}
+          {mine.length === 0 ? <p className="text-body text-muted-foreground">هنوز عاملی ندارید.</p> : null}
           {mine.map((agent) => (
             <div key={agent.id} className="flex items-center gap-2">
               <Checkbox id={`sa-${agent.id}`} checked={chosen.includes(agent.id)} onCheckedChange={(checked) => setChosen((list) => (checked === true ? [...list, agent.id] : list.filter((id) => id !== agent.id)))} />

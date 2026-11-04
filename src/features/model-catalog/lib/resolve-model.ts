@@ -56,7 +56,7 @@ export function resolveModel({ choice, agent, attachments, usesTools, models, ro
     }
     const wantedName = choice === "auto" || choice.startsWith("auto:") ? null : models.find((model) => model.id === choice && !model.isInternal)?.name;
     const note = agent?.isSensitive
-      ? "چون Agent حساس است، مدل داخلی استفاده شد."
+      ? "چون عامل حساس است، مدل داخلی استفاده شد."
       : internalReason
         ? `${internalReason} پس پیام فقط با مدل داخلی «${match.name}» پردازش شد.`
         : offline

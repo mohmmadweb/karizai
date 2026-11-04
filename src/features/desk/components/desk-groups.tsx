@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { MegaphoneIcon, UsersIcon } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useMessenger } from "@/features/messenger/components/messenger-provider";

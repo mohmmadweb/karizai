@@ -4,7 +4,7 @@ import { getTemplates } from "./templates";
 const [weekly, customer, , pricing, reorder, planning, supervised] = getTemplates();
 
 const workflows: Workflow[] = [
-  { id: "wf-1", name: weekly.name, description: weekly.description, status: "active", triggers: weekly.triggers, nodes: weekly.nodes, edges: weekly.edges, updatedAt: "2026-10-20T09:00:00.000Z", lastRunAt: "2026-10-24T05:00:00.000Z" },
+  { id: "wf-1", name: weekly.name, description: weekly.description, status: "active", triggers: weekly.triggers, nodes: weekly.nodes, edges: weekly.edges, updatedAt: "2026-10-20T09:00:00.000Z", lastRunAt: "2026-11-01T05:02:00.000Z" },
   { id: "wf-2", name: customer.name, description: customer.description, status: "pending-approval", triggers: customer.triggers, nodes: customer.nodes, edges: customer.edges, updatedAt: "2026-10-25T11:30:00.000Z" },
   {
     id: "wf-3", name: "یادآوری مرخصی", description: "هر روز ساعت ۹ مانده‌ی مرخصی را بررسی می‌کند.", status: "paused",
@@ -13,14 +13,14 @@ const workflows: Workflow[] = [
     edges: [], updatedAt: "2026-10-10T08:00:00.000Z", lastRunAt: "2026-10-18T05:30:00.000Z",
   },
   { id: "wf-5", name: pricing.name, description: pricing.description, status: "active", triggers: pricing.triggers, nodes: pricing.nodes, edges: pricing.edges, updatedAt: "2026-10-28T10:00:00.000Z", lastRunAt: "2026-10-29T08:35:00.000Z" },
-  { id: "wf-6", name: reorder.name, description: reorder.description, status: "active", triggers: reorder.triggers, nodes: reorder.nodes, edges: reorder.edges, updatedAt: "2026-10-30T09:00:00.000Z", lastRunAt: "2026-10-31T05:00:00.000Z" },
-  { id: "wf-7", name: planning.name, description: planning.description, status: "active", triggers: planning.triggers, nodes: planning.nodes, edges: planning.edges, updatedAt: "2026-11-01T07:00:00.000Z", lastRunAt: "2026-11-02T02:30:00.000Z" },
+  { id: "wf-6", name: reorder.name, description: reorder.description, status: "active", triggers: reorder.triggers, nodes: reorder.nodes, edges: reorder.edges, updatedAt: "2026-10-30T09:00:00.000Z", lastRunAt: "2026-11-04T04:30:00.000Z" },
+  { id: "wf-7", name: planning.name, description: planning.description, status: "active", triggers: planning.triggers, nodes: planning.nodes, edges: planning.edges, updatedAt: "2026-11-01T07:00:00.000Z", lastRunAt: "2026-11-04T02:30:00.000Z" },
   { id: "wf-8", name: supervised.name, description: supervised.description, status: "draft", triggers: supervised.triggers, nodes: supervised.nodes, edges: supervised.edges, updatedAt: "2026-11-02T10:00:00.000Z" },
 ];
 
 const runs: Run[] = [
   {
-    id: "run-1", workflowId: "wf-1", startedAt: "2026-10-24T05:00:00.000Z", endedAt: "2026-10-24T05:02:10.000Z", status: "succeeded", startedBy: "زمان‌بندی: هر شنبه ۰۸:۰۰",
+    id: "run-1", workflowId: "wf-1", startedAt: "2026-11-01T05:00:00.000Z", endedAt: "2026-11-01T05:02:10.000Z", status: "succeeded", startedBy: "اجرای دستی",
     steps: [
       { nodeId: "n1", label: "ساخت آمار فروش", status: "succeeded", durationMs: 4200, output: "آمار ۳۱ استان دریافت شد.", modelName: "Claude Sonnet", inputTokens: 912, outputTokens: 466 },
       { nodeId: "n2", label: "نوشتن گزارش", status: "succeeded", durationMs: 6100, output: "گزارش ۴ پاراگرافی نوشته شد.", modelName: "Mistral", inputTokens: 1380, outputTokens: 702 },
@@ -29,7 +29,7 @@ const runs: Run[] = [
     ],
   },
   {
-    id: "run-2", workflowId: "wf-1", startedAt: "2026-10-17T05:00:00.000Z", endedAt: "2026-10-17T05:00:12.000Z", status: "failed", startedBy: "زمان‌بندی: هر شنبه ۰۸:۰۰",
+    id: "run-2", workflowId: "wf-1", startedAt: "2026-10-31T04:30:00.000Z", endedAt: "2026-10-31T04:30:12.000Z", status: "failed", startedBy: "زمان‌بندی: هر شنبه ۰۸:۰۰",
     steps: [
       { nodeId: "n1", label: "ساخت آمار فروش", status: "failed", durationMs: 12000, error: "انبار داده در زمان مشخص پاسخ نداد." },
       { nodeId: "n2", label: "نوشتن گزارش", status: "skipped" },
@@ -51,7 +51,7 @@ const runs: Run[] = [
     ],
   },
   {
-    id: "run-6", workflowId: "wf-6", startedAt: "2026-10-31T05:00:00.000Z", endedAt: "2026-10-31T05:06:40.000Z", status: "succeeded", startedBy: "زمان‌بندی: هر روز ۰۸:۰۰",
+    id: "run-6", workflowId: "wf-6", startedAt: "2026-11-04T04:30:00.000Z", endedAt: "2026-11-04T04:36:40.000Z", status: "succeeded", startedBy: "زمان‌بندی: هر روز ۰۸:۰۰",
     steps: [
       { nodeId: "n1", label: "راهکاران: موجودی", status: "succeeded", durationMs: 1600, output: "۳ ماده از ۶ ماده زیر نقطه‌ی سفارش است؛ HD5502 با ۱۸ تن (نقطه‌ی سفارش ۴۰ تن) فقط ۳ روز پوشش دارد." },
       { nodeId: "n2", label: "SQL: محموله‌های در راه", status: "succeeded", durationMs: 1500, output: "محموله‌ی HD5502 تا ۱۸ آبان در گمرک است." },
@@ -66,7 +66,7 @@ const runs: Run[] = [
     ],
   },
   {
-    id: "run-7", workflowId: "wf-7", startedAt: "2026-11-02T02:30:00.000Z", endedAt: "2026-11-02T02:34:40.000Z", status: "succeeded", startedBy: "زمان‌بندی: هر روز ۰۶:۰۰", savedMs: 3400,
+    id: "run-7", workflowId: "wf-7", startedAt: "2026-11-04T02:30:00.000Z", endedAt: "2026-11-04T02:34:40.000Z", status: "succeeded", startedBy: "زمان‌بندی: هر روز ۰۶:۰۰", savedMs: 3400,
     steps: [
       { nodeId: "p1", label: "راهکاران: سفارش‌های باز", status: "succeeded", durationMs: 1400, output: "۱۴ سفارش باز فروش برای ۱۰ روز آینده، جمعاً ۳۱۲ تن در ۶ گرید." },
       { nodeId: "p2", label: "شاخه‌ی موازی", status: "succeeded", durationMs: 200, output: "۳ شاخه هم‌زمان شروع شد." },

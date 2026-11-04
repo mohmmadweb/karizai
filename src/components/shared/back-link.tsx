@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { ArrowRightIcon } from "lucide-react";
 
 /** In RTL the arrow points to the end of the line, away from the page. */

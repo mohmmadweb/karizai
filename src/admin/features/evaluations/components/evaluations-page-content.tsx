@@ -52,7 +52,7 @@ export function EvaluationsPageContent() {
     { id: "version", header: "نسخه", cell: (r) => ver(r.version) },
     { id: "set", header: "مجموعه‌ی ارزیابی", hideBelow: "lg", cell: (r) => `${r.setSize.toLocaleString("fa-IR")} نمونه` },
     { id: "accuracy", header: "دقت", align: "end", cell: (r) => pct(r.accuracy) },
-    { id: "change", header: "تغییر", hideBelow: "lg", cell: (r) => <span className="text-body-sm text-muted-foreground">{change(r.accuracy, r.previous)}</span> },
+    { id: "change", header: "تغییر", hideBelow: "lg", cell: (r) => <bdi dir="ltr" className="text-body-sm text-muted-foreground">{change(r.accuracy, r.previous)}</bdi> },
     { id: "status", header: "انتشار", cell: (r) => <StatusCell row={r} /> },
   ];
 

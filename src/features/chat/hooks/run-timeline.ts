@@ -53,7 +53,7 @@ export async function runTimeline(deps: Deps): Promise<TimelineOutcome> {
       const model = (decision.outcome === "rerun" ? deps.supervisor?.strongerModel : deps.supervisor?.independentModel) ?? null;
       if (!model) {
         await deps.wait(500);
-        set(index, { status: "failed", error: deps.supervisor?.sensitive ? "مدل داخلی در دسترس نیست؛ چون Agent حساس است، بررسی انجام نشد." : "مدل ناظر در دسترس نیست و بررسی انجام نشد.", inputTokens: 0, outputTokens: 0 });
+        set(index, { status: "failed", error: deps.supervisor?.sensitive ? "مدل داخلی در دسترس نیست؛ چون عامل حساس است، بررسی انجام نشد." : "مدل ناظر در دسترس نیست و بررسی انجام نشد.", inputTokens: 0, outputTokens: 0 });
         continue;
       }
       set(index, { modelName: model });

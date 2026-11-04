@@ -45,12 +45,12 @@ function Preview({ file }: { file: GeneratedFile }) {
 export function GeneratedFilesView({ files }: { files: GeneratedFile[] }) {
   const [open, setOpen] = useState<GeneratedFile | null>(null);
   return (
-    <div className="flex flex-col gap-2">
-      <ul className="grid gap-2 sm:grid-cols-2">
+    <div className="flex min-w-0 max-w-full flex-col gap-2">
+      <ul className="grid min-w-0 gap-2 sm:grid-cols-2">
         {files.map((file) => {
           const { icon: Icon, label, tone } = kinds[file.kind];
           return (
-            <li key={file.id} className="flex items-center gap-3 rounded-2xl border bg-card p-3">
+            <li key={file.id} className="flex min-w-0 items-center gap-3 rounded-2xl border bg-card p-3">
               <span aria-hidden className={cn("flex size-11 shrink-0 items-center justify-center rounded-xl", tone)}><Icon className="size-6" /></span>
               <div className="min-w-0 flex-1">
                 <p className="flex min-w-0 items-baseline gap-0.5 text-label"><span className="truncate">{file.name}</span><span dir="ltr" className="shrink-0 text-muted-foreground">.{fileExtension(file)}</span></p>

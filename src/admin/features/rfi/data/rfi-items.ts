@@ -230,7 +230,7 @@ export const rfiItems: RfiItem[] = [
   },
   {
     "id": "R3a.1",
-    "section": "۳. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
+    "section": "۳الف. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
     "title": "مسیریابی: تحلیل نوع، پیچیدگی و حساسیت درخواست",
     "status": "demo",
     "href": "/admin/models",
@@ -238,7 +238,7 @@ export const rfiItems: RfiItem[] = [
   },
   {
     "id": "R3a.2",
-    "section": "۳. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
+    "section": "۳الف. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
     "title": "انتخاب مدل بر اساس کیفیت، سرعت و هزینه",
     "status": "demo",
     "href": "/admin/models",
@@ -246,7 +246,7 @@ export const rfiItems: RfiItem[] = [
   },
   {
     "id": "R3a.3",
-    "section": "۳. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
+    "section": "۳الف. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
     "title": "ناظر مستقل بر اجرا، صحت و کیفیت خروجی",
     "status": "demo",
     "href": "/chat",
@@ -254,7 +254,7 @@ export const rfiItems: RfiItem[] = [
   },
   {
     "id": "R3a.4",
-    "section": "۳. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
+    "section": "۳الف. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
     "title": "درخواست اصلاح در صورت خطا",
     "status": "demo",
     "href": "/chat",
@@ -262,7 +262,7 @@ export const rfiItems: RfiItem[] = [
   },
   {
     "id": "R3a.5",
-    "section": "۳. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
+    "section": "۳الف. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
     "title": "اجرای مجدد",
     "status": "demo",
     "href": "/chat",
@@ -270,7 +270,7 @@ export const rfiItems: RfiItem[] = [
   },
   {
     "id": "R3a.6",
-    "section": "۳. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
+    "section": "۳الف. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
     "title": "ارجاع به مدل قوی‌تر",
     "status": "demo",
     "href": "/chat",
@@ -278,15 +278,15 @@ export const rfiItems: RfiItem[] = [
   },
   {
     "id": "R3a.7",
-    "section": "۳. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
+    "section": "۳الف. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
     "title": "بهینه‌سازی و فشرده‌سازی پرامپت و زمینه پیش از ارسال",
     "status": "demo",
     "href": "/chat",
-    "how": "کلید «✦ بهینه‌ساز پرامپت» در منوی ⋯"
+    "how": "کلید «✦ بهینه‌ساز پرامپت» در منوی «بیشتر» (نماد سه‌نقطه)"
   },
   {
     "id": "R3a.8",
-    "section": "۳. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
+    "section": "۳الف. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
     "title": "نمایش کاهش توکن و هزینه‌ی حاصل از بهینه‌سازی",
     "status": "demo",
     "href": "/chat",
@@ -294,7 +294,7 @@ export const rfiItems: RfiItem[] = [
   },
   {
     "id": "R3a.9",
-    "section": "۳. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
+    "section": "۳الف. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
     "title": "تعریف تعامل، ترتیب اجرا، تبادل داده و کنترل این ایجنت‌ها در یک Workflow",
     "status": "demo",
     "href": "/workflows/wf-8",
@@ -302,7 +302,7 @@ export const rfiItems: RfiItem[] = [
   },
   {
     "id": "R3a.10",
-    "section": "۳. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
+    "section": "۳الف. ارکستراسیون چندایجنتی و بهینه‌سازی توکن",
     "title": "مقایسه‌ی عملی هزینه، توکن، دقت و زمان: چندایجنتی در برابر مستقیم",
     "status": "demo",
     "href": "/admin/benchmark",
@@ -310,7 +310,7 @@ export const rfiItems: RfiItem[] = [
   },
   {
     "id": "R3b.1",
-    "section": "۳. امنیت، محرمانگی و حاکمیت داده",
+    "section": "۳ب. امنیت، محرمانگی و حاکمیت داده",
     "title": "محل ذخیره و پردازش داده",
     "status": "written",
     "href": null,
@@ -318,7 +318,7 @@ export const rfiItems: RfiItem[] = [
   },
   {
     "id": "R3b.2",
-    "section": "۳. امنیت، محرمانگی و حاکمیت داده",
+    "section": "۳ب. امنیت، محرمانگی و حاکمیت داده",
     "title": "شفافیت انتقال داده به سرویس‌دهنده‌ی بیرونی",
     "status": "demo",
     "href": "/admin/policies",
@@ -326,7 +326,7 @@ export const rfiItems: RfiItem[] = [
   },
   {
     "id": "R3b.3",
-    "section": "۳. امنیت، محرمانگی و حاکمیت داده",
+    "section": "۳ب. امنیت، محرمانگی و حاکمیت داده",
     "title": "سیاست استفاده از داده برای آموزش مدل",
     "status": "written",
     "href": null,
@@ -334,7 +334,7 @@ export const rfiItems: RfiItem[] = [
   },
   {
     "id": "R3b.4",
-    "section": "۳. امنیت، محرمانگی و حاکمیت داده",
+    "section": "۳ب. امنیت، محرمانگی و حاکمیت داده",
     "title": "محدودسازی اطلاعات ارسالی به مدل‌ها",
     "status": "demo",
     "href": "/admin/policies",
@@ -342,7 +342,7 @@ export const rfiItems: RfiItem[] = [
   },
   {
     "id": "R3b.5",
-    "section": "۳. امنیت، محرمانگی و حاکمیت داده",
+    "section": "۳ب. امنیت، محرمانگی و حاکمیت داده",
     "title": "پوشاندن داده‌های حساس",
     "status": "demo",
     "href": "/admin/policies",
@@ -350,7 +350,7 @@ export const rfiItems: RfiItem[] = [
   },
   {
     "id": "R3b.6",
-    "section": "۳. امنیت، محرمانگی و حاکمیت داده",
+    "section": "۳ب. امنیت، محرمانگی و حاکمیت داده",
     "title": "ثبت لاگ دسترسی",
     "status": "demo",
     "href": "/admin/audit",
@@ -358,7 +358,7 @@ export const rfiItems: RfiItem[] = [
   },
   {
     "id": "R3b.7",
-    "section": "۳. امنیت، محرمانگی و حاکمیت داده",
+    "section": "۳ب. امنیت، محرمانگی و حاکمیت داده",
     "title": "سیاست نگهداری داده",
     "status": "written",
     "href": null,
@@ -366,7 +366,7 @@ export const rfiItems: RfiItem[] = [
   },
   {
     "id": "R3b.8",
-    "section": "۳. امنیت، محرمانگی و حاکمیت داده",
+    "section": "۳ب. امنیت، محرمانگی و حاکمیت داده",
     "title": "پشتیبان‌گیری",
     "status": "written",
     "href": null,
@@ -374,7 +374,7 @@ export const rfiItems: RfiItem[] = [
   },
   {
     "id": "R3b.9",
-    "section": "۳. امنیت، محرمانگی و حاکمیت داده",
+    "section": "۳ب. امنیت، محرمانگی و حاکمیت داده",
     "title": "حذف اطلاعات، از جمله پس از پایان همکاری",
     "status": "written",
     "href": null,
@@ -898,7 +898,7 @@ export const rfiItems: RfiItem[] = [
     "title": "زمان پیشنهادی جلسه‌ی دمو",
     "status": "written",
     "href": null,
-    "how": "در نامه‌ی پاسخ"
+    "how": "در پاسخ مکتوب"
   },
   {
     "id": "R11.2",

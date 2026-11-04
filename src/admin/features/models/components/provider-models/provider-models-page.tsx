@@ -33,7 +33,7 @@ export function ProviderModelsPage({ providerId }: { providerId: string }) {
         description={
           <span className="flex flex-wrap items-center gap-3">
             <ProviderStatusBadge status={provider.status} />
-            <bdi dir="ltr">{provider.baseUrl}</bdi>
+            <bdi dir="ltr" className="font-mono">{provider.baseUrl}</bdi>
           </span>
         }
         action={

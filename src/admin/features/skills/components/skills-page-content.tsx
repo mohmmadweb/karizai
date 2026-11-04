@@ -38,19 +38,19 @@ export function SkillsPageContent() {
   function toggle(skill: OrgSkill) {
     const status = skill.status === "published" ? "draft" : "published";
     setSkills((list) => list.map((s) => (s.id === skill.id ? { ...s, status } : s)));
-    toast.success(status === "published" ? "اسکیل منتشر شد و کاربران می‌توانند آن را به Agent اضافه کنند." : "انتشار اسکیل لغو شد.");
+    toast.success(status === "published" ? "مهارت منتشر شد و کاربران می‌توانند آن را به عامل اضافه کنند." : "انتشار مهارت لغو شد.");
   }
 
   return (
     <div className="flex flex-col gap-8">
       <PageHeader
-        title="اسکیل‌ها"
-        description="اسکیل‌های سازمانی را بارگذاری و منتشر کنید تا کاربران بتوانند آن‌ها را به Agent خود اضافه کنند."
-        action={<Button onClick={() => setDialog({ skill: null })}><UploadIcon aria-hidden />بارگذاری اسکیل</Button>}
+        title="مهارت‌ها"
+        description="مهارت‌های سازمانی را بارگذاری و منتشر کنید تا کاربران بتوانند آن‌ها را به عامل خود اضافه کنند."
+        action={<Button onClick={() => setDialog({ skill: null })}><UploadIcon aria-hidden />بارگذاری مهارت</Button>}
       />
       {skills.length === 0 ? (
-        <EmptyState icon={<SparklesIcon aria-hidden />} title="هنوز اسکیلی بارگذاری نشده" description="اولین اسکیل سازمانی را بارگذاری کنید."
-          action={<Button onClick={() => setDialog({ skill: null })}>بارگذاری اسکیل</Button>} />
+        <EmptyState icon={<SparklesIcon aria-hidden />} title="هنوز مهارتی بارگذاری نشده" description="اولین مهارت سازمانی را بارگذاری کنید."
+          action={<Button onClick={() => setDialog({ skill: null })}>بارگذاری مهارت</Button>} />
       ) : (
         <ul className="grid gap-4 lg:grid-cols-2">
           {skills.map((skill) => (
@@ -71,7 +71,7 @@ export function SkillsPageContent() {
                 </ul>
               ) : null}
               <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 text-body-sm">
-                <dt className="text-muted-foreground">نسخه</dt><dd>{skill.version}</dd>
+                <dt className="text-muted-foreground">نسخه</dt><dd>{skill.version.replace("/", "٫")}</dd>
                 <dt className="text-muted-foreground">گروه‌های مجاز</dt><dd>{groupNames(skill)}</dd>
                 <dt className="text-muted-foreground">آخرین به‌روزرسانی</dt><dd>{formatDate(skill.updatedAt)}</dd>
               </dl>
@@ -96,15 +96,15 @@ export function SkillsPageContent() {
       <AlertDialog open={deleting !== null} onOpenChange={(open) => { if (!open) setDeleting(null); }}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>اسکیل «{deleting?.name}» حذف شود؟</AlertDialogTitle>
-            <AlertDialogDescription>این اسکیل از فهرست کاربران برداشته می‌شود و Agentهایی که از آن استفاده می‌کنند دیگر به آن دسترسی ندارند.</AlertDialogDescription>
+            <AlertDialogTitle>مهارت «{deleting?.name}» حذف شود؟</AlertDialogTitle>
+            <AlertDialogDescription>این مهارت از فهرست کاربران برداشته می‌شود و عامل‌هایی که از آن استفاده می‌کنند دیگر به آن دسترسی ندارند.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>انصراف</AlertDialogCancel>
             <AlertDialogAction variant="destructive" onClick={() => {
               const id = deleting?.id;
               setSkills((list) => list.filter((s) => s.id !== id));
-              toast.success("اسکیل حذف شد.");
+              toast.success("مهارت حذف شد.");
             }}>حذف</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

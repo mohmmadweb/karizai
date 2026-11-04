@@ -44,5 +44,7 @@ export function getSampleConnections(): DefinedConnection[] {
   }));
   const extras = getCollaborationConnections();
   const replaced = new Set(extras.map((item) => item.id));
-  return [...mirrored.filter((item) => !replaced.has(item.id)), ...extras, scadaSample()];
+  const kept = [...mirrored.filter((item) => !replaced.has(item.id)), ...extras];
+  // The user panel already lists the plant's SCADA; add the template-based one only when it is missing.
+  return kept.some((item) => item.type === "opcua" || /SCADA/.test(item.name)) ? kept : [...kept, scadaSample()];
 }

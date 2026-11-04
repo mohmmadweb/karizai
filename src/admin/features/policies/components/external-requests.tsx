@@ -48,6 +48,7 @@ export function ExternalRequests({ fallbackName }: { fallbackName: string }) {
     {
       id: "user",
       header: "کاربر",
+      className: "max-w-56 whitespace-normal",
       cell: (r) => (
         <span className="flex flex-col">
           <span className="font-medium">{r.user}</span>

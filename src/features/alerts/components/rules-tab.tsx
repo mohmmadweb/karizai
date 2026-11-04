@@ -17,7 +17,7 @@ export function RulesTab() {
   const { rules, saveRule, removeRule } = useAlerts();
   const [editing, setEditing] = useState<AlertRule | "new" | null>(null);
   return (
-    <section aria-label="قواعد هشدار" className="flex flex-col gap-4">
+    <section aria-label="قواعد هشدار" className="flex min-w-0 flex-col gap-4">
       <div className="flex justify-end"><Button type="button" onClick={() => setEditing("new")}><PlusIcon aria-hidden />هشدار تازه</Button></div>
       {rules.length === 0 ? (
         <EmptyState title="هنوز هشداری تعریف نشده" description="برای داده‌ای که مهم است یک هشدار بسازید تا رفتار غیرعادی آن را بدون پرسیدن خبر بگیرید." />

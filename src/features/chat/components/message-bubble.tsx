@@ -46,7 +46,7 @@ export function MessageBubble({ message, question = "", onApprove, onReject, onR
 
   const waiting = message.status === "streaming" && !message.text && !message.toolRun && !message.timeline?.some((step) => step.status !== "done");
   return (
-    <Message className="flex-col gap-3">
+    <Message className="min-w-0 max-w-full flex-col gap-3">
       {message.timeline ? <TimelineView steps={message.timeline} /> : null}
       {message.toolRun ? <ToolRunCard run={message.toolRun} onApprove={onApprove} onReject={onReject} /> : null}
       {waiting ? <Loader variant="typing" size="md" /> : null}

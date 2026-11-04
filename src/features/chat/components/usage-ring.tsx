@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import type { Quota } from "@/features/user-session/types";
 import { formatDate, formatNumber, formatPercent } from "@/lib/format";
@@ -21,7 +21,7 @@ export function UsageRing({ quota, used }: { quota: Quota; used: number }) {
     <Popover>
       <PopoverTrigger
         aria-label={`مصرف شما: ${formatPercent(fraction)} از سهمیه`}
-        className="flex size-9 items-center justify-center rounded-full outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50"
+        title="سهمیه‌ی مصرف توکن" className="flex h-9 items-center gap-1.5 rounded-full px-2 outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50"
       >
         <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90" aria-hidden>
           <circle cx={size / 2} cy={size / 2} r={radius} fill="none" strokeWidth={stroke} className="stroke-muted" />
@@ -37,6 +37,7 @@ export function UsageRing({ quota, used }: { quota: Quota; used: number }) {
             className={cn("stroke-current transition-[stroke-dashoffset] motion-reduce:transition-none", tone)}
           />
         </svg>
+        <span className="text-caption tabular-nums text-muted-foreground">{formatPercent(fraction)}</span>
       </PopoverTrigger>
       <PopoverContent align="end">
         <div className="flex flex-col gap-3">

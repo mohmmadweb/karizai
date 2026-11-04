@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { Building2Icon, ChevronDownIcon, LogOutIcon, MoonIcon, SettingsIcon, SunIcon } from "lucide-react";
 import { BrandLockup } from "@/components/brand/brand-lockup";
 import { PersonAvatar } from "@/components/shared/person-avatar";
@@ -82,7 +82,7 @@ export function TopBar({ query, onQueryChange }: TopBarProps) {
         <AiLayerSwitch />
         <DropdownMenu>
           <DropdownMenuTrigger render={<Button type="button" variant="outline" className="hidden h-10 gap-2 xl:flex" aria-label="سازمان" />}>
-            <Building2Icon aria-hidden />{organization}<ChevronDownIcon aria-hidden />
+            <Building2Icon aria-hidden /><span className="hidden 2xl:inline">{organization}</span><ChevronDownIcon aria-hidden />
           </DropdownMenuTrigger>
           <DropdownMenuContent align="start" className="min-w-52">
             <DropdownMenuGroup>

@@ -44,7 +44,7 @@ export function ComposerPills(props: ComposerPillsProps) {
   const connections = available.filter((item) => props.connectionIds.includes(item.id));
   return (
     <>
-      {props.agent ? <Pill icon={<BotIcon />} label={`Agent: ${props.agent.name}`} offLabel="خروج از حالت Agent" onOff={props.onLeaveAgent} /> : null}
+      {props.agent ? <Pill icon={<BotIcon />} label={`Agent: ${props.agent.name}`} offLabel="خروج از حالت عامل" onOff={props.onLeaveAgent} /> : null}
       {props.knowledge ? <Pill icon={<BookOpenIcon />} label="دانش سازمانی" offLabel="خاموش کردن دانش سازمانی" onOff={props.onKnowledgeOff} /> : null}
       {props.webSearch ? <Pill icon={<GlobeIcon />} label="جست‌وجوی وب" offLabel="خاموش کردن جست‌وجوی وب" onOff={props.onWebSearchOff} /> : null}
       {props.supervisor ? <Pill icon={<ShieldCheckIcon />} label="ناظر هوشمند" offLabel="خاموش کردن ناظر هوشمند" onOff={props.onSupervisorOff} /> : null}

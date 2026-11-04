@@ -1,5 +1,5 @@
 import { ListSkeleton } from "@/components/shared/list-skeleton";
 
 export default function Loading() {
-  return <ListSkeleton title="ویرایش Agent" />;
+  return <ListSkeleton title="ویرایش عامل" />;
 }

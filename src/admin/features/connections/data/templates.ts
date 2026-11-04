@@ -34,7 +34,7 @@ const templates: ConnectionTemplate[] = [
     id: "tpl-scada",
     label: "SCADA خط تولید (OPC-UA)",
     hint: "تگ‌های لحظه‌ای، روند دما و فشار، آلارم‌ها",
-    name: "SCADA خط اکستروژن (OPC-UA)",
+    name: "SCADA خطوط اکسترودر (OPC-UA)",
     domain: "کنترل و پایش خط تولید",
     description: "خواندن تگ‌های لحظه‌ای اکسترودرها، روند دمای نواحی و آلارم‌های فعال؛ فقط‌خواندنی.",
     type: "opcua",

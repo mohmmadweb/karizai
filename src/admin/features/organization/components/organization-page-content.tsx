@@ -21,7 +21,7 @@ export function OrganizationPageContent() {
   const units = flatten(tree);
   return (
     <div className="flex flex-col gap-8">
-      <PageHeader title="ساختار و نقش‌ها" description="واحدهای سازمان و گروه کاریزِ هر کدام، نقش‌های مدیریتی با دامنه‌ی هر نقش، و همگام‌سازی با Active Directory." />
+      <PageHeader title="ساختار و نقش‌ها" description={<>واحدهای سازمان و گروه کاریزِ هر کدام، نقش‌های مدیریتی با دامنه‌ی هر نقش، و همگام‌سازی با <bdi dir="ltr" className="whitespace-nowrap">Active Directory</bdi>.</>} />
       <Tabs defaultValue="tree">
         <TabsList>
           <TabsTrigger value="tree">درخت سازمان</TabsTrigger>

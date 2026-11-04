@@ -36,7 +36,7 @@ export function SettingsPageContent({ account }: { account: Account }) {
             <div className="flex items-center gap-2"><RadioGroupItem id="style-short" value="short" /><Label htmlFor="style-short">کوتاه</Label></div>
             <div className="flex items-center gap-2"><RadioGroupItem id="style-long" value="long" /><Label htmlFor="style-long">مفصل</Label></div>
           </RadioGroup>
-          <p className="text-body-sm text-muted-foreground">این ترجیح بر قواعد سازمان و دستورالعمل Agent اولویت ندارد.</p>
+          <p className="text-body-sm text-muted-foreground">این ترجیح بر قواعد سازمان و دستورالعمل عامل اولویت ندارد.</p>
         </div>
       </FormSection>
       <FormSection title="حریم خصوصی">

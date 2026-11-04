@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { BookOpenIcon, BotIcon, EllipsisIcon, GlobeIcon, PlugIcon, ShieldCheckIcon, WandSparklesIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -85,9 +85,9 @@ export function ComposerMoreMenu(props: ComposerMoreMenuProps) {
           </DropdownMenuSubContent>
         </DropdownMenuSub>
         <DropdownMenuSub open={props.agentOpen} onOpenChange={props.onAgentOpenChange}>
-          <DropdownMenuSubTrigger><BotIcon aria-hidden />عامل (Agent)</DropdownMenuSubTrigger>
+          <DropdownMenuSubTrigger><BotIcon aria-hidden />عامل</DropdownMenuSubTrigger>
           <DropdownMenuSubContent className="min-w-56">
-            {props.agents.length === 0 ? <DropdownMenuItem disabled>هنوز Agentی ندارید</DropdownMenuItem> : null}
+            {props.agents.length === 0 ? <DropdownMenuItem disabled>هنوز عاملی ندارید</DropdownMenuItem> : null}
             {sections.map((section) =>
               section.items.length ? (
                 <DropdownMenuGroup key={section.title}>

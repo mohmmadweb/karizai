@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { CpuIcon } from "lucide-react";
 import { DataTable } from "@/admin/components/shared/data-table/data-table";
 import type { DataTableColumn } from "@/admin/components/shared/data-table/types";

@@ -79,7 +79,7 @@ export function FileManager({ initial }: { initial: KnowledgeDocument[] }) {
       <FolderList folders={allFolders} total={documents.length} selected={folder} onSelect={setFolder} />
       <section aria-label="اسناد" className="flex min-w-0 flex-col gap-4">
         <div className="flex flex-wrap items-center gap-2">
-          <div data-ai className="flex min-w-0 flex-1 items-center gap-2 rounded-lg">
+          <div data-ai className="flex min-w-0 basis-full flex-wrap items-center gap-2 rounded-lg sm:flex-1 sm:basis-0 sm:flex-nowrap">
             <SearchField value={query} onValueChange={setQuery} label={semantic ? "جستجوی معنایی" : "جست‌وجو در اسناد"} placeholder={semantic ? "سندی که درباره رطوبت مواد ورودی است" : "جست‌وجو در اسناد"} className="sm:max-w-none" />
             <Button type="button" size="sm" variant={semantic ? "default" : "soft"} aria-pressed={semantic} onClick={() => setSemantic(!semantic)} className="shrink-0">✦ جستجوی معنایی</Button>
           </div>

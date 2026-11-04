@@ -1,8 +1,8 @@
 /**
- * The day the sample data is built around (۱۱ آبان ۱۴۰۵, 10:00 in Tehran). Pages that talk about
+ * The day the sample data is built around (۱۳ آبان ۱۴۰۵, 10:00 in Tehran). Pages that talk about
  * «today» use it, so the server-rendered page and the browser agree and the sample stays coherent.
  */
-export const demoToday = "2026-11-02T06:30:00.000Z";
+export const demoToday = "2026-11-04T06:30:00.000Z";
 
 const dayMs = 864e5;
 

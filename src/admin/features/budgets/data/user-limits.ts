@@ -1,5 +1,5 @@
-/** The budget month of the sample data: day 22 of 30 of آبان ۱۴۰۵. */
-export const budgetMonth = { label: "آبان ۱۴۰۵", daysPassed: 22, daysInMonth: 30 };
+/** The budget month of the sample data: day 13 of 30 of آبان ۱۴۰۵. */
+export const budgetMonth = { label: "آبان ۱۴۰۵", daysPassed: 13, daysInMonth: 30 };
 
 export type UserLimit = {
   id: string;
@@ -13,12 +13,12 @@ export type UserLimit = {
 };
 
 const users: UserLimit[] = [
-  { id: "user-002", name: "سارا احمدی", groupId: "group-001", monthlyToman: 1_500_000, internalTokens: 2_100_000, externalTokens: 1_120_000 },
-  { id: "user-003", name: "علی کریمی", groupId: "group-001", monthlyToman: 1_200_000, internalTokens: 900_000, externalTokens: 1_310_000 },
-  { id: "user-004", name: "نرگس موسوی", groupId: "group-002", monthlyToman: 1_000_000, internalTokens: 3_400_000, externalTokens: 420_000 },
-  { id: "user-006", name: "زهرا نوری", groupId: "group-003", monthlyToman: 2_500_000, internalTokens: 6_800_000, externalTokens: 960_000 },
-  { id: "user-007", name: "امیر صادقی", groupId: "group-003", monthlyToman: 2_000_000, internalTokens: 4_200_000, externalTokens: 1_520_000 },
-  { id: "user-008", name: "فاطمه حیدری", groupId: "group-005", monthlyToman: 600_000, internalTokens: 1_100_000, externalTokens: 180_000 },
+  { id: "user-002", name: "سارا احمدی", groupId: "group-001", monthlyToman: 1_500_000, internalTokens: 1_200_000, externalTokens: 791_000 },
+  { id: "user-003", name: "علی کریمی", groupId: "group-001", monthlyToman: 1_200_000, internalTokens: 700_000, externalTokens: 1_358_000 },
+  { id: "user-004", name: "نرگس موسوی", groupId: "group-002", monthlyToman: 1_000_000, internalTokens: 2_000_000, externalTokens: 240_000 },
+  { id: "user-006", name: "زهرا نوری", groupId: "group-003", monthlyToman: 2_500_000, internalTokens: 4_000_000, externalTokens: 600_000 },
+  { id: "user-007", name: "امیر صادقی", groupId: "group-003", monthlyToman: 2_000_000, internalTokens: 2_500_000, externalTokens: 1_000_000 },
+  { id: "user-008", name: "فاطمه حیدری", groupId: "group-005", monthlyToman: 600_000, internalTokens: 600_000, externalTokens: 106_000 },
 ];
 
 export type ExhaustAction = "lock" | "internal-light" | "notify";

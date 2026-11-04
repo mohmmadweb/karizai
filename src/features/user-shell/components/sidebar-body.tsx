@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/shared/app-link";
 import { HistoryIcon, ActivityIcon, FolderIcon, MessagesSquareIcon, PanelRightCloseIcon, PanelRightOpenIcon, SquarePenIcon } from "lucide-react";
 import { BrandLockup } from "@/components/brand/brand-lockup";
 import { BrandLogo } from "@/components/brand/brand-logo";
@@ -69,7 +69,7 @@ export function SidebarBody({ pathname, query = "", onQueryChange, collapsed = f
         ) : null}
       </div>
       {/* In a short window the content scrolls; without shrink-0 the rows would be squeezed flat instead. */}
-      <div className={cn("flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto [&>*]:shrink-0", !classic && "p-3")}>
+      <div className={cn("flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto [&>*]:shrink-0 [mask-image:linear-gradient(to_bottom,black_calc(100%-1.5rem),transparent)]", !classic && "p-3 pb-6")}>
         <NewChatButton collapsed={collapsed} classic={classic} onNavigate={onNavigate} />
         <SidebarNav groups={getUserSectionGroups()} flat={classic} pathname={pathname} collapsed={collapsed} onNavigate={onNavigate} />
         {collapsed ? null : (

@@ -16,9 +16,9 @@ export function CodeBlock({ code, label, className }: { code: string; label?: st
     }
   }
   return (
-    <div className={cn("relative rounded-lg border bg-muted/50", className)}>
-      <Button type="button" variant="ghost" size="icon-sm" className="absolute end-1 top-1" aria-label={`کپی ${label ?? "کد"}`} onClick={() => void copy()}><CopyIcon aria-hidden /></Button>
-      <pre dir="ltr" className="overflow-x-auto p-3 pe-10 text-start font-mono text-caption leading-relaxed"><code>{code}</code></pre>
+    <div className={cn("relative min-w-0 max-w-full rounded-lg border bg-muted/50", className)}>
+      <Button type="button" variant="ghost" size="icon-sm" className="absolute right-1 top-1 z-10 bg-muted/80" aria-label={`کپی ${label ?? "کد"}`} onClick={() => void copy()}><CopyIcon aria-hidden /></Button>
+      <pre dir="ltr" style={{ unicodeBidi: "isolate" }} className="max-w-full overflow-x-auto p-3 pr-11 text-left font-mono text-caption leading-relaxed"><code>{code}</code></pre>
     </div>
   );
 }

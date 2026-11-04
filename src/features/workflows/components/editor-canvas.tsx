@@ -73,8 +73,13 @@ export function EditorCanvas({ draft, run, subtitle, stepEffects = noEffects }: 
     draft.setGraph(nodes, [...edges, { id: `e-${source}-${target}`, source, target, label }]);
   };
 
+  // Tall flows get a taller canvas so the steps stay readable at the fitted zoom; the canvas can still be panned.
+  const ys = nodes.map((node) => node.position.y);
+  const graphHeight = ys.length > 0 ? Math.max(...ys) - Math.min(...ys) + 80 : 0;
+  const canvasHeight = Math.min(Math.max(Math.round(graphHeight * 0.85) + 96, 448), 760);
+
   return (
-    <div className="relative h-[28rem] overflow-hidden rounded-xl border bg-muted/30 lg:h-[34rem]" dir="ltr" aria-label="بوم طراحی کار">
+    <div className="relative overflow-hidden rounded-xl border bg-muted/30" style={{ height: canvasHeight }} dir="ltr" aria-label="بوم طراحی کار">
       <ReactFlow
         nodes={flowNodes}
         edges={flowEdges}
@@ -87,7 +92,9 @@ export function EditorCanvas({ draft, run, subtitle, stepEffects = noEffects }: 
         onPaneClick={() => draft.select(null)}
         deleteKeyCode={["Backspace", "Delete"]}
         fitView
-        fitViewOptions={{ padding: 0.3, maxZoom: 1 }}
+        fitViewOptions={{ padding: 0.12, minZoom: 0.6, maxZoom: 1 }}
+        minZoom={0.3}
+        panOnScroll
         proOptions={{ hideAttribution: true }}
       >
         <Background />

@@ -23,7 +23,7 @@ const agents: Agent[] = [
     defaultModelId: "model-10", tools: [], skillIds: ["skill-2"], isSensitive: false, isEnabled: true, kind: "personal",
     useCount: 9, updatedAt: "2026-10-05T11:00:00.000Z",
     shareRequests: [
-      { id: "share-2", targets: [{ kind: "user", name: "علی رضایی" }], status: "rejected", rejectionReason: "این Agent قالب مشابهی در Agentهای سازمان دارد؛ از همان استفاده کنید.", requestedAt: "2026-10-08T10:00:00.000Z" },
+      { id: "share-2", targets: [{ kind: "user", name: "علی رضایی" }], status: "rejected", rejectionReason: "این عامل قالب مشابهی در عامل‌های سازمان دارد؛ از همان استفاده کنید.", requestedAt: "2026-10-08T10:00:00.000Z" },
     ],
   },
   {
@@ -52,7 +52,7 @@ const agents: Agent[] = [
     id: "agent-5", knowledgeIds: [], modelPolicy: "auto", runIn: ["assistant"], version: "1.0", evalScore: 0.78, name: "پاسخگوی پشتیبانی", purpose: "پیش‌نویس پاسخ به تیکت‌های مشتریان.",
     instructions: "پاسخ‌ها را مودبانه و گام‌به‌گام بنویس.",
     defaultModelId: "model-4", tools: [], skillIds: [], isSensitive: false, isEnabled: false,
-    disabledReason: "ادمین این Agent را موقتاً غیرفعال کرده است.", kind: "shared", useCount: 3, updatedAt: "2026-08-20T09:00:00.000Z", shareRequests: [],
+    disabledReason: "ادمین این عامل را موقتاً غیرفعال کرده است.", kind: "shared", useCount: 3, updatedAt: "2026-08-20T09:00:00.000Z", shareRequests: [],
   },
 ];
 

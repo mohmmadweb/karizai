@@ -48,19 +48,19 @@ export function NodeProperties({ draft }: { draft: WorkflowDraft }) {
       {node.kind === "agent" ? (
         <Field>
           <FieldLabel htmlFor="node-agent">Agent</FieldLabel>
-          <SearchableSelect id="node-agent" items={agentItems} value={c.agentId ?? null} onValueChange={(value) => set({ agentId: value ?? undefined })} placeholder="انتخاب Agent" searchPlaceholder="جست‌وجوی Agent" emptyText="Agentی پیدا نشد" />
+          <SearchableSelect id="node-agent" items={agentItems} value={c.agentId ?? null} onValueChange={(value) => set({ agentId: value ?? undefined })} placeholder="انتخاب عامل" searchPlaceholder="جست‌وجوی عامل" emptyText="عاملی پیدا نشد" />
         </Field>
       ) : null}
       {node.kind === "skill" ? (
         <>
           <Field>
-            <FieldLabel htmlFor="node-skill-agent">Agent صاحب اسکیل</FieldLabel>
-            <SearchableSelect id="node-skill-agent" items={agentItems} value={c.agentId ?? null} onValueChange={(value) => set({ agentId: value ?? undefined, skillId: undefined })} placeholder="انتخاب Agent" searchPlaceholder="جست‌وجوی Agent" emptyText="Agentی پیدا نشد" />
+            <FieldLabel htmlFor="node-skill-agent">عامل صاحب اسکیل</FieldLabel>
+            <SearchableSelect id="node-skill-agent" items={agentItems} value={c.agentId ?? null} onValueChange={(value) => set({ agentId: value ?? undefined, skillId: undefined })} placeholder="انتخاب عامل" searchPlaceholder="جست‌وجوی عامل" emptyText="عاملی پیدا نشد" />
           </Field>
           <Field>
             <FieldLabel htmlFor="node-skill">اسکیل</FieldLabel>
-            <SearchableSelect id="node-skill" items={skills.filter((s) => s.approval === "approved" && ownAgent?.skillIds.includes(s.id)).map((s) => ({ value: s.id, label: s.name, hint: s.description }))} value={c.skillId ?? null} onValueChange={(value) => set({ skillId: value ?? undefined })} placeholder="انتخاب اسکیل" searchPlaceholder="جست‌وجوی اسکیل" emptyText="این Agent اسکیل تأییدشده‌ای ندارد" />
-            <FieldDescription>اسکیل همیشه زیرمجموعه‌ی یک Agent است و فقط اسکیل‌های تأییدشده‌ی آن Agent پیدا می‌شود.</FieldDescription>
+            <SearchableSelect id="node-skill" items={skills.filter((s) => s.approval === "approved" && ownAgent?.skillIds.includes(s.id)).map((s) => ({ value: s.id, label: s.name, hint: s.description }))} value={c.skillId ?? null} onValueChange={(value) => set({ skillId: value ?? undefined })} placeholder="انتخاب اسکیل" searchPlaceholder="جست‌وجوی اسکیل" emptyText="این عامل اسکیل تأییدشده‌ای ندارد" />
+            <FieldDescription>اسکیل همیشه زیرمجموعه‌ی یک عامل است و فقط اسکیل‌های تأییدشده‌ی آن عامل پیدا می‌شود.</FieldDescription>
           </Field>
         </>
       ) : null}
@@ -76,9 +76,9 @@ export function NodeProperties({ draft }: { draft: WorkflowDraft }) {
       {node.kind === "orchestrator" ? (
         <>
           <Field>
-            <FieldLabel htmlFor="node-children">Agentهای زیرمجموعه</FieldLabel>
-            <SearchableMultiSelect id="node-children" items={agentItems} value={c.childAgentIds ?? []} onValueChange={(ids) => set({ childAgentIds: ids })} placeholder="انتخاب Agentها" searchPlaceholder="جست‌وجوی Agent" emptyText="Agentی پیدا نشد" />
-            <FieldDescription>هماهنگ‌کننده فقط این Agentها را صدا می‌زند و دسترسی هیچ‌کدام بیشتر از دسترسی شما نیست.</FieldDescription>
+            <FieldLabel htmlFor="node-children">عامل‌های زیرمجموعه</FieldLabel>
+            <SearchableMultiSelect id="node-children" items={agentItems} value={c.childAgentIds ?? []} onValueChange={(ids) => set({ childAgentIds: ids })} placeholder="انتخاب عامل‌ها" searchPlaceholder="جست‌وجوی عامل" emptyText="عاملی پیدا نشد" />
+            <FieldDescription>هماهنگ‌کننده فقط این عامل‌ها را صدا می‌زند و دسترسی هیچ‌کدام بیشتر از دسترسی شما نیست.</FieldDescription>
           </Field>
           <Field>
             <FieldLabel htmlFor="node-max">حداکثر تعداد گام‌ها</FieldLabel>
@@ -88,8 +88,8 @@ export function NodeProperties({ draft }: { draft: WorkflowDraft }) {
         </>
       ) : null}
       {node.kind === "agent" && ownAgent ? (
-        <section className="flex flex-col gap-3 rounded-lg bg-muted p-3" aria-label="تنظیم‌های Agent">
-          <p className="text-caption text-muted-foreground">این Agent {ownAgent.tools.length.toLocaleString("fa-IR")} ابزار دارد و فقط با دسترسی خود شما کار می‌کند.</p>
+        <section className="flex flex-col gap-3 rounded-lg bg-muted p-3" aria-label="تنظیم‌های عامل">
+          <p className="text-caption text-muted-foreground">این عامل {ownAgent.tools.length.toLocaleString("fa-IR")} ابزار دارد و فقط با دسترسی خود شما کار می‌کند.</p>
           {agentParams.map((param) => (
             <ParamField key={param.key} id={`param-${param.key}`} param={param} value={agentValues[param.key] ?? param.defaultValue ?? ""} onChange={(value) => set({ params: { ...agentValues, [param.key]: value } })} />
           ))}

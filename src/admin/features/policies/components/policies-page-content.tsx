@@ -38,7 +38,7 @@ export function PoliciesPageContent() {
   return (
     <div className="flex flex-col gap-8">
       <PageHeader
-        title="مرکز قواعد و سیاست‌ها"
+        title="سیاست‌ها"
         description="بودجه‌ی هر گروه، پنهان‌سازی فیلدهای حساس، دسترسی خواندن و نوشتن و مدل‌های مجاز را در یک جا تعیین کنید. محرمانگی اسناد در بخش «اسناد» است. عامل‌ها نمی‌توانند این قواعد را دور بزنند."
       />
       {loading ? (
@@ -54,13 +54,13 @@ export function PoliciesPageContent() {
           <Button variant="outline" className="mt-2 w-fit" onClick={reload}>تلاش دوباره</Button>
         </Alert>
       ) : (
-        <Tabs defaultValue="budget">
-          <TabsList aria-label="بخش‌های مرکز قواعد" className="h-auto max-w-full flex-wrap justify-start">
-            <TabsTrigger value="budget">بودجه‌ی گروه‌ها</TabsTrigger>
-            <TabsTrigger value="masking">پنهان‌سازی</TabsTrigger>
-            <TabsTrigger value="access">خواندن و نوشتن</TabsTrigger>
-            <TabsTrigger value="models">سیاست مدل‌ها</TabsTrigger>
-            <TabsTrigger value="external">درخواست‌های بیرونی</TabsTrigger>
+        <Tabs defaultValue="budget" className="min-w-0">
+          <TabsList aria-label="بخش‌های سیاست‌ها" className="max-w-full justify-start overflow-x-auto">
+            <TabsTrigger value="budget" className="shrink-0 flex-none px-3">بودجه‌ی گروه‌ها</TabsTrigger>
+            <TabsTrigger value="masking" className="shrink-0 flex-none px-3">پنهان‌سازی</TabsTrigger>
+            <TabsTrigger value="access" className="shrink-0 flex-none px-3">خواندن و نوشتن</TabsTrigger>
+            <TabsTrigger value="models" className="shrink-0 flex-none px-3">سیاست مدل‌ها</TabsTrigger>
+            <TabsTrigger value="external" className="shrink-0 flex-none px-3">درخواست‌های بیرونی</TabsTrigger>
           </TabsList>
           <TabsContent value="budget" className="pt-4"><BudgetTab /></TabsContent>
           <TabsContent value="masking" className="pt-4"><MaskingTab /></TabsContent>

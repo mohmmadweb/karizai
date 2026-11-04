@@ -15,7 +15,7 @@ export type AllowanceLine = {
 };
 
 export const stateLabels: Record<AllowanceState, string> = {
-  within: "در حد",
+  within: "در حد مجاز",
   near: "نزدیک سقف",
   used: "سقف تمام شده",
   none: "بدون سقف",
