@@ -72,7 +72,8 @@ export function ModelsProvider({ initialProviders, initialModels, children }: Mo
 
   // Only a reachable server store is written back; without one (the static demo) the sample data stays in memory.
   const [loaded, setLoaded] = useState(false);
-  const [ready, setReady] = useState(false);
+  // Without a server (the static site) the samples show at once instead of a blank page.
+  const [ready, setReady] = useState(!hasServer);
   useEffect(() => {
     if (!hasServer) { setReady(true); return; }
     fetch("/api/admin/store")

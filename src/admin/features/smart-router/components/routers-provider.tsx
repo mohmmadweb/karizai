@@ -25,7 +25,8 @@ export function RoutersProvider({ children }: { children: ReactNode }) {
   const [routers, setRouters] = useState<SmartRouter[]>(getSampleRouters);
   /** loaded: the server store answered, so changes are saved back. ready: show the page (with samples when there is no server). */
   const [loaded, setLoaded] = useState(false);
-  const [ready, setReady] = useState(false);
+  // Without a server (the static site) the samples show at once instead of a blank page.
+  const [ready, setReady] = useState(!hasServer);
 
   useEffect(() => {
     if (!hasServer) { setReady(true); return; }
