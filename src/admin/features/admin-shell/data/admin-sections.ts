@@ -177,7 +177,7 @@ const byId = (ids: string[]) =>
   ids.map((id) => sections.find((section) => section.id === id)!);
 
 const groups: AdminSectionGroup[] = [
-  { id: "overview", title: "نمای کلی", sections: byId(["section-dashboard", "section-rfi"]) },
+  { id: "overview", title: "نمای کلی", sections: byId(["section-dashboard"]) },
   { id: "people", title: "کاربران و ساختار", sections: byId(["section-users", "section-groups", "section-organization"]) },
   { id: "governance", title: "قواعد و حاکمیت", sections: byId(["section-policies", "section-approvals", "section-agents", "section-evaluations", "section-audit"]) },
   { id: "intelligence", title: "هوش و دانش", sections: byId(["section-models", "section-ml-models", "section-benchmark", "section-documents", "section-data", "section-connections", "section-skills", "section-webhooks"]) },
